@@ -100,7 +100,7 @@ Conditionals=
 DebugSourceDirs=
 UsePackages=0
 [Parameters]
-RunParams=
+RunParams=1.0.0.0 gudang
 HostApplication=
 Launcher=
 UseLauncher=0

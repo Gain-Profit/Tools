@@ -8,7 +8,9 @@ uses
   Dialogs,
   Messages,
   Controls,
-  SysUtils;
+  SysUtils,
+  Variants,
+  uLkJSON;
 
 function loadVersion(const Url: string): string;
 var
@@ -54,28 +56,32 @@ begin
 end;
 
 //param 1 -> versi
-//param 2 -> cek
-//param 3 -> dowmload
-//param 4 -> nama aplikasi
+//param 2 -> applikasi
 
-var Appterbaru: string;
+var jsonApp,versi,download: string;
+    js: TlkJsonObject;
 begin
-  Appterbaru:= loadVersion(paramStr(2));
+  jsonApp:= loadVersion('https://dl.dropboxusercontent.com/s/ttrj07pqp3q8r7n/profit.json?dl=0');
+  js := TlkJSON.ParseText(jsonApp) as TlkJSONobject;
 
-  if Appterbaru <>''then
+  versi     := VarToStr(js.Field['app'].Field['gudang'].Field['versi'].Value);
+  download  := VarToStr(js.Field['app'].Field['gudang'].Field['download'].Value);
+
+  if versi <>''then
   begin
-    if paramStr(1)<> Appterbaru then
+    if paramStr(1)<> versi then
     begin
-      if MessageDlg('Aplikasi '+ParamStr(4)+' Terbaru Telah keluar:' + #13#10 +
-        'Versi terbaru : ' + Appterbaru + #13#10#13#10 +
+      if MessageDlg('Aplikasi '+ParamStr(2)+' Terbaru Telah keluar:' + #13#10 +
+        'Versi terbaru : ' + versi + #13#10#13#10 +
         'Download Applikasi Terbaru?',  mtWarning, [mbYes, mbNo], 0) = mrYes
         then
       begin
-        WinExec(PChar('rundll32 url.dll,FileProtocolHandler '+ paramStr(3)),
+        WinExec(PChar('rundll32 url.dll,FileProtocolHandler '+ download),
         SW_MAXIMIZE);
       end;
     end;
   end;
+  
 
 end.
  
