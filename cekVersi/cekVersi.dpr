@@ -61,7 +61,7 @@ end;
 var jsonApp,versi,download: string;
     js: TlkJsonObject;
 begin
-  jsonApp:= loadVersion('https://dl.dropboxusercontent.com/s/ttrj07pqp3q8r7n/profit.json?dl=0');
+  jsonApp:= loadVersion('http://gain-profit.github.io/profit.json');
   js := TlkJSON.ParseText(jsonApp) as TlkJSONobject;
 
   versi     := VarToStr(js.Field['app'].Field['gudang'].Field['versi'].Value);
