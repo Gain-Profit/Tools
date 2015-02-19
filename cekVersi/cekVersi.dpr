@@ -32,7 +32,6 @@ var versi,download: string;
 begin
   if NOT Download_HTM('http://gain-profit.github.io/profit.json','profit.json') then
   begin
-    ShowMessage('Error in HTML file download') ;
     Exit;
   end;
 
