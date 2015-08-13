@@ -1,4 +1,4 @@
-object Form1: TForm1
+object FUpdater: TFUpdater
   Left = 230
   Top = 185
   Width = 928
@@ -11,14 +11,13 @@ object Form1: TForm1
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object cxGrid1: TcxGrid
     Left = 0
     Top = 41
     Width = 912
-    Height = 400
+    Height = 381
     Align = alClient
     TabOrder = 0
     object TableView: TcxGridDBTableView
@@ -29,28 +28,34 @@ object Form1: TForm1
       OptionsView.ColumnAutoWidth = True
       OptionsView.GroupByBox = False
       object TableViewColumn1: TcxGridDBColumn
-        Caption = 'Aplikasi'
+        Caption = 'File'
         DataBinding.ValueType = 'String'
         Options.Editing = False
-        Width = 115
+        Width = 141
       end
       object TableViewColumn2: TcxGridDBColumn
-        Caption = 'Versi Sekarang'
-        DataBinding.ValueType = 'String'
-        Options.Editing = False
-        Width = 83
-      end
-      object TableViewColumn3: TcxGridDBColumn
         Caption = 'Versi Terbaru'
         DataBinding.ValueType = 'String'
         Options.Editing = False
-        Width = 80
+        Width = 103
+      end
+      object TableViewColumn3: TcxGridDBColumn
+        Caption = 'Versi Sekarang'
+        DataBinding.ValueType = 'String'
+        Options.Editing = False
+        Width = 98
       end
       object TableViewColumn4: TcxGridDBColumn
         Caption = 'Aksi'
         DataBinding.ValueType = 'String'
         Options.Editing = False
-        Width = 214
+        Width = 72
+      end
+      object TableViewColumn5: TcxGridDBColumn
+        Caption = 'URL Download'
+        DataBinding.ValueType = 'String'
+        Options.Editing = False
+        Width = 270
       end
     end
     object Level: TcxGridLevel
@@ -91,11 +96,52 @@ object Form1: TForm1
       Left = 200
       Top = 8
       Width = 529
-      Height = 17
+      Height = 25
       ParentShowHint = False
       Smooth = True
       ShowHint = True
       TabOrder = 2
     end
+  end
+  object status: TStatusBar
+    Left = 0
+    Top = 422
+    Width = 912
+    Height = 19
+    Panels = <
+      item
+        Text = 'Status'
+        Width = 50
+      end>
+  end
+  object Laporan: TfrxReport
+    Version = '4.9.35'
+    DotMatrixReport = False
+    IniFile = '\Software\Fast Reports'
+    PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick]
+    PreviewOptions.Zoom = 1.000000000000000000
+    PrintOptions.Printer = 'Default'
+    PrintOptions.PrintOnSheet = 0
+    ReportOptions.CreateDate = 42229.882180833330000000
+    ReportOptions.LastChange = 42229.882180833330000000
+    ScriptLanguage = 'PascalScript'
+    ScriptText.Strings = (
+      'begin'
+      ''
+      'end.')
+    Left = 24
+    Top = 96
+    Datasets = <>
+    Variables = <>
+    Style = <>
+  end
+  object frxBarCodeObject1: TfrxBarCodeObject
+    Left = 72
+    Top = 96
+  end
+  object UnZipApp: TAbUnZipper
+    OnArchiveItemProgress = UnZipAppArchiveItemProgress
+    Left = 112
+    Top = 96
   end
 end

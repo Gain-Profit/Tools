@@ -7,10 +7,12 @@ uses
   Dialogs, StdCtrls, cxStyles, cxCustomData, cxGraphics, cxFilter, cxData,
   cxDataStorage, cxEdit, DB, cxDBData, cxGridCustomTableView,
   cxGridTableView, cxGridDBTableView, cxGridLevel, cxClasses, cxControls,
-  cxGridCustomView, cxGrid, ExtCtrls,IdHTTP,uLkJSON,ExtActns, ComCtrls;
+  cxGridCustomView, cxGrid, ExtCtrls,IdHTTP,uLkJSON,ExtActns, ComCtrls,
+  frxBarcode, frxClass, AbBase, AbBrowse, AbZBrows, AbUnzper,TlHelp32,
+  AbComCtrls,AbArcTyp;
 
 type
-  TForm1 = class(TForm)
+  TFUpdater = class(TForm)
     TableView: TcxGridDBTableView;
     Level: TcxGridLevel;
     cxGrid1: TcxGrid;
@@ -22,23 +24,32 @@ type
     TableViewColumn4: TcxGridDBColumn;
     btnJalankan: TButton;
     pbDownload: TProgressBar;
+    Laporan: TfrxReport;
+    frxBarCodeObject1: TfrxBarCodeObject;
+    TableViewColumn5: TcxGridDBColumn;
+    status: TStatusBar;
+    UnZipApp: TAbUnZipper;
     procedure btnCekClick(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure _set(baris,kolom:Integer; _isi:variant);
-    procedure fileExistandVersion(baris,kolom:Integer; filename:string);
+    function fileExistandVersion(filename:string):string;
     procedure btnJalankanClick(Sender: TObject);
+    procedure UnZipAppArchiveItemProgress(Sender: TObject;
+      Item: TAbArchiveItem; Progress: Byte; var Abort: Boolean);
   private
     procedure URL_OnDownloadProgress
         (Sender: TDownLoadURL;
          Progress, ProgressMax: Cardinal;
          StatusCode: TURLDownloadStatus;
          StatusText: String; var Cancel: Boolean) ;
+    function loadJsonOnline(online:Boolean):Boolean;
+    function laporan_versi(filename: string): string;
+    function cekAksi(baris:Integer;path,URLfile: string):string;
   public
     { Public declarations }
   end;
 
 var
-  Form1: TForm1;
+  FUpdater: TFUpdater;
   Json: string;
   js: TlkJsonObject;
 
@@ -71,100 +82,197 @@ Result := IntToStr(V1) + '.'
             + IntToStr(V4);
 end;
 
-procedure TForm1.btnCekClick(Sender: TObject);
+function TFUpdater.laporan_versi(filename: string): string;
+var
+  versi: string;
+begin
+  Laporan.LoadFromFile(filename);
+
+  with Laporan.ReportOptions do
+  begin
+    versi := VersionMajor+'.'+VersionMinor+'.'+VersionRelease+'.'+VersionBuild;
+  end;
+
+  Result := versi;
+end;
+
+function TFUpdater.loadJsonOnline(online: Boolean): Boolean;
 var
   IdHTTP: TIdHTTP;
-  data: Integer;
 begin
-  fileExistandVersion(0,1,'..\gudang.exe');
-  fileExistandVersion(1,1,'..\accounting.exe');
-  fileExistandVersion(2,1,'..\pos_server.exe');
-  fileExistandVersion(3,1,'..\kasir.exe');
-
-  IdHTTP := TIdHTTP.Create(nil);
-  try
-    Json := IdHTTP.Get('http://gain-profit.github.io/profit.json');
-  finally
-    IdHTTP.Free;
-  end;
-
-  try
-    js := TlkJSON.ParseText(Json) as TlkJSONobject;
-    _set(0,2,VarToStr(js.Field['app'].Field['gudang'].Field['versi'].Value));
-    _set(1,2,VarToStr(js.Field['app'].Field['accounting'].Field['versi'].Value));
-    _set(2,2,VarToStr(js.Field['app'].Field['POS_server'].Field['versi'].Value));
-    _set(3,2,VarToStr(js.Field['app'].Field['kasir'].Field['versi'].Value));
-  except
-    exit;
-  end;
-
-  for data:= 0 to tableview.DataController.RecordCount-1 do
+  Result := True;
+  if online then
   begin
-    if TableView.DataController.GetValue(data, 1) <>
-       TableView.DataController.GetValue(data, 2) then
-      begin
-        _set(data,3,'DOWNLOAD');
-        btnJalankan.Enabled := True;
-      end else
-      begin
-        _set(data,3,'LEWATI');
-      end;
+    IdHTTP := TIdHTTP.Create(nil);
+    try
+      Json := IdHTTP.Get('http://gain-profit.github.io/updater.json');
+      js := TlkJSON.ParseText(Json) as TlkJSONobject;
+    except
+      ShowMessage('TIDAK DAPAT MENYAMBUNGKAN KE INTERNET');
+      Result := False;
+    end;
+    IdHTTP.Free;
+  end else
+      js := TlkJSONstreamed.loadfromfile('updater.json') as TlkJsonObject;
+end;
+
+function TFUpdater.cekAksi(baris:Integer;path,URLfile: string):string;
+var
+  namaFile: string;
+begin
+  namaFile := Copy(URLfile,LastDelimiter('/',URLfile)+1,Length(URLfile)-LastDelimiter('/',URLfile));
+
+  if TableView.DataController.GetValue(baris, 1) <>
+     TableView.DataController.GetValue(baris, 2) then
+    begin
+      btnJalankan.Enabled := True;
+
+        if FileExists(path + namaFile) then
+          Result := 'EXTRACT ' + path + namaFile else
+          Result := 'DOWNLOAD ' + path + namaFile;
+    end else
+    begin
+      Result := 'LEWATI';
+    end;
+end;
+
+procedure TFUpdater.btnCekClick(Sender: TObject);
+var
+  jsonDetail:TlkJSONobject;
+  NoItem: Integer;
+  nama,versiOnline,path,download,versiOffline:string;
+begin
+  pbDownload.Position:= 0;
+  btnJalankan.Enabled := False;
+
+  if not loadJsonOnline(True) then Exit;
+
+  TableView.DataController.RecordCount := js.Field['profit'].Count;
+
+  for NoItem := 0 to js.Field['profit'].Count -1 do
+  begin
+    jsonDetail  := (js.Field['profit'].Child[NoItem] as TlkJSONobject);
+    nama        := jsondetail.getString('nama');
+    versiOnline := jsondetail.getString('versi');
+    path        := jsondetail.getString('path');
+    download    := jsondetail.getString('download');
+    versiOffline:= fileExistandVersion(path + nama);
+
+    _set(NoItem,0,path + nama);
+    _set(NoItem,1,versiOnline);
+    _set(NoItem,2,versiOffline);
+    _set(NoItem,3,cekAksi(NoItem,path,download));
+    _set(NoItem,4,download);
+  end;
+
+  status.Panels[0].Text := 'Pengecekan File Gain Profit Selesai...';
+end;
+
+function TFUpdater.fileExistandVersion(filename: string) : string;
+begin
+  if FileExists(filename) then
+  begin
+    if ExtractFileExt(filename) = '.exe' then
+    Result := program_versi(filename) else
+    if ExtractFileExt(filename) = '.fr3' then
+    Result := laporan_versi(filename);
+  end else
+  begin
+    Result := 'HILANG';
   end;
 end;
 
-procedure TForm1.fileExistandVersion(baris, kolom: Integer;
-  filename: string);
-begin
-if FileExists(filename) then
-  _set(baris,kolom,program_versi(filename))
-else
-  _set(baris,kolom,'HILANG');
-end;
-
-procedure TForm1.FormCreate(Sender: TObject);
-begin
-TableView.DataController.RecordCount := 4;
-_set(0,0,'gudang');
-_set(1,0,'accounting');
-_set(2,0,'POS_server');
-_set(3,0,'kasir');
-end;
-
-procedure TForm1._set(baris,kolom:Integer; _isi:variant);
+procedure TFUpdater._set(baris,kolom:Integer; _isi:variant);
 begin
 TableView.DataController.SetValue(baris,kolom,_isi);
 end;
 
-procedure TForm1.URL_OnDownloadProgress;
+procedure TFUpdater.URL_OnDownloadProgress;
 begin
    pbDownload.Max:= ProgressMax;
    pbDownload.Position:= Progress;
 end;
 
-procedure TForm1.btnJalankanClick(Sender: TObject);
+function processExists(exeFileName: string): Boolean; 
+var 
+  ContinueLoop: BOOL; 
+  FSnapshotHandle: THandle; 
+  FProcessEntry32: TProcessEntry32;
+begin 
+  FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0); 
+  FProcessEntry32.dwSize := SizeOf(FProcessEntry32); 
+  ContinueLoop := Process32First(FSnapshotHandle, FProcessEntry32); 
+  Result := False; 
+  while Integer(ContinueLoop) <> 0 do 
+  begin 
+    if ((UpperCase(ExtractFileName(FProcessEntry32.szExeFile)) = 
+      UpperCase(ExeFileName)) or (UpperCase(FProcessEntry32.szExeFile) = 
+      UpperCase(ExeFileName))) then 
+    begin 
+      Result := True; 
+    end; 
+    ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32); 
+  end; 
+  CloseHandle(FSnapshotHandle); 
+end;
+
+procedure TFUpdater.btnJalankanClick(Sender: TObject);
 var
   data: Integer;
-  namafile, URLfile: string;
+  URLfile,kolomAksi,kolomNama,namaFile: string;
 begin
   for data:= 0 to tableview.DataController.RecordCount-1 do
   begin
-    if TableView.DataController.GetValue(data, 3) = 'DOWNLOAD' then
+    kolomAksi := TableView.DataController.GetValue(data, 3);
+    kolomNama := TableView.DataController.GetValue(data, 0);
+    namaFile := Copy(kolomNama,LastDelimiter('/',kolomNama)+1,Length(kolomNama)-LastDelimiter('/',kolomNama));
+
+    if processExists(namaFile) then
+    begin
+      ShowMessage('Tidak dapat melakukan Aksi untuk Aplikasi '+ namaFile + #13#10
+      +'Aplikasi Masih Berjalan, Tutup Aplikasi !!!');
+      Exit;
+    end;  
+
+    if Copy(kolomAksi,1,8) = 'DOWNLOAD' then
       begin
-        URLfile := VarToStr(js.Field['app'].Field[TableView.DataController.GetValue(data, 0)].Field['download'].Value);
-        namafile := Copy(URLfile,LastDelimiter('/',URLfile)+1,Length(URLfile)-LastDelimiter('/',URLfile));
+        status.Panels[0].Text := 'Download File ' + namaFile;
+        URLfile := TableView.DataController.GetValue(data, 4);
         with TDownloadURL.Create(self) do
         try
          URL := URLfile;
-         FileName := '..\'+namafile;
+         FileName := Copy(kolomAksi,10,Length(kolomAksi)-1);
          OnDownloadProgress := URL_OnDownloadProgress;
 
          ExecuteTarget(nil);
         finally
          Free;
         end;
+
+        if ExtractFileExt(Copy(kolomAksi,10,Length(kolomAksi)-1)) = '.zip' then
+        begin
+        UnZipApp.FileName := Copy(kolomAksi,10,Length(kolomAksi)-1);
+        UnZipApp.ExtractAt(0,TableView.DataController.GetValue(data, 0));
+        end;
+
+      end;
+
+    if Copy(kolomAksi,1,7) = 'EXTRACT' then
+      begin
+        UnZipApp.FileName := Copy(kolomAksi,9,Length(kolomAksi)-1);
+        UnZipApp.ExtractAt(0,TableView.DataController.GetValue(data, 0));
       end;
   end;
-btnJalankan.Enabled := False;
+
+  btnCekClick(Self);
+end;
+
+
+procedure TFUpdater.UnZipAppArchiveItemProgress(Sender: TObject;
+  Item: TAbArchiveItem; Progress: Byte; var Abort: Boolean);
+begin
+  status.Panels[0].Text := 'Extract file : ' + Item.FileName;
+  pbDownload.Position := Progress;
 end;
 
 end.

@@ -2,12 +2,13 @@ program Updater;
 
 uses
   Forms,
-  UUpdater in 'UUpdater.pas' {Form1};
+  UUpdater in 'UUpdater.pas' {FUpdater};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.Title := 'Updater Gain Profit';
+  Application.CreateForm(TFUpdater, FUpdater);
   Application.Run;
 end.
