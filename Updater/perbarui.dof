@@ -90,7 +90,7 @@ MaxStackSize=1048576
 ImageBase=4194304
 ExeDescription=
 [Directories]
-OutputDir=..\..\GAIN PROFIT\TOOLS
+OutputDir=../../GAIN PROFIT/TOOLS
 UnitOutputDir=
 PackageDLLOutputDir=
 PackageDCPOutputDir=
@@ -112,9 +112,9 @@ RootDir=C:\Program Files (x86)\Borland\Delphi7\Bin\
 [Version Info]
 IncludeVerInfo=1
 AutoIncBuild=0
-MajorVer=0
+MajorVer=1
 MinorVer=1
-Release=1
+Release=0
 Build=0
 Debug=0
 PreRelease=0
@@ -125,8 +125,8 @@ Locale=2057
 CodePage=1252
 [Version Info Keys]
 CompanyName=
-FileDescription=Updater for Gain Profit
-FileVersion=0.1.1.0
+FileDescription=
+FileVersion=1.1.0.0
 InternalName=
 LegalCopyright=
 LegalTrademarks=
@@ -147,5 +147,8 @@ C:\Program Files (x86)\Borland\Delphi7\Projects\Bpl\tmsded7.bpl=TMS Component Pa
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlOutputDirectorry]
-Count=1
-Item0=..\..\GAIN PROFIT\TOOLS
+Count=4
+Item0=../../GAIN PROFIT/TOOLS
+Item1=../../GAIN PROFIT/TOO;S
+Item2=../../GAIN PROFIT
+Item3=..\..\GAIN PROFIT\TOOLS

@@ -1,9 +1,9 @@
-object FUpdater: TFUpdater
+object FormUtama: TFormUtama
   Left = 230
   Top = 185
   Width = 928
   Height = 480
-  Caption = 'Updater'
+  Caption = 'Perbarui Aplikasi'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

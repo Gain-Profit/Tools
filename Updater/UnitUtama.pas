@@ -1,4 +1,4 @@
-unit UUpdater;
+unit UnitUtama;
 
 interface
 
@@ -12,7 +12,7 @@ uses
   AbComCtrls,AbArcTyp;
 
 type
-  TFUpdater = class(TForm)
+  TFormUtama = class(TForm)
     TableView: TcxGridDBTableView;
     Level: TcxGridLevel;
     cxGrid1: TcxGrid;
@@ -49,7 +49,7 @@ type
   end;
 
 var
-  FUpdater: TFUpdater;
+  FormUtama: TFormUtama;
   Json: string;
   js: TlkJsonObject;
 
@@ -82,7 +82,7 @@ Result := IntToStr(V1) + '.'
             + IntToStr(V4);
 end;
 
-function TFUpdater.laporan_versi(filename: string): string;
+function TFormUtama.laporan_versi(filename: string): string;
 var
   versi: string;
 begin
@@ -96,7 +96,7 @@ begin
   Result := versi;
 end;
 
-function TFUpdater.loadJsonOnline(online: Boolean): Boolean;
+function TFormUtama.loadJsonOnline(online: Boolean): Boolean;
 var
   IdHTTP: TIdHTTP;
 begin
@@ -116,7 +116,7 @@ begin
       js := TlkJSONstreamed.loadfromfile('updater.json') as TlkJsonObject;
 end;
 
-function TFUpdater.cekAksi(baris:Integer;path,URLfile: string):string;
+function TFormUtama.cekAksi(baris:Integer;path,URLfile: string):string;
 var
   namaFile: string;
 begin
@@ -136,7 +136,7 @@ begin
     end;
 end;
 
-procedure TFUpdater.btnCekClick(Sender: TObject);
+procedure TFormUtama.btnCekClick(Sender: TObject);
 var
   jsonDetail:TlkJSONobject;
   NoItem: Integer;
@@ -168,7 +168,7 @@ begin
   status.Panels[0].Text := 'Pengecekan File Gain Profit Selesai...';
 end;
 
-function TFUpdater.fileExistandVersion(filename: string) : string;
+function TFormUtama.fileExistandVersion(filename: string) : string;
 begin
   if FileExists(filename) then
   begin
@@ -182,12 +182,12 @@ begin
   end;
 end;
 
-procedure TFUpdater._set(baris,kolom:Integer; _isi:variant);
+procedure TFormUtama._set(baris,kolom:Integer; _isi:variant);
 begin
 TableView.DataController.SetValue(baris,kolom,_isi);
 end;
 
-procedure TFUpdater.URL_OnDownloadProgress;
+procedure TFormUtama.URL_OnDownloadProgress;
 begin
    pbDownload.Max:= ProgressMax;
    pbDownload.Position:= Progress;
@@ -216,7 +216,7 @@ begin
   CloseHandle(FSnapshotHandle); 
 end;
 
-procedure TFUpdater.btnJalankanClick(Sender: TObject);
+procedure TFormUtama.btnJalankanClick(Sender: TObject);
 var
   data: Integer;
   URLfile,kolomAksi,kolomNama,namaFile: string;
@@ -268,7 +268,7 @@ begin
 end;
 
 
-procedure TFUpdater.UnZipAppArchiveItemProgress(Sender: TObject;
+procedure TFormUtama.UnZipAppArchiveItemProgress(Sender: TObject;
   Item: TAbArchiveItem; Progress: Byte; var Abort: Boolean);
 begin
   status.Panels[0].Text := 'Extract file : ' + Item.FileName;
