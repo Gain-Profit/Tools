@@ -9,10 +9,6 @@ uses
 type
   TFChekIO = class(TForm)
     FPVer: TFinFPVer;
-    lbl1: TLabel;
-    lbl2: TLabel;
-    edID: TEdit;
-    edNama: TEdit;
     lblPerintah: TsLabel;
     lblStatus: TsLabel;
     imgSIdikJari: TImage;
@@ -20,6 +16,7 @@ type
     procedure FPVerFPVerificationID(ASender: TObject; const ID: WideString;
       FingerNr: Integer);
     procedure FPVerFPVerificationStatus(ASender: TObject; Status: Integer);
+    procedure LolosVerifikasi;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
   private
@@ -32,16 +29,17 @@ var
   SN: WideString;
   Verification: WideString;
   Activation: WideString;
-  parentPath:string;
+  parentPath, jenis,idUser,namaUser:string;
 
 implementation
 
-uses UDM;
+uses UDM, USukses;
 
 {$R *.dfm}
 
 procedure TFChekIO.FormShow(Sender: TObject);
 begin
+  Caption := 'CHECK '+ jenis;
   lblStatus.Caption := Caption;
   SN:= 'C800V004068';
   Verification:= 'EC5-C58-C93-CAD-DEA';
@@ -82,13 +80,20 @@ begin
   _sql := 'SELECT * FROM tb_user WHERE kd_user ="'+DM.QShow.FieldByName('user_id').AsString+'"';
   DM.SQLExec(DM.QShow,_sql,True);
 
-  edID.Text   := DM.QShow.FieldByName('kd_user').AsString;
-  edNama.Text := DM.QShow.FieldByName('n_user').AsString;
+  idUser    := DM.QShow.FieldByName('kd_user').AsString;
+  namaUser  := DM.QShow.FieldByName('n_user').AsString;
+  LolosVerifikasi;
+end;
 
-  if FileExists(parentPath+'image/'+edID.Text+'.jpg') then
-  imgSIdikJari.Picture.LoadFromFile(parentPath+'image/'+edID.Text+'.jpg') else
-  ShowMessage('gambar tidak ada');
-
+procedure TFChekIO.LolosVerifikasi;
+begin
+  Application.CreateForm(TFSukses, FSukses);
+  FSukses.Caption := 'CHECK '+ jenis + ' SUKSES';
+  FSukses.lblKode.Caption := idUser;
+  FSukses.lblNama.Caption := namaUser;
+  if FileExists(parentPath+'image/'+idUser+'.jpg') then
+  FSukses.imgSIdikJari.Picture.LoadFromFile(parentPath+'image/'+idUser+'.jpg');
+  FSukses.ShowModal;
 end;
 
 procedure TFChekIO.FPVerFPVerificationStatus(ASender: TObject;
@@ -150,7 +155,5 @@ procedure TFChekIO.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   FPVer.FPVerificationStop;
 end;
-
-
 
 end.

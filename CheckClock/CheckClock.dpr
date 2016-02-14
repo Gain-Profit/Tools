@@ -4,7 +4,8 @@ uses
   Forms,
   UCheckIO in 'UCheckIO.pas' {FChekIO},
   UDM in 'UDM.pas' {dm: TDataModule},
-  UMain in 'UMain.pas' {FMain};
+  UMain in 'UMain.pas' {FMain},
+  USukses in 'USukses.pas' {FSukses};
 
 {$R *.res}
 

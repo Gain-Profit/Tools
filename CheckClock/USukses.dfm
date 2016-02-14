@@ -1,10 +1,10 @@
-object FChekIO: TFChekIO
-  Left = 280
-  Top = 249
+object FSukses: TFSukses
+  Left = 330
+  Top = 261
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
-  ClientHeight = 284
-  ClientWidth = 242
+  ClientHeight = 340
+  ClientWidth = 319
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -13,44 +13,14 @@ object FChekIO: TFChekIO
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
-  OnClose = FormClose
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object lblPerintah: TsLabel
-    Left = 8
-    Top = 216
-    Width = 228
-    Height = 58
-    Alignment = taCenter
-    Caption = 'Tempelkan Jari Anda'#13#10'ke Mesin Sidik Jari!!!'
-    ParentFont = False
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -24
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-  end
-  object lblStatus: TsLabel
-    Left = 8
-    Top = 8
-    Width = 225
-    Height = 29
-    Alignment = taCenter
-    AutoSize = False
-    Caption = 'CHECK OUT'
-    ParentFont = False
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -24
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-  end
   object imgSIdikJari: TImage
-    Left = 64
-    Top = 56
-    Width = 112
-    Height = 154
+    Left = 8
+    Top = 48
+    Width = 297
+    Height = 169
     Center = True
     Picture.Data = {
       07544269746D617096470000424D964700000000000036040000280000007000
@@ -629,12 +599,62 @@ object FChekIO: TFChekIO
       FFFF}
     Proportional = True
   end
-  object FPVer: TFinFPVer
-    AutoConnect = False
-    ConnectKind = ckRunningOrNew
-    OnFPVerificationStatus = FPVerFPVerificationStatus
-    OnFPVerificationID = FPVerFPVerificationID
+  object lblStatus: TsLabel
     Left = 8
-    Top = 72
+    Top = 8
+    Width = 297
+    Height = 29
+    Alignment = taCenter
+    AutoSize = False
+    Caption = 'CHECK OUT SUKSES'
+    Color = clBtnFace
+    ParentColor = False
+    ParentFont = False
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlue
+    Font.Height = -24
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    UseSkinColor = False
+  end
+  object lblKode: TsLabel
+    Left = 8
+    Top = 224
+    Width = 297
+    Height = 29
+    Alignment = taCenter
+    AutoSize = False
+    Caption = 'KODE'
+    ParentFont = False
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -19
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+  end
+  object lblNama: TsLabel
+    Left = 8
+    Top = 256
+    Width = 297
+    Height = 33
+    Alignment = taCenter
+    AutoSize = False
+    Caption = 'CAHYA BAGUS SANJAYA'
+    ParentFont = False
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -19
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+  end
+  object btnKeluar: TsBitBtn
+    Left = 112
+    Top = 304
+    Width = 75
+    Height = 25
+    Caption = 'Keluar'
+    TabOrder = 0
+    OnClick = btnKeluarClick
+    SkinData.SkinSection = 'BUTTON'
   end
 end
