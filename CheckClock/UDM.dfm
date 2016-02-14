@@ -2235,12 +2235,4 @@ object dm: Tdm
     Left = 216
     Top = 24
   end
-  object image: TsAlphaImageList
-    DrawingStyle = dsTransparent
-    Height = 36
-    Width = 36
-    Items = <>
-    Left = 216
-    Top = 72
-  end
 end

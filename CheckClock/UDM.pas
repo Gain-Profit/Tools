@@ -12,7 +12,6 @@ type
     Qexe: TmySQLQuery;
     QShow: TmySQLQuery;
     sm: TsSkinManager;
-    image: TsAlphaImageList;
     procedure koneksikan;
     procedure SQLExec(aQuery:TmySQLQuery; _SQL:string; isSearch: boolean);
     procedure DataModuleCreate(Sender: TObject);
