@@ -1,0 +1,75 @@
+object GainSMS: TGainSMS
+  OldCreateOrder = False
+  OnStart = DataModuleStart
+  Height = 434
+  HorizontalOffset = 238
+  VerticalOffset = 150
+  Width = 658
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 2000
+    OnTimer = Timer1Timer
+    left = 412
+    top = 36
+  end
+  object ProfitConn: TSQLConnector
+    Connected = False
+    LoginPrompt = False
+    KeepConnection = False
+    Transaction = ProfitTrans
+    LogEvents = []
+    left = 52
+    top = 36
+  end
+  object LibLoad: TSQLDBLibraryLoader
+    Enabled = False
+    LibraryName = 'libmysql.dll'
+    left = 188
+    top = 36
+  end
+  object ProfitTrans: TSQLTransaction
+    Active = False
+    Database = ProfitConn
+    left = 116
+    top = 36
+  end
+  object SMSConn: TSQLConnector
+    Connected = False
+    LoginPrompt = False
+    KeepConnection = False
+    Transaction = SMSTrans
+    LogEvents = []
+    left = 252
+    top = 36
+  end
+  object SMSTrans: TSQLTransaction
+    Active = False
+    Database = SMSConn
+    left = 332
+    top = 36
+  end
+  object QSMSEXE: TSQLQuery
+    FieldDefs = <>
+    Database = SMSConn
+    Transaction = SMSTrans
+    Params = <>
+    left = 332
+    top = 100
+  end
+  object QSMSShow: TSQLQuery
+    FieldDefs = <>
+    Database = SMSConn
+    Transaction = SMSTrans
+    Params = <>
+    left = 252
+    top = 100
+  end
+  object QProfitShow: TSQLQuery
+    FieldDefs = <>
+    Database = ProfitConn
+    Transaction = ProfitTrans
+    Params = <>
+    left = 52
+    top = 108
+  end
+end

@@ -1,0 +1,44 @@
+object FUtama: TFUtama
+  Left = 238
+  Height = 240
+  Top = 150
+  Width = 320
+  Caption = 'SMS Gain Profit'
+  ClientHeight = 240
+  ClientWidth = 320
+  LCLVersion = '1.2.4.0'
+  object Button1: TButton
+    Left = 16
+    Height = 25
+    Top = 104
+    Width = 99
+    Caption = 'Kotak Masuk'
+    OnClick = Button1Click
+    TabOrder = 0
+  end
+  object Button2: TButton
+    Left = 16
+    Height = 25
+    Top = 10
+    Width = 99
+    Caption = 'Kirim Pesan'
+    OnClick = Button2Click
+    TabOrder = 1
+  end
+  object Button3: TButton
+    Left = 16
+    Height = 25
+    Top = 40
+    Width = 99
+    Caption = 'Pesan Terkirim'
+    TabOrder = 2
+  end
+  object Button4: TButton
+    Left = 16
+    Height = 25
+    Top = 72
+    Width = 99
+    Caption = 'Kotak Keluar'
+    TabOrder = 3
+  end
+end
