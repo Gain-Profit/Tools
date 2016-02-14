@@ -16,7 +16,7 @@ type
     procedure FPVerFPVerificationID(ASender: TObject; const ID: WideString;
       FingerNr: Integer);
     procedure FPVerFPVerificationStatus(ASender: TObject; Status: Integer);
-    procedure LolosVerifikasi;
+    procedure Verifikasi;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
   private
@@ -33,7 +33,7 @@ var
 
 implementation
 
-uses UDM, USukses;
+uses UDM, USukses, Math;
 
 {$R *.dfm}
 
@@ -82,11 +82,49 @@ begin
 
   idUser    := DM.QShow.FieldByName('kd_user').AsString;
   namaUser  := DM.QShow.FieldByName('n_user').AsString;
-  LolosVerifikasi;
+  Verifikasi;
 end;
 
-procedure TFChekIO.LolosVerifikasi;
+procedure TFChekIO.Verifikasi;
+var
+  sql,sqlQuery,checkin_time : string;
 begin
+  sqlQuery := Format('SELECT checkin_time FROM tb_checkinout WHERE ' +
+  'user_id = "%s" AND ISNULL(checkout_time)',[idUser]);
+
+  dm.SQLExec(dm.QShow,sqlQuery,True);
+
+  if jenis = 'OUT' then
+  begin
+    if not(dm.QShow.Eof) then
+    begin
+      checkin_time := dm.QShow.FieldByName('checkin_time').AsString;
+      checkin_time := FormatDateTime('YYYY-MM-DD hh:mm:ss',
+                      StrToDateTime(checkin_time));
+      sql := Format('UPDATE tb_checkinout SET checkout_time = now(), stat = "O" ' +
+      'WHERE user_id = "%s" AND checkin_time = "%s"',[idUser,checkin_time]);
+    end else
+    begin
+      ShowMessage('TIDAK DAPAT CHECK OUT...'#10#13'' +
+                  'User Ini Belum Melakukan CHECK IN');
+      Exit;
+    end;
+  end else
+  begin
+    if not(dm.QShow.Eof) then
+    begin
+      ShowMessage('TIDAK DAPAT CHECK IN...'#10#13'' +
+                  'User Ini Belum Melakukan CHECK OUT');
+      Exit;
+    end else
+    begin
+      sql := Format('INSERT INTO tb_checkinout (user_id,checkin_time) ' +
+      'VALUES ("%s", now())',[idUser]);
+    end;
+  end;
+
+  dm.SQLExec(dm.Qexe,sql,False);
+
   Application.CreateForm(TFSukses, FSukses);
   FSukses.Caption := 'CHECK '+ jenis + ' SUKSES';
   FSukses.lblKode.Caption := idUser;
