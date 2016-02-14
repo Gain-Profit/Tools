@@ -3,7 +3,8 @@ program FRdesign;
 uses
   Dialogs,
   frxDesgn,
-  frxClass;
+  frxClass,
+  frxBarcode;
 
 
 {$R *.res}
@@ -11,11 +12,13 @@ var
     rpt1: TfrxReport;
     dsg1: TfrxDesigner;
     opd1: TOpenDialog;
+    barcode1 :TfrxBarCodeObject;
 
 begin
 rpt1:= TfrxReport.Create(nil);
 dsg1:= TfrxDesigner.Create(nil);
 opd1:= TOpenDialog.Create(nil);
+barcode1 := TfrxBarCodeObject.Create(nil);
 opd1.DefaultExt:= '.fr3';
 opd1.Filter:= 'Fast Design(*.fr3)|*.fr3';
 
