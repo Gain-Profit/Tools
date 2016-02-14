@@ -80,8 +80,15 @@ begin
   _sql := 'SELECT * FROM tb_user WHERE kd_user ="'+DM.QShow.FieldByName('user_id').AsString+'"';
   DM.SQLExec(DM.QShow,_sql,True);
 
-  idUser    := DM.QShow.FieldByName('kd_user').AsString;
-  namaUser  := DM.QShow.FieldByName('n_user').AsString;
+  if dm.QShow.Eof then
+  begin
+    ShowMessage('Data User Tidak Dapat Ditemukan...');
+    Exit;
+  end else
+  begin
+    idUser    := DM.QShow.FieldByName('kd_user').AsString;
+    namaUser  := DM.QShow.FieldByName('n_user').AsString;
+  end;
   Verifikasi;
 end;
 
