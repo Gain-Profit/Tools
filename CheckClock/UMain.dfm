@@ -57,7 +57,9 @@ object FMain: TFMain
     Height = 19
     Panels = <
       item
-        Alignment = taCenter
+        Width = 50
+      end
+      item
         Width = 50
       end>
     SkinData.SkinSection = 'STATUSBAR'

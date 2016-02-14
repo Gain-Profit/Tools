@@ -3,7 +3,6 @@ object FChekIO: TFChekIO
   Top = 249
   Width = 657
   Height = 394
-  Caption = 'CHECK (IN / OUT)'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
