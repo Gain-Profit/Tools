@@ -1,0 +1,205 @@
+object FKoneksi: TFKoneksi
+  Left = 238
+  Height = 222
+  Top = 150
+  Width = 648
+  BorderStyle = bsDialog
+  Caption = 'Koneksi Gain Profit'
+  ClientHeight = 222
+  ClientWidth = 648
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '1.2.4.0'
+  object GroupBox1: TGroupBox
+    Left = 8
+    Height = 201
+    Top = 8
+    Width = 312
+    Caption = 'Gain Profit'
+    ClientHeight = 183
+    ClientWidth = 308
+    TabOrder = 0
+    object Label1: TLabel
+      Left = 12
+      Height = 15
+      Top = 8
+      Width = 81
+      Caption = 'Host Name / IP'
+      ParentColor = False
+    end
+    object Label2: TLabel
+      Left = 12
+      Height = 15
+      Top = 32
+      Width = 48
+      Caption = 'Database'
+      ParentColor = False
+    end
+    object Label3: TLabel
+      Left = 12
+      Height = 15
+      Top = 56
+      Width = 22
+      Caption = 'Port'
+      ParentColor = False
+    end
+    object Label4: TLabel
+      Left = 12
+      Height = 15
+      Top = 80
+      Width = 58
+      Caption = 'User Name'
+      ParentColor = False
+    end
+    object Label5: TLabel
+      Left = 12
+      Height = 15
+      Top = 104
+      Width = 50
+      Caption = 'Password'
+      ParentColor = False
+    end
+    object edHostProfit: TEdit
+      Left = 104
+      Height = 23
+      Top = 8
+      Width = 194
+      TabOrder = 0
+    end
+    object edDBProfit: TEdit
+      Left = 104
+      Height = 23
+      Top = 32
+      Width = 194
+      TabOrder = 1
+    end
+    object edPortProfit: TEdit
+      Left = 104
+      Height = 23
+      Top = 56
+      Width = 194
+      TabOrder = 2
+    end
+    object edUserProfit: TEdit
+      Left = 104
+      Height = 23
+      Top = 80
+      Width = 194
+      TabOrder = 3
+    end
+    object edPasswordProfit: TEdit
+      Left = 103
+      Height = 23
+      Top = 104
+      Width = 194
+      EchoMode = emPassword
+      PasswordChar = '#'
+      TabOrder = 4
+    end
+    object Button1: TButton
+      Left = 221
+      Height = 33
+      Top = 135
+      Width = 77
+      Caption = '&Simpan'
+      OnClick = Button1Click
+      TabOrder = 5
+    end
+  end
+  object GroupBox2: TGroupBox
+    Left = 328
+    Height = 201
+    Top = 8
+    Width = 312
+    Caption = 'SMS Gain Profit'
+    ClientHeight = 183
+    ClientWidth = 308
+    TabOrder = 1
+    object Label6: TLabel
+      Left = 12
+      Height = 15
+      Top = 8
+      Width = 81
+      Caption = 'Host Name / IP'
+      ParentColor = False
+    end
+    object edHostSMS: TEdit
+      Left = 104
+      Height = 23
+      Top = 8
+      Width = 194
+      TabOrder = 0
+    end
+    object edDBSMS: TEdit
+      Left = 104
+      Height = 23
+      Top = 32
+      Width = 194
+      TabOrder = 1
+    end
+    object edPortSMS: TEdit
+      Left = 104
+      Height = 23
+      Top = 56
+      Width = 194
+      TabOrder = 2
+    end
+    object edUserSMS: TEdit
+      Left = 104
+      Height = 23
+      Top = 80
+      Width = 194
+      TabOrder = 3
+    end
+    object edPasswordSMS: TEdit
+      Left = 104
+      Height = 23
+      Top = 104
+      Width = 194
+      EchoMode = emPassword
+      PasswordChar = '#'
+      TabOrder = 4
+    end
+    object Button2: TButton
+      Left = 221
+      Height = 33
+      Top = 135
+      Width = 77
+      Caption = '&Simpan'
+      OnClick = Button2Click
+      TabOrder = 5
+    end
+    object Label7: TLabel
+      Left = 12
+      Height = 15
+      Top = 104
+      Width = 50
+      Caption = 'Password'
+      ParentColor = False
+    end
+    object Label8: TLabel
+      Left = 12
+      Height = 15
+      Top = 80
+      Width = 58
+      Caption = 'User Name'
+      ParentColor = False
+    end
+    object Label9: TLabel
+      Left = 12
+      Height = 15
+      Top = 56
+      Width = 22
+      Caption = 'Port'
+      ParentColor = False
+    end
+    object Label10: TLabel
+      Left = 12
+      Height = 15
+      Top = 32
+      Width = 48
+      Caption = 'Database'
+      ParentColor = False
+    end
+  end
+end
