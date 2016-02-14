@@ -1,7 +1,8 @@
 object FMain: TFMain
   Left = 394
   Top = 194
-  BorderStyle = bsDialog
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsSingle
   Caption = 'CHECK CLOCK'
   ClientHeight = 287
   ClientWidth = 425

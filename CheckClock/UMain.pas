@@ -65,12 +65,14 @@ end;
 procedure TFMain.btnCheckInClick(Sender: TObject);
 begin
   Application.CreateForm(TFChekIO,FChekIO);
+  FChekIO.Caption := 'CHECK IN';
   FChekIO.ShowModal;
 end;
 
 procedure TFMain.btnCheckClick(Sender: TObject);
 begin
   Application.CreateForm(TFChekIO,FChekIO);
+  FChekIO.Caption := 'CHECK OUT';
   FChekIO.ShowModal;
 end;
 

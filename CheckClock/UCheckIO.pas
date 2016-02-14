@@ -4,29 +4,27 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, OleServer, FlexCodeSDK, ExtCtrls, StdCtrls;
+  Dialogs, OleServer, FlexCodeSDK, ExtCtrls, StdCtrls, sLabel,jpeg;
 
 type
   TFChekIO = class(TForm)
     FPVer: TFinFPVer;
-    imgJari: TImage;
-    mmoInfo: TMemo;
     lbl1: TLabel;
     lbl2: TLabel;
     edID: TEdit;
     edNama: TEdit;
-    procedure FormCreate(Sender: TObject);
-    procedure FormShow(Sender: TObject);
+    lblPerintah: TsLabel;
+    lblStatus: TsLabel;
+    imgSIdikJari: TImage;
     procedure LoadData;
     procedure FPVerFPVerificationID(ASender: TObject; const ID: WideString;
       FingerNr: Integer);
-    procedure FPVerFPVerificationImage(Sender: TObject);
     procedure FPVerFPVerificationStatus(ASender: TObject; Status: Integer);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
   public
-    { Public declarations }
   end;
 
 var
@@ -34,6 +32,7 @@ var
   SN: WideString;
   Verification: WideString;
   Activation: WideString;
+  parentPath:string;
 
 implementation
 
@@ -41,16 +40,9 @@ uses UDM;
 
 {$R *.dfm}
 
-procedure TFChekIO.FormCreate(Sender: TObject);
-begin
-  imgJari.Canvas.Create();
-  FPVer.PictureSamplePath := ExtractFilePath(Application.ExeName) + '\FPTemp.BMP';
-  FPVer.PictureSampleHeight := 1635;
-  FPVer.PictureSampleWidth := 1335;
-end;
-
 procedure TFChekIO.FormShow(Sender: TObject);
 begin
+  lblStatus.Caption := Caption;
   SN:= 'C800V004068';
   Verification:= 'EC5-C58-C93-CAD-DEA';
   Activation:= '1YJ3-FBDA-C633-2124-7321-5XJN';
@@ -58,7 +50,7 @@ begin
   FPVer.AddDeviceInfo(SN,Verification,Activation);
   LoadData;
   FPVer.FPVerificationStart('');
-  mmoInfo.Lines.Add('Tempelkan jari ke Alat Perekam!!!...')
+  parentPath := ExtractFilePath(ExcludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName)));
 end;
 
 procedure TFChekIO.LoadData;
@@ -93,12 +85,10 @@ begin
   edID.Text   := DM.QShow.FieldByName('kd_user').AsString;
   edNama.Text := DM.QShow.FieldByName('n_user').AsString;
 
-//  mmoInfo.lines.add('ID = ' + ID + ', FingerNr = ' + inttostr(FingerNr));
-end;
+  if FileExists(parentPath+'image/'+edID.Text+'.jpg') then
+  imgSIdikJari.Picture.LoadFromFile(parentPath+'image/'+edID.Text+'.jpg') else
+  ShowMessage('gambar tidak ada');
 
-procedure TFChekIO.FPVerFPVerificationImage(Sender: TObject);
-begin
-  imgJari.Picture.LoadFromFile(ExtractFilePath(Application.ExeName) + '\FPTemp.BMP');
 end;
 
 procedure TFChekIO.FPVerFPVerificationStatus(ASender: TObject;
@@ -106,44 +96,52 @@ procedure TFChekIO.FPVerFPVerificationStatus(ASender: TObject;
 begin
   case Status of
     0  :  begin
-            mmoInfo.lines.add('Not match!');
-            ShowMessage('Data Sidik Jari Tidak Terdaftar...');
-            edID.Clear;
-            edNama.Clear;
+            ShowMessage('Data Sidik Jari Tidak Terdaftar... '#10#13''+
+                        'Tidak Dapat melakukan ' + Caption);
           end;
     1  :  begin
-            mmoInfo.lines.add('Match!');
+            //ShowMessage('Match!');
           end;
     2   : begin
-            mmoInfo.lines.add('Multiple match!');
+            ShowMessage('Multiple match!');
           end;
     3  :  begin
-            mmoInfo.lines.add('Verification fail!');
+            ShowMessage('Verification fail!');
           end;
     7   : begin
-            mmoInfo.lines.add('Please connect the device to USB port!');
+            ShowMessage('Mesin Sidik Jari Tidak Terpasang '#10#13''+
+                        'Tidak Dapat melakukan ' + Caption);
+            Close;
           end;
     8  :  begin
-            mmoInfo.lines.add('Poor image quality!');
+            ShowMessage('Kualitas Gambar Jelek, '#10#13''+
+                        'Ulangi Lagi Proses ' + Caption);
           end;
     9   : begin
-            mmoInfo.lines.add('Activation/verification code is incorrect!');
+            ShowMessage('Aktivasi dan verifikasi Mesin Salah'#10#13''+
+                        'Tidak Dapat melakukan ' + Caption);
+            Close;
           end;
     11  : begin
-            mmoInfo.lines.add('&Stop Verify!');
+            ShowMessage('&Stop Verify!');
           end;
     15  : begin
-            mmoInfo.Clear;
-            mmoInfo.lines.add('Jari Menempel...');
+            //ShowMessage('Jari Menempel...');
           end;
     16  : begin
-            mmoInfo.lines.add('Max 2000 templates!');
+            ShowMessage('Max 2000 templates!'#10#13''+
+                        'Tidak Dapat melakukan ' + Caption);
+            Close;
           end;
     17  : begin
-            mmoInfo.lines.add('Max 10 Devices!');
+            ShowMessage('Max 10 Devices!'#10#13''+
+                        'Tidak Dapat melakukan ' + Caption);
+            Close;
           end;
     18  : begin
-            mmoInfo.lines.add('Please add some template!');
+            ShowMessage('TIdak Ada Template yang terdaftar'#10#13''+
+                        'Tidak Dapat melakukan ' + Caption);
+            Close;
           end;          
   end;
 end;
@@ -152,5 +150,7 @@ procedure TFChekIO.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   FPVer.FPVerificationStop;
 end;
+
+
 
 end.
