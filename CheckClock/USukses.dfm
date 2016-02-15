@@ -11,8 +11,10 @@ object FSukses: TFSukses
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
+  KeyPreview = True
   OldCreateOrder = False
   Position = poScreenCenter
+  OnKeyDown = FormKeyDown
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -627,7 +629,7 @@ object FSukses: TFSukses
     Caption = 'KODE'
     ParentFont = False
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
+    Font.Color = 2171169
     Font.Height = -19
     Font.Name = 'MS Sans Serif'
     Font.Style = []
@@ -642,7 +644,7 @@ object FSukses: TFSukses
     Caption = 'CAHYA BAGUS SANJAYA'
     ParentFont = False
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
+    Font.Color = 2171169
     Font.Height = -19
     Font.Name = 'MS Sans Serif'
     Font.Style = []

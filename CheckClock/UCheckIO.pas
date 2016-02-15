@@ -19,9 +19,12 @@ type
     procedure Verifikasi;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     { Private declarations }
   public
+    jenis : string;
   end;
 
 var
@@ -29,7 +32,7 @@ var
   SN: WideString;
   Verification: WideString;
   Activation: WideString;
-  parentPath, jenis,idUser,namaUser:string;
+  parentPath, idUser,namaUser:string;
 
 implementation
 
@@ -200,6 +203,13 @@ end;
 procedure TFChekIO.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   FPVer.FPVerificationStop;
+end;
+
+procedure TFChekIO.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = vk_escape then
+  Close;
 end;
 
 end.

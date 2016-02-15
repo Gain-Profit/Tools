@@ -12,9 +12,11 @@ object FMain: TFMain
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
+  KeyPreview = True
   OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -2130,14 +2132,14 @@ object FMain: TFMain
     Reflected = True
     ShowCaption = False
   end
-  object btnCheck: TsBitBtn
+  object btnCheckOut: TsBitBtn
     Left = 216
     Top = 32
     Width = 200
     Height = 200
     Caption = 'Check Out'
     TabOrder = 2
-    OnClick = btnCheckClick
+    OnClick = btnCheckOutClick
     Glyph.Data = {
       36000100424D3600010000000000360000002800000080000000800000000100
       2000000000000000010000000000000000000000000000000000000000000000

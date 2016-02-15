@@ -15,6 +15,8 @@ type
     btnKeluar: TsBitBtn;
     procedure FormShow(Sender: TObject);
     procedure btnKeluarClick(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     { Private declarations }
   public
@@ -35,6 +37,13 @@ end;
 
 procedure TFSukses.btnKeluarClick(Sender: TObject);
 begin
+  Close;
+end;
+
+procedure TFSukses.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = vk_escape then
   Close;
 end;
 

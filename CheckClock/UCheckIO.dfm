@@ -11,9 +11,11 @@ object FChekIO: TFChekIO
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
+  KeyPreview = True
   OldCreateOrder = False
   Position = poScreenCenter
   OnClose = FormClose
+  OnKeyDown = FormKeyDown
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -26,7 +28,7 @@ object FChekIO: TFChekIO
     Caption = 'Tempelkan Jari Anda'#13#10'ke Mesin Sidik Jari!!!'
     ParentFont = False
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
+    Font.Color = 2171169
     Font.Height = -24
     Font.Name = 'MS Sans Serif'
     Font.Style = []
@@ -41,7 +43,7 @@ object FChekIO: TFChekIO
     Caption = 'CHECK OUT'
     ParentFont = False
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
+    Font.Color = 2171169
     Font.Height = -24
     Font.Name = 'MS Sans Serif'
     Font.Style = []

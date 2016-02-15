@@ -14,7 +14,7 @@ type
   TFMain = class(TForm)
     sb: TsStatusBar;
     btnCheckIn: TsBitBtn;
-    btnCheck: TsBitBtn;
+    btnCheckOut: TsBitBtn;
     lbl1: TsLabel;
     lbl2: TsLabel;
     grid: TcxGrid;
@@ -23,13 +23,16 @@ type
     vwUserId: TcxGridDBColumn;
     vwNama: TcxGridDBColumn;
     vwKondisi: TcxGridDBColumn;
+    function methodManual:Boolean;
     procedure FormCreate(Sender: TObject);
     procedure btnCheckInClick(Sender: TObject);
-    procedure btnCheckClick(Sender: TObject);
+    procedure btnCheckOutClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure ViewCustomDrawCell(Sender: TcxCustomGridTableView;
       ACanvas: TcxCanvas; AViewInfo: TcxGridTableDataCellViewInfo;
       var ADone: Boolean);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     { Private declarations }
   public
@@ -41,7 +44,7 @@ var
 
 implementation
 
-uses UDM, UCheckIO;
+uses UDM, UCheckIO, UCheckIOManual;
 
 {$R *.dfm}
 
@@ -76,18 +79,44 @@ begin
   sb.Panels[1].Text := dm.xConn.DatabaseName + '@' +dm.xConn.Host;
 end;
 
-procedure TFMain.btnCheckInClick(Sender: TObject);
+
+function TFMain.methodManual: Boolean;
+var
+  sql: string;
 begin
-  Application.CreateForm(TFChekIO,FChekIO);
-  jenis := 'IN';
-  FChekIO.ShowModal;
+  sql:= 'SELECT nilai FROM tb_settings WHERE parameter ="fingerprint"';
+  dm.SQLExec(dm.QShow,sql,True);
+  Result:= dm.QShow.FieldByName('nilai').AsBoolean;
 end;
 
-procedure TFMain.btnCheckClick(Sender: TObject);
+procedure TFMain.btnCheckInClick(Sender: TObject);
 begin
-  Application.CreateForm(TFChekIO,FChekIO);
-  jenis := 'OUT';
-  FChekIO.ShowModal;
+  if methodManual then
+  begin
+    Application.CreateForm(TFCheckIOManual, FCheckIOManual);
+    FCheckIOManual.jenis := 'IN';
+    FCheckIOManual.ShowModal;
+  end else
+  begin
+    Application.CreateForm(TFChekIO,FChekIO);
+    FChekIO.jenis := 'IN';
+    FChekIO.ShowModal;
+  end;
+end;
+
+procedure TFMain.btnCheckOutClick(Sender: TObject);
+begin
+  if methodManual then
+  begin
+    Application.CreateForm(TFCheckIOManual, FCheckIOManual);
+    FCheckIOManual.jenis := 'OUT';
+    FCheckIOManual.ShowModal;
+  end else
+  begin
+    Application.CreateForm(TFChekIO,FChekIO);
+    FChekIO.jenis := 'OUT';
+    FChekIO.ShowModal;
+  end;
 end;
 
 procedure TFMain.FormShow(Sender: TObject);
@@ -109,6 +138,12 @@ begin
     ACanvas.Font.Color := clYellow;
     ACanvas.Brush.Color := clBlue;
   end;
+end;
+procedure TFMain.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = vk_escape then
+  Close;
 end;
 
 end.
