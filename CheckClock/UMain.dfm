@@ -1,10 +1,10 @@
 object FMain: TFMain
-  Left = 394
-  Top = 194
+  Left = 395
+  Top = 167
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'CHECK CLOCK'
-  ClientHeight = 287
+  ClientHeight = 467
   ClientWidth = 425
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -15,11 +15,12 @@ object FMain: TFMain
   OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object lbl1: TsLabel
     Left = 32
-    Top = 224
+    Top = 0
     Width = 152
     Height = 37
     Alignment = taCenter
@@ -36,7 +37,7 @@ object FMain: TFMain
   end
   object lbl2: TsLabel
     Left = 224
-    Top = 224
+    Top = 0
     Width = 188
     Height = 37
     Alignment = taCenter
@@ -53,7 +54,7 @@ object FMain: TFMain
   end
   object sb: TsStatusBar
     Left = 0
-    Top = 268
+    Top = 448
     Width = 425
     Height = 19
     Panels = <
@@ -67,7 +68,7 @@ object FMain: TFMain
   end
   object btnCheckIn: TsBitBtn
     Left = 8
-    Top = 8
+    Top = 32
     Width = 200
     Height = 200
     Caption = 'Check IN'
@@ -2131,7 +2132,7 @@ object FMain: TFMain
   end
   object btnCheck: TsBitBtn
     Left = 216
-    Top = 8
+    Top = 32
     Width = 200
     Height = 200
     Caption = 'Check Out'
@@ -4192,5 +4193,58 @@ object FMain: TFMain
     SkinData.SkinSection = 'BUTTON'
     Reflected = True
     ShowCaption = False
+  end
+  object grid: TcxGrid
+    Left = 0
+    Top = 240
+    Width = 425
+    Height = 208
+    Align = alBottom
+    TabOrder = 3
+    LookAndFeel.Kind = lfOffice11
+    object View: TcxGridDBTableView
+      NavigatorButtons.ConfirmDelete = False
+      OnCustomDrawCell = ViewCustomDrawCell
+      DataController.DataSource = dm.dsStatus
+      DataController.Summary.DefaultGroupSummaryItems = <
+        item
+          Kind = skCount
+          Position = spFooter
+        end>
+      DataController.Summary.FooterSummaryItems = <>
+      DataController.Summary.SummaryGroups = <>
+      OptionsBehavior.CellHints = True
+      OptionsBehavior.DragDropText = True
+      OptionsBehavior.IncSearch = True
+      OptionsCustomize.ColumnsQuickCustomization = True
+      OptionsData.Deleting = False
+      OptionsData.DeletingConfirmation = False
+      OptionsData.Editing = False
+      OptionsData.Inserting = False
+      OptionsSelection.MultiSelect = True
+      OptionsView.NoDataToDisplayInfoText = '<TIDAK ADA DATA YANG DAPAT DITAMPILKAN>'
+      OptionsView.ColumnAutoWidth = True
+      OptionsView.GroupByBox = False
+      object vwUserId: TcxGridDBColumn
+        Caption = 'Kode'
+        DataBinding.FieldName = 'kd_user'
+        Width = 131
+      end
+      object vwNama: TcxGridDBColumn
+        Caption = 'Nama'
+        DataBinding.FieldName = 'n_user'
+        Width = 352
+      end
+      object vwKondisi: TcxGridDBColumn
+        Caption = 'Kondisi'
+        DataBinding.FieldName = 'kondisi'
+        SortIndex = 0
+        SortOrder = soDescending
+        Width = 189
+      end
+    end
+    object Level: TcxGridLevel
+      GridView = View
+    end
   end
 end

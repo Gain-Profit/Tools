@@ -4,7 +4,11 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ComCtrls, sStatusBar, StdCtrls, Buttons, sBitBtn, sLabel;
+  Dialogs, ComCtrls, sStatusBar, StdCtrls, Buttons, sBitBtn, sLabel,
+  cxStyles, cxCustomData, cxGraphics, cxFilter, cxData, cxDataStorage,
+  cxEdit, DB, cxDBData, cxGridLevel, cxClasses, cxControls,
+  cxGridCustomView, cxGridCustomTableView, cxGridTableView,
+  cxGridDBTableView, cxGrid, cxTextEdit, cxSpinEdit;
 
 type
   TFMain = class(TForm)
@@ -13,9 +17,19 @@ type
     btnCheck: TsBitBtn;
     lbl1: TsLabel;
     lbl2: TsLabel;
+    grid: TcxGrid;
+    View: TcxGridDBTableView;
+    Level: TcxGridLevel;
+    vwUserId: TcxGridDBColumn;
+    vwNama: TcxGridDBColumn;
+    vwKondisi: TcxGridDBColumn;
     procedure FormCreate(Sender: TObject);
     procedure btnCheckInClick(Sender: TObject);
     procedure btnCheckClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure ViewCustomDrawCell(Sender: TcxCustomGridTableView;
+      ACanvas: TcxCanvas; AViewInfo: TcxGridTableDataCellViewInfo;
+      var ADone: Boolean);
   private
     { Private declarations }
   public
@@ -74,6 +88,27 @@ begin
   Application.CreateForm(TFChekIO,FChekIO);
   jenis := 'OUT';
   FChekIO.ShowModal;
+end;
+
+procedure TFMain.FormShow(Sender: TObject);
+begin
+  dm.refreshTable;
+end;
+
+procedure TFMain.ViewCustomDrawCell(Sender: TcxCustomGridTableView;
+  ACanvas: TcxCanvas; AViewInfo: TcxGridTableDataCellViewInfo;
+  var ADone: Boolean);
+begin
+  if (AViewInfo.Text = 'CHECKOUT') then
+  begin
+    ACanvas.Font.Color := clYellow;
+    ACanvas.Brush.Color := clRed;
+  end else
+  if (AViewInfo.Text = 'CHECKIN') then
+  begin
+    ACanvas.Font.Color := clYellow;
+    ACanvas.Brush.Color := clBlue;
+  end;
 end;
 
 end.
