@@ -111,7 +111,7 @@ begin
       checkin_time := dm.QShow.FieldByName('checkin_time').AsString;
       checkin_time := FormatDateTime('YYYY-MM-DD hh:mm:ss',
                       StrToDateTime(checkin_time));
-      sql := Format('UPDATE tb_checkinout SET checkout_time = now(), stat = "O" ' +
+      sql := Format('UPDATE tb_checkinout SET checkout_time = now() ' +
       'WHERE user_id = "%s" AND checkin_time = "%s"',[idUser,checkin_time]);
     end else
     begin

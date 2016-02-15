@@ -116,8 +116,9 @@ begin
       checkin_time := dm.QShow.FieldByName('checkin_time').AsString;
       checkin_time := FormatDateTime('YYYY-MM-DD hh:mm:ss',
                       StrToDateTime(checkin_time));
-      sql := Format('UPDATE tb_checkinout SET checkout_time = now(), stat = "O" ' +
-      'WHERE user_id = "%s" AND checkin_time = "%s"',[idUser,checkin_time]);
+      sql := Format('UPDATE tb_checkinout SET checkout_time = now(), ' +
+      'checkout_method = "MANUAL" WHERE user_id = "%s" AND checkin_time = "%s"',
+      [idUser,checkin_time]);
     end else
     begin
       ShowMessage('TIDAK DAPAT CHECK OUT...'#10#13'' +
@@ -133,8 +134,8 @@ begin
       Exit;
     end else
     begin
-      sql := Format('INSERT INTO tb_checkinout (user_id,checkin_time) ' +
-      'VALUES ("%s", now())',[idUser]);
+      sql := Format('INSERT INTO tb_checkinout (user_id, checkin_time, ' +
+      'checkin_method) VALUES ("%s", now(), "MANUAL")',[idUser]);
     end;
   end;
 
