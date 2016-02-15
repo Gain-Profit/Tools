@@ -12,9 +12,12 @@ type
     Qexe: TmySQLQuery;
     QShow: TmySQLQuery;
     sm: TsSkinManager;
+    dsStatus: TDataSource;
+    QStatus: TmySQLQuery;
     procedure koneksikan;
     procedure SQLExec(aQuery:TmySQLQuery; _SQL:string; isSearch: boolean);
     procedure DataModuleCreate(Sender: TObject);
+    procedure refreshTable;
   private
     { Private declarations }
   public
@@ -97,6 +100,12 @@ end;
 procedure Tdm.DataModuleCreate(Sender: TObject);
 begin
 koneksikan;
+end;
+
+procedure Tdm.refreshTable;
+begin
+  SQLExec(QStatus,'SELECT kd_user, n_user, fx_checkclock(kd_user) ' +
+  'AS kondisi FROM tb_user',True);
 end;
 
 end.

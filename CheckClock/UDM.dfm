@@ -32,7 +32,6 @@ object dm: Tdm
     AnimEffects.DialogHide.Time = 100
     AnimEffects.PageChange.Time = 60
     AnimEffects.SkinChanging.Time = 200
-    IsDefault = False
     InternalSkins = <
       item
         Name = 'Air (internal)'
@@ -2234,5 +2233,15 @@ object dm: Tdm
     ThirdParty.ThirdSpeedButton = 'TSpeedButton'#13#10'TNavButton'#13#10
     Left = 216
     Top = 24
+  end
+  object dsStatus: TDataSource
+    DataSet = QStatus
+    Left = 88
+    Top = 128
+  end
+  object QStatus: TmySQLQuery
+    Database = xConn
+    Left = 24
+    Top = 128
   end
 end
