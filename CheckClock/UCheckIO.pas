@@ -139,6 +139,7 @@ begin
   if FileExists(parentPath+'image/'+idUser+'.jpg') then
   FSukses.imgSIdikJari.Picture.LoadFromFile(parentPath+'image/'+idUser+'.jpg');
   FSukses.ShowModal;
+  dm.refreshTable;
 end;
 
 procedure TFChekIO.FPVerFPVerificationStatus(ASender: TObject;
