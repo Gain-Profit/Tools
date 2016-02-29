@@ -3,8 +3,8 @@ object FSukses: TFSukses
   Top = 261
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
-  ClientHeight = 340
-  ClientWidth = 319
+  ClientHeight = 229
+  ClientWidth = 455
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,11 +18,92 @@ object FSukses: TFSukses
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object imgSIdikJari: TImage
+  object lblStatus: TsLabel
+    Left = 0
+    Top = 8
+    Width = 257
+    Height = 29
+    Alignment = taCenter
+    AutoSize = False
+    Caption = 'CHECK OUT SUKSES'
+    Color = clBtnFace
+    ParentColor = False
+    ParentFont = False
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlue
+    Font.Height = -24
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    UseSkinColor = False
+  end
+  object lblKode: TsLabel
+    Left = 0
+    Top = 64
+    Width = 257
+    Height = 29
+    Alignment = taCenter
+    AutoSize = False
+    Caption = 'KODE'
+    ParentFont = False
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = 2171169
+    Font.Height = -19
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+  end
+  object lblNama: TsLabel
+    Left = 0
+    Top = 88
+    Width = 257
+    Height = 33
+    Alignment = taCenter
+    AutoSize = False
+    Caption = 'CAHYA BAGUS SANJAYA'
+    ParentFont = False
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = 2171169
+    Font.Height = -19
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+  end
+  object lblCheck: TsLabel
+    Left = 0
+    Top = 32
+    Width = 257
+    Height = 29
+    Alignment = taCenter
+    AutoSize = False
+    Caption = '2016-02-29 24:00:00'
+    Color = clBtnFace
+    ParentColor = False
+    ParentFont = False
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlue
+    Font.Height = -24
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    UseSkinColor = False
+  end
+  object lblKeterangan: TsLabel
     Left = 8
-    Top = 48
-    Width = 297
-    Height = 169
+    Top = 144
+    Width = 213
+    Height = 26
+    Caption = 
+      '* isi keterangan jika diperlukan'#13#10'  Kemudian tekan Tombol Simpan' +
+      ' dan Keluar'
+    ParentFont = False
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = 2171169
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+  end
+  object imgSidikJari: TImage
+    Left = 256
+    Top = 8
+    Width = 185
+    Height = 209
     Center = True
     Picture.Data = {
       07544269746D617096470000424D964700000000000036040000280000007000
@@ -601,62 +682,39 @@ object FSukses: TFSukses
       FFFF}
     Proportional = True
   end
-  object lblStatus: TsLabel
-    Left = 8
-    Top = 8
-    Width = 297
-    Height = 29
-    Alignment = taCenter
-    AutoSize = False
-    Caption = 'CHECK OUT SUKSES'
-    Color = clBtnFace
-    ParentColor = False
-    ParentFont = False
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clBlue
-    Font.Height = -24
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-    UseSkinColor = False
-  end
-  object lblKode: TsLabel
-    Left = 8
-    Top = 224
-    Width = 297
-    Height = 29
-    Alignment = taCenter
-    AutoSize = False
-    Caption = 'KODE'
-    ParentFont = False
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = 2171169
-    Font.Height = -19
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-  end
-  object lblNama: TsLabel
-    Left = 8
-    Top = 256
-    Width = 297
-    Height = 33
-    Alignment = taCenter
-    AutoSize = False
-    Caption = 'CAHYA BAGUS SANJAYA'
-    ParentFont = False
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = 2171169
-    Font.Height = -19
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
-  end
   object btnKeluar: TsBitBtn
-    Left = 112
-    Top = 304
-    Width = 75
+    Left = 64
+    Top = 184
+    Width = 121
     Height = 25
-    Caption = 'Keluar'
-    TabOrder = 0
+    Caption = 'Simpan dan Keluar'
+    TabOrder = 1
     OnClick = btnKeluarClick
     SkinData.SkinSection = 'BUTTON'
+  end
+  object edKeterangan: TsEdit
+    Left = 8
+    Top = 120
+    Width = 233
+    Height = 21
+    Color = clWhite
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlack
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    TabOrder = 0
+    OnKeyDown = edKeteranganKeyDown
+    SkinData.SkinSection = 'EDIT'
+    BoundLabel.Indent = 0
+    BoundLabel.Font.Charset = DEFAULT_CHARSET
+    BoundLabel.Font.Color = clWindowText
+    BoundLabel.Font.Height = -11
+    BoundLabel.Font.Name = 'MS Sans Serif'
+    BoundLabel.Font.Style = []
+    BoundLabel.Layout = sclLeft
+    BoundLabel.MaxWidth = 0
+    BoundLabel.UseSkinColor = True
   end
 end

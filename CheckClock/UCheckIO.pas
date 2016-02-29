@@ -97,8 +97,13 @@ end;
 
 procedure TFChekIO.Verifikasi;
 var
-  sql,sqlQuery,checkin_time : string;
+  sql,sqlQuery,checkin_time,saiki : string;
 begin
+  dm.SQLExec(dm.QShow,'SELECT now() as saiki',True);
+  saiki := dm.QShow.FieldByName('saiki').AsString;
+  saiki := FormatDateTime('YYYY-MM-DD hh:mm:ss',
+                      StrToDateTime(saiki));
+
   sqlQuery := Format('SELECT checkin_time FROM tb_checkinout WHERE ' +
   'user_id = "%s" AND ISNULL(checkout_time)',[idUser]);
 
@@ -111,8 +116,8 @@ begin
       checkin_time := dm.QShow.FieldByName('checkin_time').AsString;
       checkin_time := FormatDateTime('YYYY-MM-DD hh:mm:ss',
                       StrToDateTime(checkin_time));
-      sql := Format('UPDATE tb_checkinout SET checkout_time = now() ' +
-      'WHERE user_id = "%s" AND checkin_time = "%s"',[idUser,checkin_time]);
+      sql := Format('UPDATE tb_checkinout SET checkout_time = "%s" ' +
+      'WHERE user_id = "%s" AND checkin_time = "%s"',[saiki,idUser,checkin_time]);
     end else
     begin
       ShowMessage('TIDAK DAPAT CHECK OUT...'#10#13'' +
@@ -129,14 +134,15 @@ begin
     end else
     begin
       sql := Format('INSERT INTO tb_checkinout (user_id,checkin_time) ' +
-      'VALUES ("%s", now())',[idUser]);
+      'VALUES ("%s", "%s")',[idUser,saiki]);
     end;
   end;
 
   dm.SQLExec(dm.Qexe,sql,False);
 
   Application.CreateForm(TFSukses, FSukses);
-  FSukses.Caption := 'CHECK '+ jenis + ' SUKSES';
+  FSukses.jenis := jenis;
+  FSukses.lblCheck.Caption := saiki;
   FSukses.lblKode.Caption := idUser;
   FSukses.lblNama.Caption := namaUser;
   if FileExists(parentPath+'image/'+idUser+'.jpg') then
