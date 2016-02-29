@@ -1,10 +1,10 @@
 object FMain: TFMain
-  Left = 395
-  Top = 167
+  Left = 303
+  Top = 125
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'CHECK CLOCK'
-  ClientHeight = 467
+  ClientHeight = 555
   ClientWidth = 425
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -22,7 +22,7 @@ object FMain: TFMain
   TextHeight = 13
   object lbl1: TsLabel
     Left = 32
-    Top = 0
+    Top = 56
     Width = 152
     Height = 37
     Alignment = taCenter
@@ -39,7 +39,7 @@ object FMain: TFMain
   end
   object lbl2: TsLabel
     Left = 224
-    Top = 0
+    Top = 56
     Width = 188
     Height = 37
     Alignment = taCenter
@@ -54,23 +54,47 @@ object FMain: TFMain
     Font.Style = []
     UseSkinColor = False
   end
+  object lbTime: TsLabel
+    Left = 8
+    Top = 0
+    Width = 409
+    Height = 57
+    Alignment = taCenter
+    AutoSize = False
+    Caption = '24:00:00'
+    Color = clBtnFace
+    ParentColor = False
+    ParentFont = False
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clGreen
+    Font.Height = -53
+    Font.Name = 'Times New Roman'
+    Font.Style = [fsBold]
+    UseSkinColor = False
+  end
   object sb: TsStatusBar
     Left = 0
-    Top = 448
+    Top = 536
     Width = 425
     Height = 19
     Panels = <
       item
-        Width = 50
+        Text = '99.99.99.99'
+        Width = 75
       end
       item
+        Text = 'profit@localhost'
+        Width = 140
+      end
+      item
+        Text = '29 Feb 2016'
         Width = 50
       end>
     SkinData.SkinSection = 'STATUSBAR'
   end
   object btnCheckIn: TsBitBtn
     Left = 8
-    Top = 32
+    Top = 96
     Width = 200
     Height = 200
     Caption = 'Check IN'
@@ -2134,7 +2158,7 @@ object FMain: TFMain
   end
   object btnCheckOut: TsBitBtn
     Left = 216
-    Top = 32
+    Top = 96
     Width = 200
     Height = 200
     Caption = 'Check Out'
@@ -4198,9 +4222,9 @@ object FMain: TFMain
   end
   object grid: TcxGrid
     Left = 0
-    Top = 240
+    Top = 304
     Width = 425
-    Height = 208
+    Height = 232
     Align = alBottom
     TabOrder = 3
     LookAndFeel.Kind = lfOffice11
@@ -4248,5 +4272,15 @@ object FMain: TFMain
     object Level: TcxGridLevel
       GridView = View
     end
+  end
+  object Timer1: TTimer
+    OnTimer = Timer1Timer
+    Left = 40
+    Top = 264
+  end
+  object Q_time: TmySQLQuery
+    Database = dm.xConn
+    Left = 8
+    Top = 264
   end
 end

@@ -8,7 +8,8 @@ uses
   cxStyles, cxCustomData, cxGraphics, cxFilter, cxData, cxDataStorage,
   cxEdit, DB, cxDBData, cxGridLevel, cxClasses, cxControls,
   cxGridCustomView, cxGridCustomTableView, cxGridTableView,
-  cxGridDBTableView, cxGrid, cxTextEdit, cxSpinEdit;
+  cxGridDBTableView, cxGrid, cxTextEdit, cxSpinEdit, mySQLDbTables,
+  ExtCtrls;
 
 type
   TFMain = class(TForm)
@@ -23,6 +24,9 @@ type
     vwUserId: TcxGridDBColumn;
     vwNama: TcxGridDBColumn;
     vwKondisi: TcxGridDBColumn;
+    Timer1: TTimer;
+    Q_time: TmySQLQuery;
+    lbTime: TsLabel;
     function methodManual:Boolean;
     procedure FormCreate(Sender: TObject);
     procedure btnCheckInClick(Sender: TObject);
@@ -33,6 +37,7 @@ type
       var ADone: Boolean);
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure Timer1Timer(Sender: TObject);
   private
     { Private declarations }
   public
@@ -144,6 +149,23 @@ procedure TFMain.FormKeyDown(Sender: TObject; var Key: Word;
 begin
   if Key = vk_escape then
   Close;
+end;
+
+procedure TFMain.Timer1Timer(Sender: TObject);
+begin
+  try
+    dm.SQLExec(Q_time,'select now() as sekarang',True);
+
+    sb.Panels[2].Text:=formatdatetime('dd mmm yyyy', Q_time.fieldbyname('sekarang').AsDateTime);
+    lbTime.Caption:=FormatDateTime('hh:nn:ss',Q_time.fieldbyname('sekarang').AsDateTime);
+  except
+    Timer1.Enabled:= False;
+    if (MessageDlg('KONEKSI TERPUTUS DENGAN SERVER...'+#13+#10+'coba '+
+    'hubungkan kembali??????', mtWarning, [mbOK], 0) = mrOk) then
+    begin
+      Timer1.Enabled:= True;
+    end;
+  end;
 end;
 
 end.
