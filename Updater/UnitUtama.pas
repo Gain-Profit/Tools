@@ -35,7 +35,10 @@ type
     procedure btnJalankanClick(Sender: TObject);
     procedure UnZipAppArchiveItemProgress(Sender: TObject;
       Item: TAbArchiveItem; Progress: Byte; var Abort: Boolean);
+    procedure FormCreate(Sender: TObject);
   private
+    procedure LoadDataFromJson;
+    procedure LoadDataFromDatabase;
     procedure URL_OnDownloadProgress
         (Sender: TDownLoadURL;
          Progress, ProgressMax: Cardinal;
@@ -50,7 +53,7 @@ type
 
 var
   FormUtama: TFormUtama;
-  Json: string;
+  Json,ThisPath: string;
   js: TlkJsonObject;
 
 implementation
@@ -136,7 +139,17 @@ begin
     end;
 end;
 
-procedure TFormUtama.btnCekClick(Sender: TObject);
+function GetParentFolder(path:string):string;
+begin
+  Result := ExpandFileName(path+'\..');
+end;
+
+procedure TFormUtama.LoadDataFromDatabase;
+begin
+  // masih proses/
+end;
+
+procedure TFormUtama.LoadDataFromJson;
 var
   jsonDetail:TlkJSONobject;
   NoItem: Integer;
@@ -145,7 +158,7 @@ begin
   pbDownload.Position:= 0;
   btnJalankan.Enabled := False;
 
-  if not loadJsonOnline(True) then Exit;
+  if not loadJsonOnline(False) then Exit;
 
   TableView.DataController.RecordCount := js.Field['profit'].Count;
 
@@ -156,9 +169,9 @@ begin
     versiOnline := jsondetail.getString('versi');
     path        := jsondetail.getString('path');
     download    := jsondetail.getString('download');
-    versiOffline:= fileExistandVersion(path + nama);
+    versiOffline:= fileExistandVersion(ThisPath + path + nama);
 
-    _set(NoItem,0,path + nama);
+    _set(NoItem,0,ThisPath + path + nama);
     _set(NoItem,1,versiOnline);
     _set(NoItem,2,versiOffline);
     _set(NoItem,3,cekAksi(NoItem,path,download));
@@ -166,6 +179,11 @@ begin
   end;
 
   status.Panels[0].Text := 'Pengecekan File Gain Profit Selesai...';
+end;
+
+procedure TFormUtama.btnCekClick(Sender: TObject);
+begin
+  LoadDataFromJson;
 end;
 
 function TFormUtama.fileExistandVersion(filename: string) : string;
@@ -193,27 +211,27 @@ begin
    pbDownload.Position:= Progress;
 end;
 
-function processExists(exeFileName: string): Boolean; 
-var 
-  ContinueLoop: BOOL; 
-  FSnapshotHandle: THandle; 
+function processExists(exeFileName: string): Boolean;
+var
+  ContinueLoop: BOOL;
+  FSnapshotHandle: THandle;
   FProcessEntry32: TProcessEntry32;
-begin 
-  FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0); 
-  FProcessEntry32.dwSize := SizeOf(FProcessEntry32); 
-  ContinueLoop := Process32First(FSnapshotHandle, FProcessEntry32); 
-  Result := False; 
-  while Integer(ContinueLoop) <> 0 do 
-  begin 
-    if ((UpperCase(ExtractFileName(FProcessEntry32.szExeFile)) = 
-      UpperCase(ExeFileName)) or (UpperCase(FProcessEntry32.szExeFile) = 
-      UpperCase(ExeFileName))) then 
-    begin 
-      Result := True; 
-    end; 
-    ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32); 
-  end; 
-  CloseHandle(FSnapshotHandle); 
+begin
+  FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+  FProcessEntry32.dwSize := SizeOf(FProcessEntry32);
+  ContinueLoop := Process32First(FSnapshotHandle, FProcessEntry32);
+  Result := False;
+  while Integer(ContinueLoop) <> 0 do
+  begin
+    if ((UpperCase(ExtractFileName(FProcessEntry32.szExeFile)) =
+      UpperCase(ExeFileName)) or (UpperCase(FProcessEntry32.szExeFile) =
+      UpperCase(ExeFileName))) then
+    begin
+      Result := True;
+    end;
+    ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32);
+  end;
+  CloseHandle(FSnapshotHandle);
 end;
 
 procedure TFormUtama.btnJalankanClick(Sender: TObject);
@@ -232,7 +250,7 @@ begin
       ShowMessage('Tidak dapat melakukan Aksi untuk Aplikasi '+ namaFile + #13#10
       +'Aplikasi Masih Berjalan, Tutup Aplikasi !!!');
       Exit;
-    end;  
+    end;
 
     if Copy(kolomAksi,1,8) = 'DOWNLOAD' then
       begin
@@ -273,6 +291,11 @@ procedure TFormUtama.UnZipAppArchiveItemProgress(Sender: TObject;
 begin
   status.Panels[0].Text := 'Extract file : ' + Item.FileName;
   pbDownload.Position := Progress;
+end;
+
+procedure TFormUtama.FormCreate(Sender: TObject);
+begin
+  ThisPath := GetParentFolder(ExtractFilePath(Application.ExeName));
 end;
 
 end.
