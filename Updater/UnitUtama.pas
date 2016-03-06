@@ -203,7 +203,8 @@ procedure TFormUtama.LoadDataFromJson;
 var
   jsonDetail:TlkJSONobject;
   NoItem: Integer;
-  nama,versiOnline,path,download,versiOffline:string;
+  nama,namaFile,versiOnline,path,download,versiOffline,aksi:string;
+  updated: Boolean;
 begin
   pbDownload.Position:= 0;
   btnJalankan.Enabled := False;
@@ -219,13 +220,22 @@ begin
     versiOnline := jsondetail.getString('versi');
     path        := jsondetail.getString('path');
     download    := jsondetail.getString('download');
-    versiOffline:= fileExistandVersion(ThisPath + path + nama);
+    namaFile    := ThisPath + path + nama;
+    versiOffline:= fileExistandVersion(namaFile);
 
-    _set(NoItem,0,ThisPath + path + nama);
+    _set(NoItem,0,namaFile);
     _set(NoItem,1,versiOnline);
     _set(NoItem,2,versiOffline);
-    _set(NoItem,3,cekAksi(NoItem,ThisPath + path,download));
+    aksi        := cekAksi(NoItem,ThisPath + path,download);
+    _set(NoItem,3,aksi);
+    if aksi <> 'LEWATI' then
+      updated:= False;
     _set(NoItem,4,download);
+  end;
+  if updated then
+  begin
+    btnJalankan.Enabled := False;
+    ShowMessage('Semua Aplikasi Sudah TerUpdate...');
   end;
 
   status.Panels[0].Text := 'Pengecekan File Gain Profit Selesai...';
