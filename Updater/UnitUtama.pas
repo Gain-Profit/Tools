@@ -37,6 +37,7 @@ type
       Item: TAbArchiveItem; Progress: Byte; var Abort: Boolean);
     procedure FormCreate(Sender: TObject);
   private
+    function GetURLDownloadLocal(UrlOnline: string):string;
     procedure LoadDataFromJson;
     procedure LoadDataFromDatabase;
     procedure URL_OnDownloadProgress
@@ -53,10 +54,12 @@ type
 
 var
   FormUtama: TFormUtama;
-  Json,ThisPath: string;
+  Json: string;
   js: TlkJsonObject;
 
 implementation
+
+uses UDM;
 
 {$R *.dfm}
 
@@ -123,16 +126,16 @@ function TFormUtama.cekAksi(baris:Integer;path,URLfile: string):string;
 var
   namaFile: string;
 begin
-  namaFile := Copy(URLfile,LastDelimiter('/',URLfile)+1,Length(URLfile)-LastDelimiter('/',URLfile));
+  namaFile  := Copy(URLfile,LastDelimiter('/',URLfile) + 1,Length(URLfile));
 
   if TableView.DataController.GetValue(baris, 1) <>
      TableView.DataController.GetValue(baris, 2) then
     begin
       btnJalankan.Enabled := True;
 
-        if FileExists(path + namaFile) then
-          Result := 'EXTRACT ' + path + namaFile else
-          Result := 'DOWNLOAD ' + path + namaFile;
+      if FileExists(path + namaFile) then
+        Result := 'EXTRACT ' + namaFile else
+        Result := 'DOWNLOAD ' + namaFile;
     end else
     begin
       Result := 'LEWATI';
@@ -144,9 +147,56 @@ begin
   Result := ExpandFileName(path+'\..');
 end;
 
-procedure TFormUtama.LoadDataFromDatabase;
+function TFormUtama.GetURLDownloadLocal(UrlOnline: string): string;
+var
+  fileName: string;
 begin
-  // masih proses/
+  fileName  := Copy(UrlOnline,LastDelimiter('/',UrlOnline) + 1,Length(UrlOnline));
+  Result    := 'http://'+dm.xConn.Host + '/GainProfit/' + fileName;
+end;
+
+procedure TFormUtama.LoadDataFromDatabase;
+var
+  NoItem: Integer;
+  nama,namaFile,versiOnline,path,download,versiOffline,aksi:string;
+  updated: Boolean;
+begin
+  if dm.terkoneksi then
+  begin
+    updated:= True;
+    // Hanya Menampilkan Aplikasi...
+    dm.SQLExec(dm.QShow, 'SELECT * FROM app_versi WHERE RIGHT(kode,4)=".exe"', True);
+
+    dm.QShow.First;
+    TableView.DataController.RecordCount := dm.QShow.RecordCount;
+    for NoItem := 0 to dm.QShow.RecordCount - 1 do
+    begin
+      nama        := dm.QShow.FieldByName('kode').AsString;
+      versiOnline := dm.QShow.FieldByName('versi_terbaru').AsString;
+      path        := dm.QShow.FieldByName('path').AsString;
+      download    := GetURLDownloadLocal(dm.QShow.FieldByName('URLdownload').AsString);
+      namaFile    := ThisPath + path + nama;
+      versiOffline:= fileExistandVersion(namaFile);
+
+      _set(NoItem,0,namaFile);
+      _set(NoItem,1,versiOnline);
+      _set(NoItem,2,versiOffline);
+      aksi        := cekAksi(NoItem,ThisPath + path,download);
+      _set(NoItem,3,aksi);
+      if aksi <> 'LEWATI' then
+        updated:= False;
+      _set(NoItem,4,download);
+      dm.QShow.Next;
+    end;
+    if updated then
+    begin
+      btnJalankan.Enabled := False;
+      ShowMessage('Semua Aplikasi Sudah TerUpdate...');
+    end;
+  end else
+  begin
+    ShowMessage('Tidak Dapat Terhubung ke Database...');
+  end;
 end;
 
 procedure TFormUtama.LoadDataFromJson;
@@ -174,7 +224,7 @@ begin
     _set(NoItem,0,ThisPath + path + nama);
     _set(NoItem,1,versiOnline);
     _set(NoItem,2,versiOffline);
-    _set(NoItem,3,cekAksi(NoItem,path,download));
+    _set(NoItem,3,cekAksi(NoItem,ThisPath + path,download));
     _set(NoItem,4,download);
   end;
 
@@ -183,7 +233,8 @@ end;
 
 procedure TFormUtama.btnCekClick(Sender: TObject);
 begin
-  LoadDataFromJson;
+  //LoadDataFromJson;
+  LoadDataFromDatabase;
 end;
 
 function TFormUtama.fileExistandVersion(filename: string) : string;
@@ -243,7 +294,7 @@ begin
   begin
     kolomAksi := TableView.DataController.GetValue(data, 3);
     kolomNama := TableView.DataController.GetValue(data, 0);
-    namaFile := Copy(kolomNama,LastDelimiter('/',kolomNama)+1,Length(kolomNama)-LastDelimiter('/',kolomNama));
+    namaFile  := Copy(kolomNama,LastDelimiter('/',kolomNama) + 1,Length(kolomNama));
 
     if processExists(namaFile) then
     begin
@@ -294,8 +345,11 @@ begin
 end;
 
 procedure TFormUtama.FormCreate(Sender: TObject);
+var
+  tempat: String;
 begin
-  ThisPath := GetParentFolder(ExtractFilePath(Application.ExeName));
+  tempat:= GetParentFolder(ExtractFilePath(Application.ExeName));
+  ThisPath := StringReplace(tempat,'\','/',[rfReplaceAll]);
 end;
 
 end.
