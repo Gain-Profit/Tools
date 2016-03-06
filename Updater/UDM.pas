@@ -19,7 +19,7 @@ type
 
 var
   dm: Tdm;
-  _host, _db, _user, _password: string;
+  _host, _db, _user, _password, ThisPath: string;
   _port: Integer;
 
 implementation
@@ -56,7 +56,7 @@ var
   data, pusat, jalur1, jalur2, nama, kata: string;
   X: TextFile;
 begin
-  assignfile(X, 'koneksi.cbCon');
+  assignfile(X, ThisPath + '/Tools/koneksi.cbCon');
   try
     reset(X);
     readln(X, pusat);
