@@ -121,7 +121,13 @@ begin
          GetCursorPos(aPoint);
          PopupMenu1.Popup(aPoint.x, aPoint.y);
          PostMessage(Handle, WM_NULL, 0, 0);
-      end
+      end;
+      WM_LBUTTONDOWN:
+      begin
+        if Form1.Showing then
+          Form1.Hide else
+          Form1.Show;
+      end;
     end;
   end;
   inherited;
