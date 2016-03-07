@@ -6,6 +6,7 @@ uses
   UDM in 'UDM.pas' {dm: TDataModule};
 
 {$R *.res}
+{$R 'RequestAdmin.res'}
 
 begin
   Application.Initialize;
