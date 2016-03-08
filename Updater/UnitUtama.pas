@@ -36,6 +36,7 @@ type
     procedure UnZipAppArchiveItemProgress(Sender: TObject;
       Item: TAbArchiveItem; Progress: Byte; var Abort: Boolean);
     procedure FormCreate(Sender: TObject);
+    procedure FormResize(Sender: TObject);
   private
     function GetURLDownloadLocal(UrlOnline: string):string;
     procedure LoadDataFromJson;
@@ -360,6 +361,11 @@ var
 begin
   tempat:= GetParentFolder(ExtractFilePath(Application.ExeName));
   ThisPath := StringReplace(tempat,'\','/',[rfReplaceAll]);
+end;
+
+procedure TFormUtama.FormResize(Sender: TObject);
+begin
+  pbDownload.Width := btnJalankan.Left - pbDownload.Left - 8;
 end;
 
 end.

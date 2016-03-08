@@ -11,14 +11,16 @@ object FormUtama: TFormUtama
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Position = poScreenCenter
   OnCreate = FormCreate
+  OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 13
   object cxGrid1: TcxGrid
     Left = 0
     Top = 41
     Width = 912
-    Height = 381
+    Height = 382
     Align = alClient
     TabOrder = 0
     object TableView: TcxGridDBTableView
@@ -106,7 +108,7 @@ object FormUtama: TFormUtama
   end
   object status: TStatusBar
     Left = 0
-    Top = 422
+    Top = 423
     Width = 912
     Height = 19
     Panels = <
