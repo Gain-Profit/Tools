@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls,shellapi, DB, mySQLDbTables, MySQLDump, MySQLTools,
   ExtCtrls, ComCtrls, sLabel, Menus, Grids, Buttons,registry, Mask,
-  sMaskEdit, sCustomComboEdit, sTooledit,inifiles, sButton, madExceptVcl;
+  sMaskEdit, sCustomComboEdit, sTooledit,inifiles, sButton;
 
 type
   TForm1 = class(TForm)
@@ -22,6 +22,7 @@ type
     gb_pilihan: TRadioGroup;
     ed_nama: TEdit;
     procedure salin;
+    procedure WndProc(var Msg : TMessage); override;
     procedure Timer1Timer(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -36,7 +37,6 @@ type
     procedure ed_namaKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
   private
-    procedure WndProc(var Msg : TMessage); override;
 //    function ExecAndWait(const FileName, Params: ShortString; const WinState: Word): boolean; export
     { Private declarations }
   public
