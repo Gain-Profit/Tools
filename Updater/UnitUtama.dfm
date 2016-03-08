@@ -3,7 +3,7 @@ object FormUtama: TFormUtama
   Top = 185
   Width = 928
   Height = 480
-  Caption = 'Perbarui Aplikasi'
+  Caption = 'Gain Profit Updater'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -12,6 +12,7 @@ object FormUtama: TFormUtama
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
+  OnClose = FormClose
   OnCreate = FormCreate
   OnResize = FormResize
   PixelsPerInch = 96

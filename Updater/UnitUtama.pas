@@ -9,7 +9,7 @@ uses
   cxGridTableView, cxGridDBTableView, cxGridLevel, cxClasses, cxControls,
   cxGridCustomView, cxGrid, ExtCtrls,IdHTTP,uLkJSON,ExtActns, ComCtrls,
   frxBarcode, frxClass, AbBase, AbBrowse, AbZBrows, AbUnzper,TlHelp32,
-  AbComCtrls,AbArcTyp;
+  AbComCtrls,AbArcTyp,ShellAPI;
 
 type
   TFormUtama = class(TForm)
@@ -37,6 +37,8 @@ type
       Item: TAbArchiveItem; Progress: Byte; var Abort: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
+    procedure WndProc(var Msg : TMessage); override;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     function GetURLDownloadLocal(UrlOnline: string):string;
     procedure LoadDataFromJson;
@@ -50,7 +52,8 @@ type
     function laporan_versi(filename: string): string;
     function cekAksi(baris:Integer;path,URLfile: string):string;
   public
-    { Public declarations }
+    IconData : TNotifyIconData;
+    IconCount : integer;
   end;
 
 var
@@ -361,11 +364,46 @@ var
 begin
   tempat:= GetParentFolder(ExtractFilePath(Application.ExeName));
   ThisPath := StringReplace(tempat,'\','/',[rfReplaceAll]);
+
+  ShowWindow(Application.Handle, SW_HIDE);
+
+  BorderIcons := [biSystemMenu];
+  IconCount := 0;
+  IconData.cbSize := sizeof(IconData);
+  IconData.Wnd := Handle;
+  IconData.uID := 100;
+  IconData.uFlags := NIF_MESSAGE + NIF_ICON + NIF_TIP;
+  IconData.uCallbackMessage := WM_USER + 1;
+  IconData.hIcon := Application.Icon.Handle;
+  StrPCopy(IconData.szTip, Application.Title);
+  Shell_NotifyIcon(NIM_ADD, @IconData);
 end;
 
 procedure TFormUtama.FormResize(Sender: TObject);
 begin
   pbDownload.Width := btnJalankan.Left - pbDownload.Left - 8;
+end;
+
+procedure TFormUtama.WndProc(var Msg: TMessage);
+begin
+  case Msg.Msg of
+    WM_USER + 1:
+    case Msg.lParam of
+      WM_LBUTTONDOWN:
+      begin
+        if FormUtama.Showing then
+          FormUtama.Hide else
+          FormUtama.Show;
+      end;
+    end;
+  end;
+  inherited;
+end;
+
+procedure TFormUtama.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  Action := caNone;
+  FormUtama.Hide;
 end;
 
 end.
