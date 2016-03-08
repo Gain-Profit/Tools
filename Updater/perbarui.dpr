@@ -10,7 +10,10 @@ uses
 
 begin
   Application.Initialize;
+  Application.Title := 'Gain Profit Updater';
   Application.CreateForm(TFormUtama, FormUtama);
   Application.CreateForm(Tdm, dm);
+  // Jangan Tampilkan Form Utama ketika di create
+  Application.ShowMainForm:=False;
   Application.Run;
 end.
