@@ -50,7 +50,7 @@ type
          StatusText: String; var Cancel: Boolean) ;
     function loadJsonOnline(online:Boolean):Boolean;
     function laporan_versi(filename: string): string;
-    function cekAksi(baris:Integer;path,URLfile: string):string;
+    function cekAksi(baris:Integer; URLfile: string):string;
   public
     IconData : TNotifyIconData;
     IconCount : integer;
@@ -126,7 +126,7 @@ begin
       js := TlkJSONstreamed.loadfromfile('updater.json') as TlkJsonObject;
 end;
 
-function TFormUtama.cekAksi(baris:Integer;path,URLfile: string):string;
+function TFormUtama.cekAksi(baris:Integer; URLfile: string):string;
 var
   namaFile: string;
 begin
@@ -137,7 +137,7 @@ begin
     begin
       btnJalankan.Enabled := True;
 
-      if FileExists(path + namaFile) then
+      if FileExists(ThisPath + '/Downloaded/' + namaFile) then
         Result := 'EXTRACT ' + namaFile else
         Result := 'DOWNLOAD ' + namaFile;
     end else
@@ -165,6 +165,8 @@ var
   nama,namaFile,versiOnline,path,download,versiOffline,aksi:string;
   updated: Boolean;
 begin
+  pbDownload.Position:= 0;
+
   if dm.terkoneksi then
   begin
     updated:= True;
@@ -185,7 +187,7 @@ begin
       _set(NoItem,0,namaFile);
       _set(NoItem,1,versiOnline);
       _set(NoItem,2,versiOffline);
-      aksi        := cekAksi(NoItem,ThisPath + path,download);
+      aksi        := cekAksi(NoItem, download);
       _set(NoItem,3,aksi);
       if aksi <> 'LEWATI' then
         updated:= False;
@@ -196,6 +198,7 @@ begin
     begin
       btnJalankan.Enabled := False;
       ShowMessage('Semua Aplikasi Sudah TerUpdate...');
+      status.Panels[0].Text := 'Semua Aplikasi Sudah TerUpdate...';
     end;
   end else
   begin
@@ -230,7 +233,7 @@ begin
     _set(NoItem,0,namaFile);
     _set(NoItem,1,versiOnline);
     _set(NoItem,2,versiOffline);
-    aksi        := cekAksi(NoItem,ThisPath + path,download);
+    aksi        := cekAksi(NoItem, download);
     _set(NoItem,3,aksi);
     if aksi <> 'LEWATI' then
       updated:= False;
@@ -240,9 +243,8 @@ begin
   begin
     btnJalankan.Enabled := False;
     ShowMessage('Semua Aplikasi Sudah TerUpdate...');
+    status.Panels[0].Text := 'Semua Aplikasi Sudah TerUpdate...';
   end;
-
-  status.Panels[0].Text := 'Pengecekan File Gain Profit Selesai...';
 end;
 
 procedure TFormUtama.btnCekClick(Sender: TObject);
@@ -302,14 +304,19 @@ end;
 procedure TFormUtama.btnJalankanClick(Sender: TObject);
 var
   data: Integer;
-  URLfile,kolomAksi,kolomNama,namaFile: string;
+  URLfile,kolomAksi,kolomNama,namaFile,zipFile: string;
 begin
+  if not(DirectoryExists(ThisPath + '/Downloaded')) then
+    CreateDir(ThisPath + '/Downloaded');
+
   for data:= 0 to tableview.DataController.RecordCount-1 do
   begin
     kolomAksi := TableView.DataController.GetValue(data, 3);
     kolomNama := TableView.DataController.GetValue(data, 0);
     namaFile  := Copy(kolomNama,LastDelimiter('/',kolomNama) + 1,Length(kolomNama));
-
+    zipFile   := ThisPath + '/Downloaded/' +
+    Copy(kolomAksi,LastDelimiter(' ',kolomAksi) + 1,Length(kolomAksi));
+    
     if processExists(namaFile) then
     begin
       ShowMessage('Tidak dapat melakukan Aksi untuk Aplikasi '+ namaFile + #13#10
@@ -324,7 +331,7 @@ begin
         with TDownloadURL.Create(self) do
         try
          URL := URLfile;
-         FileName := Copy(kolomAksi,10,Length(kolomAksi)-1);
+         FileName := zipFile;
          OnDownloadProgress := URL_OnDownloadProgress;
 
          ExecuteTarget(nil);
@@ -332,18 +339,16 @@ begin
          Free;
         end;
 
-        if ExtractFileExt(Copy(kolomAksi,10,Length(kolomAksi)-1)) = '.zip' then
-        begin
-        UnZipApp.FileName := Copy(kolomAksi,10,Length(kolomAksi)-1);
+        UnZipApp.FileName := zipFile;
         UnZipApp.ExtractAt(0,TableView.DataController.GetValue(data, 0));
-        end;
-
+        UnZipApp.CloseArchive;
       end;
 
     if Copy(kolomAksi,1,7) = 'EXTRACT' then
       begin
-        UnZipApp.FileName := Copy(kolomAksi,9,Length(kolomAksi)-1);
+        UnZipApp.FileName := zipFile;
         UnZipApp.ExtractAt(0,TableView.DataController.GetValue(data, 0));
+        UnZipApp.CloseArchive;
       end;
   end;
 
