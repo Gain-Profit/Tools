@@ -8,7 +8,7 @@ uses
   sCustomComboEdit, sCurrEdit, sCurrencyEdit, sLabel, sGroupBox,inifiles,
   ExtCtrls, sPanel, sBevel, sSkinManager, sButton, sSpinEdit, ComCtrls,
   sTrackBar,acselectskin, ImgList, acAlphaImageList, Buttons, sSpeedButton,
-  sComboBox, sCheckBox;
+  sComboBox, sCheckBox, SHFolder;
 
 type
   TF_atur = class(TForm)
@@ -133,6 +133,14 @@ var
 implementation
 
 {$R *.dfm}
+
+function GetAppData: string;
+var
+  path: array[0..MAX_PATH] of Char;
+begin
+  if Succeeded(SHGetFolderPath(0,CSIDL_COMMON_APPDATA,0,0,@Path[0])) then
+  Result:= path + '\Gain Profit\' else Result:='';
+end;  
 
 procedure TF_atur.amankan(pathin, pathout: string; Chave: Word);
 var
@@ -308,7 +316,7 @@ except
   db.Rollback;
 end;
 
-  appINI := TIniFile.Create(a_path+'\gain.ini') ;
+  appINI := TIniFile.Create(GetAppData+'gain.ini') ;
 try
   appINI.WriteString('perusahaan','kode',ed_kdcomp.Text);
   appINI.WriteString('perusahaan','nama',ed_ncomp.Text);
@@ -399,6 +407,7 @@ var i: Integer;
 begin
 a_path:= extractfilepath(application.ExeName);
 sm.SkinDirectory := a_path + 'Skins';
+ShowMessage(GetAppData+'gain.ini');
 ini_tampil;
 sm.Active:=true;
 
@@ -406,7 +415,7 @@ sm.Active:=true;
   begin
     if LowerCase(ParamStr(i)) = '-dump' then
     begin
-      appINI := TIniFile.Create(a_path+'\gain.ini') ;
+      appINI := TIniFile.Create(GetAppData+'gain.ini') ;
       try
         appINI.WriteInteger ('backup', 'aktif', 0);
       finally
@@ -439,7 +448,7 @@ procedure TF_atur.ini_tampil;
 var  appINI : TIniFile;
   ini_retail,ini_tunai,jenis_struk,aktif,gudang,akun,server,ksr,cadang:integer;
 begin
-  appINI := TIniFile.Create(a_path+'\gain.ini') ;
+  appINI := TIniFile.Create(GetAppData+'gain.ini') ;
  try
   ed_kdcomp.Text := appINI.ReadString ('perusahaan', 'kode', '123');
   ed_ncomp.Text := appINI.ReadString ('perusahaan', 'nama_skin', 'PERUSAHAAN CONTOH');

@@ -1,12 +1,6 @@
 program koneksi;
 
 uses
-  fastMM4,
-  madExcept,
-  madLinkDisAsm,
-  madListHardware,
-  madListProcesses,
-  madListModules,
   Forms,
   U_Utama in 'U_Utama.pas' {F_atur};
 
