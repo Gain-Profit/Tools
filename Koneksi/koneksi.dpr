@@ -5,6 +5,7 @@ uses
   UKoneksi in 'UKoneksi.pas' {FKoneksi};
 
 {$R *.res}
+{$R 'RequestAdmin.res'}
 
 begin
   Application.Initialize;
