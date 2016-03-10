@@ -20,12 +20,9 @@ type
     sLabel5: TsLabel;
     edPassword: TsEdit;
     btnTes: TButton;
-    btnSimpan: TButton;
     db: TmySQLDatabase;
     procedure FormCreate(Sender: TObject);
     procedure btnTesClick(Sender: TObject);
-    procedure btnSimpanClick(Sender: TObject);
-    procedure edChange(Sender: TObject);
   private
     function tesKoneksi: Boolean;
   public
@@ -115,45 +112,34 @@ begin
 end;
 
 procedure TFKoneksi.btnTesClick(Sender: TObject);
-begin
-  if tesKoneksi then
-  begin
-    ShowMessage('Tes Koneksi Berhasil Tersambung...');
-    btnSimpan.Enabled := True;
-  end;
-end;
-
-procedure TFKoneksi.btnSimpanClick(Sender: TObject);
 var
   x: TextFile;
   pusat, jalur, nama, kata, data: string;
 begin
-  pusat := kripik(edHost.Text, 6);
-  data := kripik(edDatabase.Text, 6);
-  jalur := kripik(edPort.Text, 6);
-  nama := kripik(edUserName.Text, 6);
-  kata := kripik(edPassword.Text, 6);
-  try
-    assignfile(X, 'koneksi.cbCon');
-    rewrite(X);
-    writeln(X, pusat);
-    writeln(X, data);
-    writeln(X, jalur);
-    writeln(X, nama);
-    writeln(X, kata);
-    closefile(X);
-    showmessage('SIMPAN DATA BERHASIL...');
-  except
-    on E: Exception do
-    begin
-      showmessage('SIMPAN DATA GAGAL...'#10#13'' + E.message);
+  if tesKoneksi then
+  begin
+    pusat := kripik(edHost.Text, 6);
+    data := kripik(edDatabase.Text, 6);
+    jalur := kripik(edPort.Text, 6);
+    nama := kripik(edUserName.Text, 6);
+    kata := kripik(edPassword.Text, 6);
+    try
+      assignfile(X, 'koneksi.cbCon');
+      rewrite(X);
+      writeln(X, pusat);
+      writeln(X, data);
+      writeln(X, jalur);
+      writeln(X, nama);
+      writeln(X, kata);
+      closefile(X);
+      showmessage('TERKONEKSI DAN DATA BERHASIL DISIMPAN...');
+    except
+      on E: Exception do
+      begin
+        showmessage('SIMPAN DATA GAGAL...'#10#13'' + E.message);
+      end;
     end;
   end;
-end;
-
-procedure TFKoneksi.edChange(Sender: TObject);
-begin
-  btnSimpan.Enabled := False;
 end;
 
 end.

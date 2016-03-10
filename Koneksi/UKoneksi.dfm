@@ -94,7 +94,6 @@ object FKoneksi: TFKoneksi
     Font.Style = []
     ParentFont = False
     TabOrder = 0
-    OnChange = edChange
     SkinData.SkinSection = 'EDIT'
     BoundLabel.Indent = 0
     BoundLabel.Font.Charset = DEFAULT_CHARSET
@@ -118,7 +117,6 @@ object FKoneksi: TFKoneksi
     Font.Style = []
     ParentFont = False
     TabOrder = 1
-    OnChange = edChange
     SkinData.SkinSection = 'EDIT'
     BoundLabel.Indent = 0
     BoundLabel.Font.Charset = DEFAULT_CHARSET
@@ -143,7 +141,6 @@ object FKoneksi: TFKoneksi
     Font.Style = []
     ParentFont = False
     TabOrder = 2
-    OnChange = edChange
     BoundLabel.Indent = 0
     BoundLabel.Font.Charset = DEFAULT_CHARSET
     BoundLabel.Font.Color = clWindowText
@@ -170,7 +167,6 @@ object FKoneksi: TFKoneksi
     Font.Style = []
     ParentFont = False
     TabOrder = 3
-    OnChange = edChange
     SkinData.SkinSection = 'EDIT'
     BoundLabel.Indent = 0
     BoundLabel.Font.Charset = DEFAULT_CHARSET
@@ -195,7 +191,6 @@ object FKoneksi: TFKoneksi
     ParentFont = False
     PasswordChar = '$'
     TabOrder = 4
-    OnChange = edChange
     SkinData.SkinSection = 'EDIT'
     BoundLabel.Indent = 0
     BoundLabel.Font.Charset = DEFAULT_CHARSET
@@ -210,9 +205,9 @@ object FKoneksi: TFKoneksi
   object btnTes: TButton
     Left = 8
     Top = 144
-    Width = 129
+    Width = 249
     Height = 25
-    Caption = '&TES KONEKSI'
+    Caption = '&TES KONEKSI dan SIMPAN'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -16
@@ -221,22 +216,6 @@ object FKoneksi: TFKoneksi
     ParentFont = False
     TabOrder = 5
     OnClick = btnTesClick
-  end
-  object btnSimpan: TButton
-    Left = 152
-    Top = 144
-    Width = 105
-    Height = 25
-    Caption = '&Simpan'
-    Enabled = False
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -16
-    Font.Name = 'Rockwell'
-    Font.Style = []
-    ParentFont = False
-    TabOrder = 6
-    OnClick = btnSimpanClick
   end
   object db: TmySQLDatabase
     UserName = 'root'
