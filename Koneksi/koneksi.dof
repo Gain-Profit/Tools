@@ -112,10 +112,10 @@ RootDir=C:\Program Files\Borland\Delphi7\Bin\
 [Version Info]
 IncludeVerInfo=1
 AutoIncBuild=0
-MajorVer=2
-MinorVer=5
-Release=0
-Build=50
+MajorVer=1
+MinorVer=1
+Release=1
+Build=0
 Debug=0
 PreRelease=0
 Special=0
@@ -126,14 +126,15 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=
 FileDescription=
-FileVersion=2.5.0.50
+FileVersion=1.1.1.0
 InternalName=
 LegalCopyright=
 LegalTrademarks=
 OriginalFilename=
 ProductName=
-ProductVersion=2.5
+ProductVersion=
 Comments=
+LastCompiledTime=
 [HistoryLists\hlConditionals]
 Count=1
 Item0=madExcept

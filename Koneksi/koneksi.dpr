@@ -2,13 +2,13 @@ program koneksi;
 
 uses
   Forms,
-  U_Utama in 'U_Utama.pas' {F_atur};
+  UKoneksi in 'UKoneksi.pas' {FKoneksi};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.Title := 'Gain Setting 2.0';
-  Application.CreateForm(TF_atur, F_atur);
+  Application.Title := 'Koneksi Database';
+  Application.CreateForm(TFKoneksi, FKoneksi);
   Application.Run;
 end.
