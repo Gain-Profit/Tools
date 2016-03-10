@@ -93,7 +93,7 @@ end;
 procedure TFKoneksi.FormCreate(Sender: TObject);
 var
   x: TextFile;
-  pusat, jalur, nama, kata, data, a_path: string;
+  pusat, jalur, nama, kata, data: string;
 begin
   assignfile(x, 'koneksi.cbCon');
   try
@@ -126,7 +126,7 @@ end;
 procedure TFKoneksi.btnSimpanClick(Sender: TObject);
 var
   x: TextFile;
-  pusat, jalur, nama, kata, data, a_path: string;
+  pusat, jalur, nama, kata, data: string;
 begin
   pusat := kripik(edHost.Text, 6);
   data := kripik(edDatabase.Text, 6);
@@ -142,6 +142,7 @@ begin
     writeln(X, nama);
     writeln(X, kata);
     closefile(X);
+    showmessage('SIMPAN DATA BERHASIL...');
   except
     on E: Exception do
     begin
