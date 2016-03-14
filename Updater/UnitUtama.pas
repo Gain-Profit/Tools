@@ -140,6 +140,8 @@ begin
      TableView.DataController.GetValue(baris, 2) then
     begin
       btnJalankan.Enabled := True;
+      btnJalankan.SetFocus;
+      status.Panels[0].Text := 'Jalankan Aksi...';
 
       if FileExists(ThisPath + '/Downloaded/' + namaFile) then
         Result := 'EXTRACT ' + namaFile else
