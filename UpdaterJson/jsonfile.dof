@@ -127,11 +127,11 @@ CodePage=1252
 CompanyName=Gain-Profit
 FileDescription=
 FileVersion=0.1.0.0
-InternalName=JsonUpdater
+InternalName=JsonFile
 LegalCopyright=
 LegalTrademarks=
 OriginalFilename=
-ProductName=
+ProductName=tools
 ProductVersion=1.0.0.0
 Comments=
 [HistoryLists\hlUnitAliases]

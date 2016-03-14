@@ -1,4 +1,4 @@
-program Json;
+program jsonfile;
 
 uses
   Forms,
