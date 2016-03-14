@@ -41,6 +41,8 @@ type
     procedure WndProc(var Msg : TMessage); override;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure tmrBaruTimer(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     function GetURLDownloadLocal(UrlOnline: string):string;
     procedure LoadDataFromJson;
@@ -421,6 +423,14 @@ begin
   begin
     FormUtama.Show;
   end; 
+end;
+
+procedure TFormUtama.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  // Ctrl + F4 untuk menutup applikasi
+  if ((Shift = [ssCtrl]) and (Key = VK_F4)) then
+    Application.Terminate;
 end;
 
 end.
