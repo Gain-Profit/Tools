@@ -29,6 +29,7 @@ type
     TableViewColumn5: TcxGridDBColumn;
     status: TStatusBar;
     UnZipApp: TAbUnZipper;
+    tmrBaru: TTimer;
     procedure btnCekClick(Sender: TObject);
     procedure _set(baris,kolom:Integer; _isi:variant);
     function fileExistandVersion(filename:string):string;
@@ -39,10 +40,11 @@ type
     procedure FormResize(Sender: TObject);
     procedure WndProc(var Msg : TMessage); override;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure tmrBaruTimer(Sender: TObject);
   private
     function GetURLDownloadLocal(UrlOnline: string):string;
     procedure LoadDataFromJson;
-    procedure LoadDataFromDatabase;
+    function LoadDataFromDatabase: Boolean;
     procedure URL_OnDownloadProgress
         (Sender: TDownLoadURL;
          Progress, ProgressMax: Cardinal;
@@ -63,7 +65,7 @@ var
 
 implementation
 
-uses UDM;
+uses UDM, Math;
 
 {$R *.dfm}
 
@@ -159,17 +161,17 @@ begin
   Result    := 'http://'+dm.xConn.Host + '/GainProfit/' + fileName;
 end;
 
-procedure TFormUtama.LoadDataFromDatabase;
+function TFormUtama.LoadDataFromDatabase: Boolean;
 var
   NoItem: Integer;
   nama,namaFile,versiOnline,path,download,versiOffline,aksi:string;
   updated: Boolean;
 begin
   pbDownload.Position:= 0;
+  updated:= True;
 
   if dm.terkoneksi then
   begin
-    updated:= True;
     // Hanya Menampilkan Aplikasi...
     dm.SQLExec(dm.QShow, 'SELECT * FROM app_versi WHERE RIGHT(kode,4)=".exe"', True);
 
@@ -194,16 +196,12 @@ begin
       _set(NoItem,4,download);
       dm.QShow.Next;
     end;
-    if updated then
-    begin
-      btnJalankan.Enabled := False;
-      ShowMessage('Semua Aplikasi Sudah TerUpdate...');
-      status.Panels[0].Text := 'Semua Aplikasi Sudah TerUpdate...';
-    end;
   end else
   begin
-    ShowMessage('Tidak Dapat Terhubung ke Database...');
+    status.Panels[0].Text := 'Tidak Dapat Terhubung ke Database...';
   end;
+  
+  Result:= updated;
 end;
 
 procedure TFormUtama.LoadDataFromJson;
@@ -250,7 +248,12 @@ end;
 procedure TFormUtama.btnCekClick(Sender: TObject);
 begin
   //LoadDataFromJson;
-  LoadDataFromDatabase;
+  if LoadDataFromDatabase then
+    begin
+      btnJalankan.Enabled := False;
+      ShowMessage('Semua Aplikasi Sudah TerUpdate...');
+      status.Panels[0].Text := 'Semua Aplikasi Sudah TerUpdate...';
+    end;
 end;
 
 function TFormUtama.fileExistandVersion(filename: string) : string;
@@ -409,6 +412,15 @@ procedure TFormUtama.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   Action := caNone;
   FormUtama.Hide;
+end;
+
+procedure TFormUtama.tmrBaruTimer(Sender: TObject);
+begin
+  // jalankan aksi setiap satu menit....
+  if not LoadDataFromDatabase then
+  begin
+    FormUtama.Show;
+  end; 
 end;
 
 end.

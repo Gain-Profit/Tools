@@ -148,4 +148,10 @@ object FormUtama: TFormUtama
     Left = 112
     Top = 96
   end
+  object tmrBaru: TTimer
+    Interval = 60000
+    OnTimer = tmrBaruTimer
+    Left = 24
+    Top = 136
+  end
 end
