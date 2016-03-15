@@ -1,6 +1,6 @@
 object FormUtama: TFormUtama
-  Left = 230
-  Top = 185
+  Left = 56
+  Top = 153
   Width = 928
   Height = 480
   Caption = 'Gain Profit Updater'
@@ -32,8 +32,10 @@ object FormUtama: TFormUtama
       DataController.Summary.DefaultGroupSummaryItems = <>
       DataController.Summary.FooterSummaryItems = <>
       DataController.Summary.SummaryGroups = <>
+      OptionsCustomize.ColumnsQuickCustomization = True
       OptionsView.ColumnAutoWidth = True
       OptionsView.GroupByBox = False
+      OptionsView.Indicator = True
       object TableViewColumn1: TcxGridDBColumn
         Caption = 'File'
         DataBinding.ValueType = 'String'
@@ -63,6 +65,24 @@ object FormUtama: TFormUtama
         DataBinding.ValueType = 'String'
         Options.Editing = False
         Width = 270
+      end
+      object TableViewColumn6: TcxGridDBColumn
+        Caption = 'MD5 Database'
+        DataBinding.ValueType = 'String'
+        Visible = False
+        Options.Editing = False
+      end
+      object TableViewColumn7: TcxGridDBColumn
+        Caption = 'MD5 File'
+        DataBinding.ValueType = 'String'
+        Visible = False
+        Options.Editing = False
+      end
+      object TableViewColumn8: TcxGridDBColumn
+        Caption = 'MD5'
+        DataBinding.ValueType = 'String'
+        Visible = False
+        Options.Editing = False
       end
     end
     object Level: TcxGridLevel

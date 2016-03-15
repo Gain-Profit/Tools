@@ -9,7 +9,7 @@ uses
   cxGridTableView, cxGridDBTableView, cxGridLevel, cxClasses, cxControls,
   cxGridCustomView, cxGrid, ExtCtrls,IdHTTP,uLkJSON,ExtActns, ComCtrls,
   frxBarcode, frxClass, AbBase, AbBrowse, AbZBrows, AbUnzper,TlHelp32,
-  AbComCtrls,AbArcTyp,ShellAPI;
+  AbComCtrls,AbArcTyp,ShellAPI, IdHashMessageDigest, idHash;
 
 type
   TFormUtama = class(TForm)
@@ -30,8 +30,13 @@ type
     status: TStatusBar;
     UnZipApp: TAbUnZipper;
     tmrBaru: TTimer;
+    TableViewColumn6: TcxGridDBColumn;
+    TableViewColumn7: TcxGridDBColumn;
+    TableViewColumn8: TcxGridDBColumn;
+    procedure CekMD5;
     procedure btnCekClick(Sender: TObject);
     procedure _set(baris,kolom:Integer; _isi:variant);
+    function _get(baris,kolom:Integer):string;
     function fileExistandVersion(filename:string):string;
     procedure btnJalankanClick(Sender: TObject);
     procedure UnZipAppArchiveItemProgress(Sender: TObject;
@@ -44,7 +49,7 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
   private
-    function GetURLDownloadLocal(UrlOnline: string):string;
+    function GetURLDownloadLocal(Path ,UrlOnline: string):string;
     procedure LoadDataFromJson;
     function LoadDataFromDatabase: Boolean;
     procedure URL_OnDownloadProgress
@@ -70,6 +75,28 @@ implementation
 uses UDM, Math;
 
 {$R *.dfm}
+
+//returns MD5 has for a file
+function MD5(const fileName: string): string;
+var
+  idmd5: TIdHashMessageDigest5;
+  fs: TFileStream;
+begin
+  if not(FileExists(fileName)) then
+  begin
+    Result := '';
+    Exit;
+  end;
+
+  idmd5 := TIdHashMessageDigest5.Create;
+  fs := TFileStream.Create(fileName, fmOpenRead or fmShareDenyWrite);
+  try
+    result := idmd5.AsHex(idmd5.HashValue(fs));
+  finally
+    fs.Free;
+    idmd5.Free;
+  end;
+end;
 
 function program_versi(exeName : string): string;
 var V1, V2, V3, V4: Word;
@@ -156,18 +183,18 @@ begin
   Result := ExpandFileName(path+'\..');
 end;
 
-function TFormUtama.GetURLDownloadLocal(UrlOnline: string): string;
+function TFormUtama.GetURLDownloadLocal(Path, UrlOnline: string): string;
 var
   fileName: string;
 begin
   fileName  := Copy(UrlOnline,LastDelimiter('/',UrlOnline) + 1,Length(UrlOnline));
-  Result    := 'http://'+dm.xConn.Host + '/GainProfit/' + fileName;
+  Result    := 'http://'+dm.xConn.Host + '/GainProfit' + Path + fileName;
 end;
 
 function TFormUtama.LoadDataFromDatabase: Boolean;
 var
   NoItem: Integer;
-  nama,namaFile,versiOnline,path,download,versiOffline,aksi:string;
+  nama,namaFile,versiOnline,path,download,versiOffline,aksi,MD5Database:string;
   updated: Boolean;
 begin
   pbDownload.Position:= 0;
@@ -176,7 +203,8 @@ begin
   if dm.terkoneksi then
   begin
     // Hanya Menampilkan Aplikasi...
-    dm.SQLExec(dm.QShow, 'SELECT * FROM app_versi WHERE RIGHT(kode,4)=".exe"', True);
+    dm.SQLExec(dm.QShow, 'SELECT * FROM app_versi WHERE RIGHT(kode,4)=".exe" '
+    + 'ORDER BY path', True);
 
     dm.QShow.First;
     TableView.DataController.RecordCount := dm.QShow.RecordCount;
@@ -185,7 +213,8 @@ begin
       nama        := dm.QShow.FieldByName('kode').AsString;
       versiOnline := dm.QShow.FieldByName('versi_terbaru').AsString;
       path        := dm.QShow.FieldByName('path').AsString;
-      download    := GetURLDownloadLocal(dm.QShow.FieldByName('URLdownload').AsString);
+      download    := GetURLDownloadLocal(path, dm.QShow.FieldByName('URLdownload').AsString);
+      MD5Database := dm.QShow.FieldByName('md5_file').AsString;
       namaFile    := ThisPath + path + nama;
       versiOffline:= fileExistandVersion(namaFile);
 
@@ -197,8 +226,10 @@ begin
       if aksi <> 'LEWATI' then
         updated:= False;
       _set(NoItem,4,download);
+      _set(NoItem,5,MD5Database);
       dm.QShow.Next;
     end;
+    TableView.ApplyBestFit();
   end else
   begin
     status.Panels[0].Text := 'Tidak Dapat Terhubung ke Database...';
@@ -276,6 +307,11 @@ end;
 procedure TFormUtama._set(baris,kolom:Integer; _isi:variant);
 begin
 TableView.DataController.SetValue(baris,kolom,_isi);
+end;
+
+function TFormUtama._get(baris,kolom:Integer): string;
+begin
+  Result := TableView.DataController.getValue(baris,kolom);
 end;
 
 procedure TFormUtama.URL_OnDownloadProgress;
@@ -432,6 +468,25 @@ begin
   // Ctrl + F4 untuk menutup applikasi
   if ((Shift = [ssCtrl]) and (Key = VK_F4)) then
     Application.Terminate;
+
+  // Ctrl + F5 untuk cek MD5
+  if ((Shift = [ssCtrl]) and (Key = VK_F5)) then
+    CekMD5;
+end;
+
+procedure TFormUtama.CekMD5;
+var
+  MD5File, MD5label : string;
+  x: Integer;
+begin
+  for x:= 0 to tableview.DataController.RecordCount-1 do
+  begin
+    MD5File := MD5(_get(x,0));
+    _set(x, 6, MD5File);
+    if (_get(x,5) = _get(x,6)) then
+      _set(x,7,'MD5 SAMA') else
+      _set(x,7,'MD5 BEDA');
+  end;
 end;
 
 end.
