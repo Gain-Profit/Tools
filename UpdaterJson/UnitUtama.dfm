@@ -121,4 +121,11 @@ object FormUtama: TFormUtama
         Width = 50
       end>
   end
+  object zipApp: TAbZipper
+    AutoSave = False
+    DOSMode = False
+    StoreOptions = [soStripDrive, soStripPath, soRemoveDots]
+    Left = 8
+    Top = 64
+  end
 end

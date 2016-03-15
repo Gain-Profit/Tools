@@ -9,7 +9,7 @@ uses
   cxGridDBTableView, cxGridLevel, cxClasses, cxControls, cxGridCustomView,
   cxGrid, ExtCtrls, IdHTTP, uLkJSON, ExtActns, ComCtrls, frxBarcode, frxClass,
   AbBase, AbBrowse, AbZBrows, AbUnzper, TlHelp32, AbComCtrls, AbArcTyp, ShellAPI,
-  FileCtrl, IdHashMessageDigest, idHash;
+  FileCtrl, IdHashMessageDigest, idHash, AbZipper;
 
 type
   TFormUtama = class(TForm)
@@ -27,6 +27,7 @@ type
     edtFolder: TEdit;
     btnCek: TButton;
     btnSimpan: TButton;
+    zipApp: TAbZipper;
     function _get(baris, kolom: Integer): string;
     procedure _set(baris, kolom: Integer; _isi: variant);
     procedure FormCreate(Sender: TObject);
@@ -175,7 +176,7 @@ var
   listFile: TStringList;
   NoItem: Integer;
   companyName, internalName: string;
-  fullNama, namaSaja, nama, path, md5file, versi, download: string;
+  fullNama, namaSaja, nama, path, md5file, versi, download, FileNameZip: string;
 begin
   listFile := TStringList.Create;
 
@@ -195,14 +196,20 @@ begin
     companyName := GetInfoApp(fullNama, '\CompanyName');
     // ambil info untuk Internal name
     internalName := GetInfoApp(fullNama, '\InternalName');
+    FileNameZip := namaSaja + '-' + versi + '.zip';
     download := 'https://github.com/' + companyName + '/' + internalName +
-      '/releases/download/v' + versi + '/' + namaSaja + '-' + versi + '.zip';
+      '/releases/download/v' + versi + '/' + FileNameZip;
 
     _set(NoItem, 0, nama);
     _set(NoItem, 1, StringReplace(path, '\', '/', [rfReplaceAll]));
     _set(NoItem, 2, md5file);
     _set(NoItem, 3, versi);
     _set(NoItem, 4, download);
+
+    //zipApp.BaseDirectory := edtFolder.Text + path;
+    zipApp.FileName := edtFolder.Text + path + FileNameZip;
+    zipApp.AddFiles(fullNama, 0);
+    zipApp.CloseArchive;
   end;
   TableView.ApplyBestFit();
 end;
@@ -238,12 +245,13 @@ begin
     rewrite(X);
     write(X, json);
     closefile(X);
+
     showmessage('penyimpanan data Berhasil');
   except
-      on E: Exception do
-      begin
-        showmessage('SIMPAN DATA GAGAL...'#10#13'' + E.message);
-      end;
+    on E: Exception do
+    begin
+      showmessage('SIMPAN DATA GAGAL...'#10#13'' + E.message);
+    end;
   end;
 end;
 
