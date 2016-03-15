@@ -112,10 +112,10 @@ RootDir=C:\Program Files\Borland\Delphi7\Bin\
 [Version Info]
 IncludeVerInfo=1
 AutoIncBuild=0
-MajorVer=2
-MinorVer=0
-Release=0
-Build=8
+MajorVer=1
+MinorVer=1
+Release=1
+Build=0
 Debug=0
 PreRelease=0
 Special=0
@@ -124,17 +124,17 @@ DLL=0
 Locale=1033
 CodePage=1252
 [Version Info Keys]
-CompanyName=CeBe Soft
-FileDescription=Pusat Pengaturan
-FileVersion=2.0.0.8
-InternalName=
+CompanyName=Gain-Profit
+FileDescription=
+FileVersion=1.1.1.0
+InternalName=Tools
 LegalCopyright=
 LegalTrademarks=
 OriginalFilename=
 ProductName=
-ProductVersion=2.0.
+ProductVersion=
 Comments=
-LastCompiledTime=02/08/2013 18:34:58
+LastCompiledTime=
 [HistoryLists\hlUnitAliases]
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
