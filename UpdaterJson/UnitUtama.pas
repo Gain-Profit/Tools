@@ -186,7 +186,7 @@ begin
   begin
     fullNama := listFile.Strings[NoItem];
     nama := ExtractFileName(fullNama);
-    namaSaja := Copy(nama, 0, Length(nama) - 3);
+    namaSaja := Copy(nama, 0, Length(nama) - 4);
     path := Copy(fullNama, Length(edtFolder.Text) + 1, Length(fullNama) - Length
       (edtFolder.Text) - Length(nama));
     md5file := MD5(fullNama);
@@ -224,7 +224,7 @@ begin
       jsonDetail := TlkJSONobject.Create(False);
       jsondetail.Add('nama', _get(no, 0));
       jsondetail.Add('path', _get(no, 1));
-      jsondetail.Add('md5', _get(no, 2));
+      jsondetail.Add('md5_file', _get(no, 2));
       jsondetail.Add('versi', _get(no, 3));
       jsondetail.Add('download', _get(no, 4));
       jsonList.Add(jsonDetail);
@@ -238,6 +238,7 @@ begin
     rewrite(X);
     write(X, json);
     closefile(X);
+    showmessage('penyimpanan data Berhasil');
   except
       on E: Exception do
       begin
