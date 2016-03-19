@@ -133,6 +133,7 @@ begin
       writeln(X, kata);
       closefile(X);
       showmessage('TERKONEKSI DAN DATA BERHASIL DISIMPAN...');
+      Close;
     except
       on E: Exception do
       begin
