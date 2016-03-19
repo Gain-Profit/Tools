@@ -5,11 +5,11 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, cxStyles, cxCustomData, cxGraphics, cxFilter, cxData,
-  cxDataStorage, cxEdit, DB, cxDBData, cxGridCustomTableView,
-  cxGridTableView, cxGridDBTableView, cxGridLevel, cxClasses, cxControls,
-  cxGridCustomView, cxGrid, ExtCtrls,IdHTTP,uLkJSON,ExtActns, ComCtrls,
-  frxBarcode, frxClass, AbBase, AbBrowse, AbZBrows, AbUnzper,TlHelp32,
-  AbComCtrls,AbArcTyp,ShellAPI, IdHashMessageDigest, idHash;
+  cxDataStorage, cxEdit, DB, cxDBData, cxGridCustomTableView, cxGridTableView,
+  cxGridDBTableView, cxGridLevel, cxClasses, cxControls, cxGridCustomView,
+  cxGrid, ExtCtrls, IdHTTP, uLkJSON, ExtActns, ComCtrls, frxBarcode, frxClass,
+  AbBase, AbBrowse, AbZBrows, AbUnzper, TlHelp32, AbComCtrls, AbArcTyp, ShellAPI,
+  IdHashMessageDigest, idHash;
 
 type
   TFormUtama = class(TForm)
@@ -35,34 +35,30 @@ type
     TableViewColumn8: TcxGridDBColumn;
     procedure CekMD5;
     procedure btnCekClick(Sender: TObject);
-    procedure _set(baris,kolom:Integer; _isi:variant);
-    function _get(baris,kolom:Integer):string;
-    function fileExistandVersion(filename:string):string;
+    procedure _set(baris, kolom: Integer; _isi: variant);
+    function _get(baris, kolom: Integer): string;
+    function fileExistandVersion(filename: string): string;
     procedure btnJalankanClick(Sender: TObject);
-    procedure UnZipAppArchiveItemProgress(Sender: TObject;
-      Item: TAbArchiveItem; Progress: Byte; var Abort: Boolean);
+    procedure UnZipAppArchiveItemProgress(Sender: TObject; Item: TAbArchiveItem;
+      Progress: Byte; var Abort: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormResize(Sender: TObject);
-    procedure WndProc(var Msg : TMessage); override;
+    procedure WndProc(var Msg: TMessage); override;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure tmrBaruTimer(Sender: TObject);
-    procedure FormKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
-    function GetURLDownloadLocal(Path ,UrlOnline: string):string;
+    function GetURLDownloadLocal(Path, UrlOnline: string): string;
     procedure LoadDataFromJson;
     function LoadDataFromDatabase: Boolean;
-    procedure URL_OnDownloadProgress
-        (Sender: TDownLoadURL;
-         Progress, ProgressMax: Cardinal;
-         StatusCode: TURLDownloadStatus;
-         StatusText: String; var Cancel: Boolean) ;
-    function loadJsonOnline(online:Boolean):Boolean;
+    procedure URL_OnDownloadProgress(Sender: TDownLoadURL; Progress, ProgressMax:
+      Cardinal; StatusCode: TURLDownloadStatus; StatusText: string; var Cancel: Boolean);
+    function loadJsonOnline(online: Boolean): Boolean;
     function laporan_versi(filename: string): string;
-    function cekAksi(baris:Integer; URLfile: string):string;
+    function cekAksi(baris: Integer; URLfile: string): string;
   public
-    IconData : TNotifyIconData;
-    IconCount : integer;
+    IconData: TNotifyIconData;
+    IconCount: integer;
   end;
 
 var
@@ -72,7 +68,8 @@ var
 
 implementation
 
-uses UDM, Math;
+uses
+  UDM, Math;
 
 {$R *.dfm}
 
@@ -82,7 +79,7 @@ var
   idmd5: TIdHashMessageDigest5;
   fs: TFileStream;
 begin
-  if not(FileExists(fileName)) then
+  if not (FileExists(fileName)) then
   begin
     Result := '';
     Exit;
@@ -98,29 +95,27 @@ begin
   end;
 end;
 
-function program_versi(exeName : string): string;
-var V1, V2, V3, V4: Word;
-   VerInfoSize, VerValueSize, Dummy : DWORD;
-   VerInfo : Pointer;
-   VerValue : PVSFixedFileInfo;
+function program_versi(exeName: string): string;
+var
+  V1, V2, V3, V4: Word;
+  VerInfoSize, VerValueSize, Dummy: DWORD;
+  VerInfo: Pointer;
+  VerValue: PVSFixedFileInfo;
 begin
-VerInfoSize := GetFileVersionInfoSize(PChar(exeName), Dummy);
-GetMem(VerInfo, VerInfoSize);
-GetFileVersionInfo(PChar(exeName), 0, VerInfoSize, VerInfo);
-VerQueryValue(VerInfo, '\', Pointer(VerValue), VerValueSize);
-With VerValue^ do
-begin
-  V1 := dwFileVersionMS shr 16;
-  V2 := dwFileVersionMS and $FFFF;
-  V3 := dwFileVersionLS shr 16;
-  V4 := dwFileVersionLS and $FFFF;
-end;
-FreeMem(VerInfo, VerInfoSize);
+  VerInfoSize := GetFileVersionInfoSize(PChar(exeName), Dummy);
+  GetMem(VerInfo, VerInfoSize);
+  GetFileVersionInfo(PChar(exeName), 0, VerInfoSize, VerInfo);
+  VerQueryValue(VerInfo, '\', Pointer(VerValue), VerValueSize);
+  with VerValue^ do
+  begin
+    V1 := dwFileVersionMS shr 16;
+    V2 := dwFileVersionMS and $FFFF;
+    V3 := dwFileVersionLS shr 16;
+    V4 := dwFileVersionLS and $FFFF;
+  end;
+  FreeMem(VerInfo, VerInfoSize);
 
-Result := IntToStr(V1) + '.'
-            + IntToStr(V2) + '.'
-            + IntToStr(V3) + '.'
-            + IntToStr(V4);
+  Result := IntToStr(V1) + '.' + IntToStr(V2) + '.' + IntToStr(V3) + '.' + IntToStr(V4);
 end;
 
 function TFormUtama.laporan_versi(filename: string): string;
@@ -131,7 +126,8 @@ begin
 
   with Laporan.ReportOptions do
   begin
-    versi := VersionMajor+'.'+VersionMinor+'.'+VersionRelease+'.'+VersionBuild;
+    versi := VersionMajor + '.' + VersionMinor + '.' + VersionRelease + '.' +
+      VersionBuild;
   end;
 
   Result := versi;
@@ -153,123 +149,128 @@ begin
       Result := False;
     end;
     IdHTTP.Free;
-  end else
-      js := TlkJSONstreamed.loadfromfile('updater.json') as TlkJsonObject;
+  end
+  else
+    js := TlkJSONstreamed.loadfromfile('updater.json') as TlkJsonObject;
 end;
 
-function TFormUtama.cekAksi(baris:Integer; URLfile: string):string;
+function TFormUtama.cekAksi(baris: Integer; URLfile: string): string;
 var
   namaFile: string;
 begin
-  namaFile  := Copy(URLfile,LastDelimiter('/',URLfile) + 1,Length(URLfile));
+  namaFile := Copy(URLfile, LastDelimiter('/', URLfile) + 1, Length(URLfile));
 
-  if TableView.DataController.GetValue(baris, 1) <>
-     TableView.DataController.GetValue(baris, 2) then
-    begin
-      btnJalankan.Enabled := True;
-      status.Panels[0].Text := 'Jalankan Aksi...';
+  if TableView.DataController.GetValue(baris, 1) <> TableView.DataController.GetValue
+    (baris, 2) then
+  begin
+    btnJalankan.Enabled := True;
+    status.Panels[0].Text := 'Jalankan Aksi...';
 
-      if FileExists(ThisPath + '/Downloaded/' + namaFile) then
-        Result := 'EXTRACT ' + namaFile else
-        Result := 'DOWNLOAD ' + namaFile;
-    end else
-    begin
-      Result := 'LEWATI';
-    end;
+    if FileExists(ThisPath + '/Downloaded/' + namaFile) then
+      Result := 'EXTRACT ' + namaFile
+    else
+      Result := 'DOWNLOAD ' + namaFile;
+  end
+  else
+  begin
+    Result := 'LEWATI';
+  end;
 end;
 
-function GetParentFolder(path:string):string;
+function GetParentFolder(path: string): string;
 begin
-  Result := ExpandFileName(path+'\..');
+  Result := ExpandFileName(path + '\..');
 end;
 
 function TFormUtama.GetURLDownloadLocal(Path, UrlOnline: string): string;
 var
   fileName: string;
 begin
-  fileName  := Copy(UrlOnline,LastDelimiter('/',UrlOnline) + 1,Length(UrlOnline));
-  Result    := 'http://'+dm.xConn.Host + '/GainProfit' + Path + fileName;
+  fileName := Copy(UrlOnline, LastDelimiter('/', UrlOnline) + 1, Length(UrlOnline));
+  Result := 'http://' + dm.xConn.Host + '/GainProfit' + Path + fileName;
 end;
 
 function TFormUtama.LoadDataFromDatabase: Boolean;
 var
   NoItem: Integer;
-  nama,namaFile,versiOnline,path,download,versiOffline,aksi,MD5Database:string;
+  nama, namaFile, versiOnline, path, download, versiOffline, aksi, MD5Database: string;
   updated: Boolean;
 begin
-  pbDownload.Position:= 0;
-  updated:= True;
+  pbDownload.Position := 0;
+  updated := True;
 
   if dm.terkoneksi then
   begin
     // Hanya Menampilkan Aplikasi...
-    dm.SQLExec(dm.QShow, 'SELECT * FROM app_versi WHERE RIGHT(kode,4)=".exe" '
-    + 'ORDER BY path', True);
+    dm.SQLExec(dm.QShow, 'SELECT * FROM app_versi WHERE RIGHT(kode,4)=".exe" ' +
+      'ORDER BY path', True);
 
     dm.QShow.First;
     TableView.DataController.RecordCount := dm.QShow.RecordCount;
     for NoItem := 0 to dm.QShow.RecordCount - 1 do
     begin
-      nama        := dm.QShow.FieldByName('kode').AsString;
+      nama := dm.QShow.FieldByName('kode').AsString;
       versiOnline := dm.QShow.FieldByName('versi_terbaru').AsString;
-      path        := dm.QShow.FieldByName('path').AsString;
-      download    := GetURLDownloadLocal(path, dm.QShow.FieldByName('URLdownload').AsString);
+      path := dm.QShow.FieldByName('path').AsString;
+      download := GetURLDownloadLocal(path, dm.QShow.FieldByName('URLdownload').AsString);
       MD5Database := dm.QShow.FieldByName('md5_file').AsString;
-      namaFile    := ThisPath + path + nama;
-      versiOffline:= fileExistandVersion(namaFile);
+      namaFile := ThisPath + path + nama;
+      versiOffline := fileExistandVersion(namaFile);
 
-      _set(NoItem,0,namaFile);
-      _set(NoItem,1,versiOnline);
-      _set(NoItem,2,versiOffline);
-      aksi        := cekAksi(NoItem, download);
-      _set(NoItem,3,aksi);
+      _set(NoItem, 0, namaFile);
+      _set(NoItem, 1, versiOnline);
+      _set(NoItem, 2, versiOffline);
+      aksi := cekAksi(NoItem, download);
+      _set(NoItem, 3, aksi);
       if aksi <> 'LEWATI' then
-        updated:= False;
-      _set(NoItem,4,download);
-      _set(NoItem,5,MD5Database);
+        updated := False;
+      _set(NoItem, 4, download);
+      _set(NoItem, 5, MD5Database);
       dm.QShow.Next;
     end;
     TableView.ApplyBestFit();
-  end else
+  end
+  else
   begin
     status.Panels[0].Text := 'Tidak Dapat Terhubung ke Database...';
   end;
-  
-  Result:= updated;
+
+  Result := updated;
 end;
 
 procedure TFormUtama.LoadDataFromJson;
 var
-  jsonDetail:TlkJSONobject;
+  jsonDetail: TlkJSONobject;
   NoItem: Integer;
-  nama,namaFile,versiOnline,path,download,versiOffline,aksi:string;
+  nama, namaFile, versiOnline, path, download, versiOffline, aksi: string;
   updated: Boolean;
 begin
-  pbDownload.Position:= 0;
+  pbDownload.Position := 0;
   btnJalankan.Enabled := False;
 
-  if not loadJsonOnline(False) then Exit;
+  if not loadJsonOnline(False) then
+    Exit;
 
   TableView.DataController.RecordCount := js.Field['profit'].Count;
 
-  for NoItem := 0 to js.Field['profit'].Count -1 do
+  for NoItem := 0 to js.Field['profit'].Count - 1 do
   begin
-    jsonDetail  := (js.Field['profit'].Child[NoItem] as TlkJSONobject);
-    nama        := jsondetail.getString('nama');
+    jsonDetail := (js.Field['profit'].Child[NoItem] as TlkJSONobject);
+    nama := jsondetail.getString('nama');
     versiOnline := jsondetail.getString('versi');
-    path        := jsondetail.getString('path');
-    download    := jsondetail.getString('download');
-    namaFile    := ThisPath + path + nama;
-    versiOffline:= fileExistandVersion(namaFile);
+    path := jsondetail.getString('path');
+    download := jsondetail.getString('download');
+    namaFile := ThisPath + path + nama;
+    versiOffline := fileExistandVersion(namaFile);
 
-    _set(NoItem,0,namaFile);
-    _set(NoItem,1,versiOnline);
-    _set(NoItem,2,versiOffline);
-    aksi        := cekAksi(NoItem, download);
-    _set(NoItem,3,aksi);
+    _set(NoItem, 0, namaFile);
+    _set(NoItem, 1, versiOnline);
+    _set(NoItem, 2, versiOffline);
+    aksi := cekAksi(NoItem, download);
+    _set(NoItem, 3, aksi);
     if aksi <> 'LEWATI' then
-      updated:= False;
-    _set(NoItem,4,download);
+      updated := False;
+    _set(NoItem, 4, download);
   end;
   if updated then
   begin
@@ -283,41 +284,42 @@ procedure TFormUtama.btnCekClick(Sender: TObject);
 begin
   //LoadDataFromJson;
   if LoadDataFromDatabase then
-    begin
-      btnJalankan.Enabled := False;
-      ShowMessage('Semua Aplikasi Sudah TerUpdate...');
-      status.Panels[0].Text := 'Semua Aplikasi Sudah TerUpdate...';
-    end;
+  begin
+    btnJalankan.Enabled := False;
+    ShowMessage('Semua Aplikasi Sudah TerUpdate...');
+    status.Panels[0].Text := 'Semua Aplikasi Sudah TerUpdate...';
+  end;
 end;
 
-function TFormUtama.fileExistandVersion(filename: string) : string;
+function TFormUtama.fileExistandVersion(filename: string): string;
 begin
   if FileExists(filename) then
   begin
     if ExtractFileExt(filename) = '.exe' then
-    Result := program_versi(filename) else
-    if ExtractFileExt(filename) = '.fr3' then
-    Result := laporan_versi(filename);
-  end else
+      Result := program_versi(filename)
+    else if ExtractFileExt(filename) = '.fr3' then
+      Result := laporan_versi(filename);
+  end
+  else
   begin
     Result := 'HILANG';
   end;
 end;
 
-procedure TFormUtama._set(baris,kolom:Integer; _isi:variant);
+procedure TFormUtama._set(baris, kolom: Integer; _isi: variant);
 begin
-TableView.DataController.SetValue(baris,kolom,_isi);
+  TableView.DataController.SetValue(baris, kolom, _isi);
 end;
 
-function TFormUtama._get(baris,kolom:Integer): string;
+function TFormUtama._get(baris, kolom: Integer): string;
 begin
-  Result := TableView.DataController.getValue(baris,kolom);
+  Result := TableView.DataController.getValue(baris, kolom);
 end;
 
 procedure TFormUtama.URL_OnDownloadProgress;
 begin
-   pbDownload.Max:= ProgressMax;
-   pbDownload.Position:= Progress;
+  pbDownload.Max := ProgressMax;
+  pbDownload.Position := Progress;
 end;
 
 function processExists(exeFileName: string): Boolean;
@@ -332,9 +334,8 @@ begin
   Result := False;
   while Integer(ContinueLoop) <> 0 do
   begin
-    if ((UpperCase(ExtractFileName(FProcessEntry32.szExeFile)) =
-      UpperCase(ExeFileName)) or (UpperCase(FProcessEntry32.szExeFile) =
-      UpperCase(ExeFileName))) then
+    if ((UpperCase(ExtractFileName(FProcessEntry32.szExeFile)) = UpperCase(ExeFileName))
+      or (UpperCase(FProcessEntry32.szExeFile) = UpperCase(ExeFileName))) then
     begin
       Result := True;
     end;
@@ -346,49 +347,50 @@ end;
 procedure TFormUtama.btnJalankanClick(Sender: TObject);
 var
   data: Integer;
-  URLfile,kolomAksi,kolomNama,namaFile,zipFile: string;
+  URLfile, kolomAksi, kolomNama, namaFile, zipFile: string;
 begin
-  if not(DirectoryExists(ThisPath + '/Downloaded')) then
+  if not (DirectoryExists(ThisPath + '/Downloaded')) then
     CreateDir(ThisPath + '/Downloaded');
 
-  for data:= 0 to tableview.DataController.RecordCount-1 do
+  for data := 0 to tableview.DataController.RecordCount - 1 do
   begin
     kolomAksi := TableView.DataController.GetValue(data, 3);
     kolomNama := TableView.DataController.GetValue(data, 0);
-    namaFile  := Copy(kolomNama,LastDelimiter('/',kolomNama) + 1,Length(kolomNama));
-    zipFile   := ThisPath + '/Downloaded/' +
-    Copy(kolomAksi,LastDelimiter(' ',kolomAksi) + 1,Length(kolomAksi));
-    
+    namaFile := Copy(kolomNama, LastDelimiter('/', kolomNama) + 1, Length(kolomNama));
+    zipFile := ThisPath + '/Downloaded/' + Copy(kolomAksi, LastDelimiter(' ',
+      kolomAksi) + 1, Length(kolomAksi));
+
     if processExists(namaFile) then
     begin
-      ShowMessage('Tidak dapat melakukan Aksi untuk Aplikasi '+ namaFile + #13#10
-      +'Aplikasi Masih Berjalan, Tutup Aplikasi !!!');
+      ShowMessage('Tidak dapat melakukan Aksi untuk Aplikasi ' + namaFile +
+        #13#10 + 'Aplikasi Masih Berjalan, Tutup Aplikasi !!!');
     end
     else
-    if Copy(kolomAksi,1,8) = 'DOWNLOAD' then
+    begin
+      if Copy(kolomAksi, 1, 8) = 'DOWNLOAD' then
       begin
         status.Panels[0].Text := 'Download File ' + namaFile;
         URLfile := TableView.DataController.GetValue(data, 4);
         with TDownloadURL.Create(self) do
         try
-         URL := URLfile;
-         FileName := zipFile;
-         OnDownloadProgress := URL_OnDownloadProgress;
+          URL := URLfile;
+          FileName := zipFile;
+          OnDownloadProgress := URL_OnDownloadProgress;
 
-         ExecuteTarget(nil);
+          ExecuteTarget(nil);
         finally
-         Free;
+          Free;
         end;
 
         UnZipApp.FileName := zipFile;
-        UnZipApp.ExtractAt(0,TableView.DataController.GetValue(data, 0));
+        UnZipApp.ExtractAt(0, TableView.DataController.GetValue(data, 0));
         UnZipApp.CloseArchive;
       end;
 
-    if Copy(kolomAksi,1,7) = 'EXTRACT' then
+      if Copy(kolomAksi, 1, 7) = 'EXTRACT' then
       begin
         UnZipApp.FileName := zipFile;
-        UnZipApp.ExtractAt(0,TableView.DataController.GetValue(data, 0));
+        UnZipApp.ExtractAt(0, TableView.DataController.GetValue(data, 0));
         UnZipApp.CloseArchive;
       end;
     end;
@@ -397,9 +399,8 @@ begin
   btnCekClick(Self);
 end;
 
-
-procedure TFormUtama.UnZipAppArchiveItemProgress(Sender: TObject;
-  Item: TAbArchiveItem; Progress: Byte; var Abort: Boolean);
+procedure TFormUtama.UnZipAppArchiveItemProgress(Sender: TObject; Item:
+  TAbArchiveItem; Progress: Byte; var Abort: Boolean);
 begin
   status.Panels[0].Text := 'Extract file : ' + Item.FileName;
   pbDownload.Position := Progress;
@@ -407,10 +408,10 @@ end;
 
 procedure TFormUtama.FormCreate(Sender: TObject);
 var
-  tempat: String;
+  tempat: string;
 begin
-  tempat:= GetParentFolder(ExtractFilePath(Application.ExeName));
-  ThisPath := StringReplace(tempat,'\','/',[rfReplaceAll]);
+  tempat := GetParentFolder(ExtractFilePath(Application.ExeName));
+  ThisPath := StringReplace(tempat, '\', '/', [rfReplaceAll]);
 
   ShowWindow(Application.Handle, SW_HIDE);
 
@@ -435,14 +436,15 @@ procedure TFormUtama.WndProc(var Msg: TMessage);
 begin
   case Msg.Msg of
     WM_USER + 1:
-    case Msg.lParam of
-      WM_LBUTTONDOWN:
-      begin
-        if FormUtama.Showing then
-          FormUtama.Hide else
-          FormUtama.Show;
+      case Msg.lParam of
+        WM_LBUTTONDOWN:
+          begin
+            if FormUtama.Showing then
+              FormUtama.Hide
+            else
+              FormUtama.Show;
+          end;
       end;
-    end;
   end;
   inherited;
 end;
@@ -459,11 +461,10 @@ begin
   if not LoadDataFromDatabase then
   begin
     FormUtama.Show;
-  end; 
+  end;
 end;
 
-procedure TFormUtama.FormKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TFormUtama.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   // Ctrl + F4 untuk menutup applikasi
   if ((Shift = [ssCtrl]) and (Key = VK_F4)) then
@@ -476,17 +477,19 @@ end;
 
 procedure TFormUtama.CekMD5;
 var
-  MD5File, MD5label : string;
+  MD5File, MD5label: string;
   x: Integer;
 begin
-  for x:= 0 to tableview.DataController.RecordCount-1 do
+  for x := 0 to tableview.DataController.RecordCount - 1 do
   begin
-    MD5File := MD5(_get(x,0));
+    MD5File := MD5(_get(x, 0));
     _set(x, 6, MD5File);
-    if (_get(x,5) = _get(x,6)) then
-      _set(x,7,'MD5 SAMA') else
-      _set(x,7,'MD5 BEDA');
+    if (_get(x, 5) = _get(x, 6)) then
+      _set(x, 7, 'MD5 SAMA')
+    else
+      _set(x, 7, 'MD5 BEDA');
   end;
 end;
 
 end.
+
