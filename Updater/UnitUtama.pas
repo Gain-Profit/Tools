@@ -363,9 +363,8 @@ begin
     begin
       ShowMessage('Tidak dapat melakukan Aksi untuk Aplikasi '+ namaFile + #13#10
       +'Aplikasi Masih Berjalan, Tutup Aplikasi !!!');
-      Exit;
-    end;
-
+    end
+    else
     if Copy(kolomAksi,1,8) = 'DOWNLOAD' then
       begin
         status.Panels[0].Text := 'Download File ' + namaFile;
@@ -392,6 +391,7 @@ begin
         UnZipApp.ExtractAt(0,TableView.DataController.GetValue(data, 0));
         UnZipApp.CloseArchive;
       end;
+    end;
   end;
 
   btnCekClick(Self);
