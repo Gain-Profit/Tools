@@ -9,7 +9,7 @@ uses
 
 {$R *.res}
 // agar aplikasi berjalan sebagai administrator
-{$R 'RequestAdmin.res'}
+//{$R 'RequestAdmin.res'}
 
 begin
   // Hanya boleh ada satu instance
