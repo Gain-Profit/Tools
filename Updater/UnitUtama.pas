@@ -360,38 +360,41 @@ begin
     zipFile := ThisPath + '/Downloaded/' + Copy(kolomAksi, LastDelimiter(' ',
       kolomAksi) + 1, Length(kolomAksi));
 
-    if processExists(namaFile) then
+    if kolomAksi <> 'LEWATI' then
     begin
-      ShowMessage('Tidak dapat melakukan Aksi untuk Aplikasi ' + namaFile +
-        #13#10 + 'Aplikasi Masih Berjalan, Tutup Aplikasi !!!');
-    end
-    else
-    begin
-      if Copy(kolomAksi, 1, 8) = 'DOWNLOAD' then
+      if processExists(namaFile) then
       begin
-        status.Panels[0].Text := 'Download File ' + namaFile;
-        URLfile := TableView.DataController.GetValue(data, 4);
-        with TDownloadURL.Create(self) do
-        try
-          URL := URLfile;
-          FileName := zipFile;
-          OnDownloadProgress := URL_OnDownloadProgress;
+        ShowMessage('Tidak dapat melakukan Aksi untuk Aplikasi ' + namaFile +
+          #13#10 + 'Aplikasi Masih Berjalan, Tutup Aplikasi !!!');
+      end
+      else
+      begin
+        if Copy(kolomAksi, 1, 8) = 'DOWNLOAD' then
+        begin
+          status.Panels[0].Text := 'Download File ' + namaFile;
+          URLfile := TableView.DataController.GetValue(data, 4);
+          with TDownloadURL.Create(self) do
+          try
+            URL := URLfile;
+            FileName := zipFile;
+            OnDownloadProgress := URL_OnDownloadProgress;
 
-          ExecuteTarget(nil);
-        finally
-          Free;
+            ExecuteTarget(nil);
+          finally
+            Free;
+          end;
+
+          UnZipApp.FileName := zipFile;
+          UnZipApp.ExtractAt(0, TableView.DataController.GetValue(data, 0));
+          UnZipApp.CloseArchive;
         end;
 
-        UnZipApp.FileName := zipFile;
-        UnZipApp.ExtractAt(0, TableView.DataController.GetValue(data, 0));
-        UnZipApp.CloseArchive;
-      end;
-
-      if Copy(kolomAksi, 1, 7) = 'EXTRACT' then
-      begin
-        UnZipApp.FileName := zipFile;
-        UnZipApp.ExtractAt(0, TableView.DataController.GetValue(data, 0));
-        UnZipApp.CloseArchive;
+        if Copy(kolomAksi, 1, 7) = 'EXTRACT' then
+        begin
+          UnZipApp.FileName := zipFile;
+          UnZipApp.ExtractAt(0, TableView.DataController.GetValue(data, 0));
+          UnZipApp.CloseArchive;
+        end;
       end;
     end;
   end;
