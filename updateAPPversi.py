@@ -9,7 +9,7 @@ response = urllib.request.urlopen(json_url);
 str_response = response.readall().decode('utf-8')
 obj = json.loads(str_response)
 
-cnx = mysql.connector.connect(user='cahya', password='42jo54ri', database='profit',host='192.168.51.2')
+cnx = mysql.connector.connect(user='root', password='', database='profit',host='localhost')
 cur = cnx.cursor()
 
 replace_app = ("REPLACE INTO app_versi "
