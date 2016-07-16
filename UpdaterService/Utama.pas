@@ -26,8 +26,6 @@ var
 
 implementation
 
-uses UVisual;
-
 {$R *.DFM}
 
 procedure ServiceController(CtrlCode: DWord); stdcall;
