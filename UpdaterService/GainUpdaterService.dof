@@ -112,8 +112,8 @@ RootDir=C:\Program Files (x86)\Borland\Delphi7\Bin\
 [Version Info]
 IncludeVerInfo=1
 AutoIncBuild=0
-MajorVer=0
-MinorVer=0
+MajorVer=1
+MinorVer=1
 Release=1
 Build=0
 Debug=0
@@ -124,10 +124,10 @@ DLL=0
 Locale=2057
 CodePage=1252
 [Version Info Keys]
-CompanyName=
+CompanyName=Gain-Profit
 FileDescription=
-FileVersion=0.0.1.0
-InternalName=
+FileVersion=1.1.1.0
+InternalName=Tools
 LegalCopyright=
 LegalTrademarks=
 OriginalFilename=
