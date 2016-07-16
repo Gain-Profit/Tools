@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, SvcMgr, Dialogs,
-  IniFiles, SHFolder, ExtCtrls, TlHelp32, ShellAPI, CreateProcessIntr;
+  IniFiles, SHFolder, ExtCtrls, TlHelp32, ShellAPI;
 
 type
   TGainUpdater = class(TService)
@@ -16,7 +16,7 @@ type
   private
     { Private declarations }
   public
-    ThisPath, AppPath, RootPath: string;
+    AppPath, RootPath: string;
     function GetServiceController: TServiceController; override;
     { Public declarations }
   end;
@@ -25,6 +25,8 @@ var
   GainUpdater: TGainUpdater;
 
 implementation
+
+uses UDM;
 
 {$R *.DFM}
 
@@ -94,6 +96,8 @@ begin
   ThisPath:= ExtractFilePath(ParamStr(0));
   AppPath := GetAppData(CSIDL_COMMON_APPDATA);
 
+  Application.CreateForm(Tdm, dm);
+
   if not (DirectoryExists(AppPath)) then
     CreateDir(AppPath);
 
@@ -112,17 +116,9 @@ procedure TGainUpdater.Timer1Timer(Sender: TObject);
 var
   FileName: string;
 begin
-  if not processExists('perbarui.exe') then
+  if dm.terkoneksi then
   begin
-    FileName := 'C:\Program Files (x86)\GAIN PROFIT\Tools\perbarui.exe';
-    try
-      ExecuteProcessAsLoggedOnUser(FileName);
-    except on e: Exception do
-      begin
-        Log(e.Message);
-      end;
-    end;
-    Log('menjalankan applikasi update...');
+    Log('terkoneksi ke database...');
   end;
 end;
 
@@ -130,6 +126,7 @@ procedure TGainUpdater.ServiceStop(Sender: TService; var Stopped: Boolean);
 begin
   Log('Service Stop.');
   Timer1.Enabled:= False;
+  dm.Free;
 end;
 
 end.
