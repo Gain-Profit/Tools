@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, SvcMgr, Dialogs,
-  IniFiles, SHFolder, ExtCtrls, TlHelp32;
+  IniFiles, SHFolder, ExtCtrls, TlHelp32, ShellAPI, CreateProcessIntr;
 
 type
   TGainUpdater = class(TService)
@@ -25,6 +25,8 @@ var
   GainUpdater: TGainUpdater;
 
 implementation
+
+uses UVisual;
 
 {$R *.DFM}
 
@@ -109,10 +111,21 @@ begin
 end;
 
 procedure TGainUpdater.Timer1Timer(Sender: TObject);
+var
+  FileName: string;
 begin
-  if processExists('gudang.exe') then
-  Log('Gudang Berjalan...')
-  //
+  if not processExists('perbarui.exe') then
+  begin
+    FileName := 'C:\Program Files (x86)\GAIN PROFIT\Tools\perbarui.exe';
+    try
+      ExecuteProcessAsLoggedOnUser(FileName);
+    except on e: Exception do
+      begin
+        Log(e.Message);
+      end;
+    end;
+    Log('menjalankan applikasi update...');
+  end;
 end;
 
 procedure TGainUpdater.ServiceStop(Sender: TService; var Stopped: Boolean);
