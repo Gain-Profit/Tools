@@ -10,6 +10,7 @@ object GainUpdater: TGainUpdater
   Width = 215
   object Timer1: TTimer
     Enabled = False
+    Interval = 10000
     OnTimer = Timer1Timer
     Left = 16
     Top = 8
