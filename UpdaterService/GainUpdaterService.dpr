@@ -3,7 +3,7 @@ program GainUpdaterService;
 uses
   SvcMgr,
   Utama in 'Utama.pas' {GainUpdater: TService},
-  CreateProcessIntr in 'CreateProcessIntr.pas';
+  UDM in 'UDM.pas' {dm: TDataModule};
 
 {$R *.RES}
 
