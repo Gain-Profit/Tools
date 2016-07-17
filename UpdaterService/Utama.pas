@@ -32,6 +32,7 @@ type
   private
     function URLDownLoad: string;
     function FileVersion: string;
+    function ZipFile: string;
   public
     constructor Create(RootPath, Path, Name, Version, Md5: string);
     procedure UpdateApplication;
@@ -176,6 +177,9 @@ begin
     appINI.Free;
   end;
   
+  if not (DirectoryExists(RootPath + '\Downloaded')) then
+    CreateDir(RootPath + '\Downloaded');
+    
   Log('Service Start.');
   Timer1.Enabled:= True;
 end;
@@ -220,12 +224,24 @@ end;
 
 procedure TApplication.UpdateApplication;
 begin
-  //
+  if FVersion <> FileVersion then
+  begin
+    
+  end;  
 end;
 
 function TApplication.URLDownLoad: string;
 begin
     Result := 'http://' + dm.xConn.Host + '/GainProfit' + FPath + FName;
+end;
+
+function TApplication.ZipFile: string;
+var
+  FileNameWithoutExt: string;
+begin
+  FileNameWithoutExt := Copy(FName, 1 , Length(FName)- 4);
+  Result := FRootPath + '\Download\' + FileNameWithoutExt + '-' +
+    FVersion + '.zip';
 end;
 
 end.
