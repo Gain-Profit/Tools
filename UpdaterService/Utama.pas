@@ -45,16 +45,6 @@ uses UDM;
 
 {$R *.DFM}
 
-procedure ServiceController(CtrlCode: DWord); stdcall;
-begin
-  GainUpdater.Controller(CtrlCode);
-end;
-
-function TGainUpdater.GetServiceController: TServiceController;
-begin
-  Result := ServiceController;
-end;
-
 function GetAppData(Folder: Integer): string;
 var
   path: array[0..MAX_PATH] of Char;
@@ -108,6 +98,16 @@ begin
     ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32);
   end;
   CloseHandle(FSnapshotHandle);
+end;
+
+procedure ServiceController(CtrlCode: DWord); stdcall;
+begin
+  GainUpdater.Controller(CtrlCode);
+end;
+
+function TGainUpdater.GetServiceController: TServiceController;
+begin
+  Result := ServiceController;
 end;
 
 procedure TGainUpdater.Log(msg: string);
