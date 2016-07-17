@@ -145,10 +145,13 @@ begin
     path := dm.QShow.FieldByName('path').AsString;
     MD5Online := dm.QShow.FieldByName('md5_file').AsString;
 
-    app := TApplication.Create(RootPath,path,nama,versiOnline,MD5Online);
-    app.UpdateApplication;
-    app.Free;
-
+    if not processExists(nama) then
+    begin
+      app := TApplication.Create(RootPath,path,nama,versiOnline,MD5Online);
+      app.UpdateApplication;
+      app.Free;
+    end;
+    
     dm.QShow.Next;
   end;
 end;
