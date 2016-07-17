@@ -88,22 +88,6 @@ begin
   Result := IntToStr(V1) + '.' + IntToStr(V2) + '.' + IntToStr(V3) + '.' + IntToStr(V4);
 end;
 
-procedure TGainUpdater.Log(msg: string);
-var
-  X: TextFile;
-  sekarang, FileName: string;
-begin
-  sekarang := FormatDateTime('dd/MM/yyyy hh:nn:ss', Now);
-  FileName := ThisPath + 'log.txt';
-
-  assignfile(X, FileName);
-  if not FileExists(FileName) then
-    Rewrite(X) else
-    Append(X);
-  Writeln(X, sekarang + ' : '+ msg);
-  closefile(X);
-end;
-
 function processExists(exeFileName: string): Boolean;
 var
   ContinueLoop: BOOL;
@@ -124,6 +108,22 @@ begin
     ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32);
   end;
   CloseHandle(FSnapshotHandle);
+end;
+
+procedure TGainUpdater.Log(msg: string);
+var
+  X: TextFile;
+  sekarang, FileName: string;
+begin
+  sekarang := FormatDateTime('dd/MM/yyyy hh:nn:ss', Now);
+  FileName := ThisPath + 'log.txt';
+
+  assignfile(X, FileName);
+  if not FileExists(FileName) then
+    Rewrite(X) else
+    Append(X);
+  Writeln(X, sekarang + ' : '+ msg);
+  closefile(X);
 end;
 
 procedure TGainUpdater.UpdateApplication;
