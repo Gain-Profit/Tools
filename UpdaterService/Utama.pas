@@ -195,7 +195,6 @@ procedure TGainUpdater.Timer1Timer(Sender: TObject);
 begin
   if dm.terkoneksi then
   begin
-    Log('terkoneksi ke database...');
     UpdateApplication;
   end;
 end;
