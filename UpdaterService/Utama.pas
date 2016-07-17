@@ -10,14 +10,13 @@ type
   TGainUpdater = class(TService)
     Timer1: TTimer;
     procedure ServiceStart(Sender: TService; var Started: Boolean);
-    procedure Log(msg: string);
     procedure Timer1Timer(Sender: TObject);
     procedure ServiceStop(Sender: TService; var Stopped: Boolean);
     procedure UpdateApplication;
   private
     { Private declarations }
   public
-    AppPath, RootPath: string;
+    RootPath: string;
     function GetServiceController: TServiceController; override;
     { Public declarations }
   end;
@@ -44,6 +43,7 @@ type
 
 var
   GainUpdater: TGainUpdater;
+  AppPath: string;
 
 implementation
 
@@ -106,17 +106,7 @@ begin
   CloseHandle(FSnapshotHandle);
 end;
 
-procedure ServiceController(CtrlCode: DWord); stdcall;
-begin
-  GainUpdater.Controller(CtrlCode);
-end;
-
-function TGainUpdater.GetServiceController: TServiceController;
-begin
-  Result := ServiceController;
-end;
-
-procedure TGainUpdater.Log(msg: string);
+procedure Log(msg: string);
 var
   X: TextFile;
   sekarang, FileName: string;
@@ -130,6 +120,16 @@ begin
     Append(X);
   Writeln(X, sekarang + ' : '+ msg);
   closefile(X);
+end;
+
+procedure ServiceController(CtrlCode: DWord); stdcall;
+begin
+  GainUpdater.Controller(CtrlCode);
+end;
+
+function TGainUpdater.GetServiceController: TServiceController;
+begin
+  Result := ServiceController;
 end;
 
 procedure TGainUpdater.UpdateApplication;
@@ -151,6 +151,7 @@ begin
 
     if not processExists(nama) then
     begin
+      Log('Cek Update For :'+ nama + ' Version: ' + versiOnline);
       app := TApplication.Create(RootPath,path,nama,versiOnline,MD5Online);
       app.UpdateApplication;
       app.Free;
