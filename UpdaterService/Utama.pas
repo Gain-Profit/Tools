@@ -151,7 +151,6 @@ begin
 
     if not processExists(nama) then
     begin
-      Log('Cek Update For :'+ nama + ' Version: ' + versiOnline);
       try
         app := TApplication.Create(RootPath,path,nama,versiOnline,MD5Online);
         app.UpdateApplication;
@@ -281,7 +280,7 @@ var
   FileNameWithoutExt: string;
 begin
   FileNameWithoutExt := Copy(FName, 1 , Length(FName)- 4);
-  Result := FRootPath + '\Download\' + FileNameWithoutExt + '-' +
+  Result := FRootPath + '\Downloaded\' + FileNameWithoutExt + '-' +
     FVersion + '.zip';
 end;
 
