@@ -152,9 +152,13 @@ begin
     if not processExists(nama) then
     begin
       Log('Cek Update For :'+ nama + ' Version: ' + versiOnline);
-      app := TApplication.Create(RootPath,path,nama,versiOnline,MD5Online);
-      app.UpdateApplication;
-      app.Free;
+      try
+        app := TApplication.Create(RootPath,path,nama,versiOnline,MD5Online);
+        app.UpdateApplication;
+        app.Free;
+      except
+        on e: Exception do Log(e.Message);
+      end;
     end;
     
     dm.QShow.Next;
