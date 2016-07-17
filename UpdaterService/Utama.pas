@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, SvcMgr, Dialogs,
-  IniFiles, SHFolder, ExtCtrls, TlHelp32, ShellAPI, AbUnzper;
+  IniFiles, SHFolder, ExtCtrls, TlHelp32, ShellAPI, AbUnzper, ExtActns;
 
 type
   TGainUpdater = class(TService)
@@ -23,18 +23,19 @@ type
   end;
 
 type
-  TApplication = class(TObject)
+  TApplication = class(TComponent)
+  private
     FRootPath : string;
     FPath     : string;
     FName     : string;
     FVersion  : string;
     FMd5      : string;
-  private
     function URLDownLoad: string;
     function FileVersion: string;
     function ZipFile: string;
     function FullFileName: string;
     procedure ExtractZipFile;
+    procedure DownloadZipFile;
   public
     constructor Create(RootPath, Path, Name, Version, Md5: string);
     procedure UpdateApplication;
@@ -214,11 +215,24 @@ begin
   FMd5      := Md5;
 end;
 
+procedure TApplication.DownloadZipFile;
+begin
+  with TDownloadURL.Create(self) do
+  try
+    URL := URLDownLoad;
+    FileName := ZipFile;
+    ExecuteTarget(nil);
+  finally
+    Free;
+  end;
+  ExtractZipFile;
+end;
+
 procedure TApplication.ExtractZipFile;
 var
   UnZip : TAbUnZipper;
 begin
-  UnZip := TAbUnZipper.Create(nil);
+  UnZip := TAbUnZipper.Create(self);
   UnZip.FileName := ZipFile;
   UnZip.ExtractAt(0, FullFileName);
   UnZip.CloseArchive;
@@ -234,20 +248,22 @@ end;
 
 function TApplication.FullFileName: string;
 begin
-  Result :=   FileName := FRootPath + FPath + FName;
+  Result := FRootPath + FPath + FName;
 end;
 
 procedure TApplication.UpdateApplication;
 begin
   if FVersion <> FileVersion then
   begin
-    
+    if FileExists(ZipFile) then
+      ExtractZipFile else
+      DownloadZipFile;
   end;  
 end;
 
 function TApplication.URLDownLoad: string;
 begin
-    Result := 'http://' + dm.xConn.Host + '/GainProfit' + FPath + FName;
+    Result := 'http://' + dm.xConn.Host + '/GainProfit' + FPath + ExtractFileName(ZipFile);
 end;
 
 function TApplication.ZipFile: string;
