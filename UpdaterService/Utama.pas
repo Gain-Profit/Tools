@@ -16,7 +16,7 @@ type
   private
     { Private declarations }
   public
-    RootPath: string;
+    AppPath, RootPath: string;
     function GetServiceController: TServiceController; override;
     { Public declarations }
   end;
@@ -40,10 +40,8 @@ type
     procedure UpdateApplication;
   end;
 
-
 var
   GainUpdater: TGainUpdater;
-  AppPath: string;
 
 implementation
 
