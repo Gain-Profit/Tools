@@ -30,8 +30,10 @@ type
     FVersion  : string;
     FMd5      : string;
   private
+    function URLDownLoad: string;
+    function FileVersion: string;
   public
-    constructor Create(RootPath, Path, Name, Version, Md5: string); override;
+    constructor Create(RootPath, Path, Name, Version, Md5: string);
     procedure UpdateApplication;
   end;
 
@@ -194,9 +196,8 @@ end;
 
 { TApplication }
 
-constructor TApplication.Create(RootPath, Path, Name, Version, Md5: string: string);
+constructor TApplication.Create(RootPath, Path, Name, Version, Md5: string);
 begin
-  inherited;
   FRootPath := RootPath;
   FPath     := Path;
   FName     := Name;
@@ -204,9 +205,24 @@ begin
   FMd5      := Md5;
 end;
 
+function TApplication.FileVersion: string;
+var
+  FileName : string;
+begin
+  FileName := FRootPath + FPath + FName;
+  if FileExists(FileName) then
+    Result := program_versi(filename) else
+    Result := 'HILANG';
+end;
+
 procedure TApplication.UpdateApplication;
 begin
   //
+end;
+
+function TApplication.URLDownLoad: string;
+begin
+    Result := 'http://' + dm.xConn.Host + '/GainProfit' + FPath + FName;
 end;
 
 end.
