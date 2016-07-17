@@ -263,7 +263,7 @@ procedure TApplication.UpdateApplication;
 begin
   if FVersion <> FileVersion then
   begin
-    Log(FName + ' v:' + FileVersion + ' new v:' FVersion);
+    Log(FName + ' v:' + FileVersion + ' new v:' + FVersion);
 
     if FileExists(ZipFile) then
       ExtractZipFile else
