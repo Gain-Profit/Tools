@@ -221,6 +221,8 @@ end;
 
 procedure TApplication.DownloadZipFile;
 begin
+  Log('Download File: ' + URLDownLoad);
+
   with TDownloadURL.Create(self) do
   try
     URL := URLDownLoad;
@@ -236,6 +238,8 @@ procedure TApplication.ExtractZipFile;
 var
   UnZip : TAbUnZipper;
 begin
+  Log('extract Zip File: ' + ZipFile);
+  
   UnZip := TAbUnZipper.Create(self);
   UnZip.FileName := ZipFile;
   UnZip.ExtractAt(0, FullFileName);
@@ -259,6 +263,8 @@ procedure TApplication.UpdateApplication;
 begin
   if FVersion <> FileVersion then
   begin
+    Log(FName + ' v:' + FileVersion + ' new v:' FVersion);
+
     if FileExists(ZipFile) then
       ExtractZipFile else
       DownloadZipFile;
