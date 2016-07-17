@@ -188,8 +188,6 @@ begin
 end;
 
 procedure TGainUpdater.Timer1Timer(Sender: TObject);
-var
-  FileName: string;
 begin
   if dm.terkoneksi then
   begin
