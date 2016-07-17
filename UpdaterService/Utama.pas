@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, SvcMgr, Dialogs,
-  IniFiles, SHFolder, ExtCtrls, TlHelp32, ShellAPI;
+  IniFiles, SHFolder, ExtCtrls, TlHelp32, ShellAPI, AbUnzper;
 
 type
   TGainUpdater = class(TService)
@@ -34,6 +34,7 @@ type
     function FileVersion: string;
     function ZipFile: string;
     function FullFileName: string;
+    procedure ExtractZipFile;
   public
     constructor Create(RootPath, Path, Name, Version, Md5: string);
     procedure UpdateApplication;
@@ -211,6 +212,17 @@ begin
   FName     := Name;
   FVersion  := Version;
   FMd5      := Md5;
+end;
+
+procedure TApplication.ExtractZipFile;
+var
+  UnZip : TAbUnZipper;
+begin
+  UnZip := TAbUnZipper.Create(nil);
+  UnZip.FileName := ZipFile;
+  UnZip.ExtractAt(0, FullFileName);
+  UnZip.CloseArchive;
+  UnZip.Free;
 end;
 
 function TApplication.FileVersion: string;
