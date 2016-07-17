@@ -33,6 +33,7 @@ type
     function URLDownLoad: string;
     function FileVersion: string;
     function ZipFile: string;
+    function FullFileName: string;
   public
     constructor Create(RootPath, Path, Name, Version, Md5: string);
     procedure UpdateApplication;
@@ -213,13 +214,15 @@ begin
 end;
 
 function TApplication.FileVersion: string;
-var
-  FileName : string;
 begin
-  FileName := FRootPath + FPath + FName;
-  if FileExists(FileName) then
-    Result := program_versi(filename) else
+  if FileExists(FullFileName) then
+    Result := program_versi(FullFileName) else
     Result := 'HILANG';
+end;
+
+function TApplication.FullFileName: string;
+begin
+  Result :=   FileName := FRootPath + FPath + FName;
 end;
 
 procedure TApplication.UpdateApplication;
