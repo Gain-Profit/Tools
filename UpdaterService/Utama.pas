@@ -16,7 +16,6 @@ type
   private
     { Private declarations }
   public
-    AppPath, RootPath: string;
     function GetServiceController: TServiceController; override;
     { Public declarations }
   end;
@@ -110,7 +109,7 @@ var
   sekarang, FileName: string;
 begin
   sekarang := FormatDateTime('dd/MM/yyyy hh:nn:ss', Now);
-  FileName := ThisPath + 'log.txt';
+  FileName := AppPath + 'LogServiceUpdater.txt';
 
   assignfile(X, FileName);
   if not FileExists(FileName) then
@@ -150,7 +149,7 @@ begin
     if not processExists(nama) then
     begin
       try
-        app := TApplication.Create(RootPath,path,nama,versiOnline,MD5Online);
+        app := TApplication.Create(FRootPath,path,nama,versiOnline,MD5Online);
         app.UpdateApplication;
         app.Free;
       except
@@ -167,25 +166,26 @@ procedure TGainUpdater.ServiceStart(Sender: TService;
   var
     AppINI: TIniFile;
 begin
-  ThisPath:= ExtractFilePath(ParamStr(0));
+  Log('Service Start.');
   AppPath := GetAppData(CSIDL_COMMON_APPDATA);
-
-  Application.CreateForm(Tdm, dm);
 
   if not (DirectoryExists(AppPath)) then
     CreateDir(AppPath);
 
   appINI := TIniFile.Create(AppPath + 'gain.ini');
   try
-    RootPath := appINI.ReadString('updater', 'root_path', 'C:\Program Files\GAIN PROFIT');
+    FRootPath := appINI.ReadString('updater', 'root_path', 'C:\Program Files\GAIN PROFIT');
   finally
     appINI.Free;
   end;
+
+  Log('Root Path: ' + FRootPath);
   
-  if not (DirectoryExists(RootPath + '\Downloaded')) then
-    CreateDir(RootPath + '\Downloaded');
-    
-  Log('Service Start.');
+  Application.CreateForm(Tdm, dm);
+
+  if not (DirectoryExists(FRootPath + '\Downloaded')) then
+    CreateDir(FRootPath + '\Downloaded');
+
   Timer1.Enabled:= True;
 end;
 

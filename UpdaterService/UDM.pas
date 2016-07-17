@@ -21,7 +21,7 @@ type
 
 var
   dm: Tdm;
-  ThisPath : string;
+  FRootPath, AppPath : string;
   
 implementation
 
@@ -57,7 +57,7 @@ var
   data, pusat, jalur1, jalur2, nama, kata: string;
   X: TextFile;
 begin
-  assignfile(X, ThisPath + 'koneksi.cbCon');
+  assignfile(X, FRootPath + '\Tools\koneksi.cbCon');
   try
     reset(X);
     readln(X, pusat);
