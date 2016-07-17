@@ -13,6 +13,7 @@ type
     procedure Log(msg: string);
     procedure Timer1Timer(Sender: TObject);
     procedure ServiceStop(Sender: TService; var Stopped: Boolean);
+    procedure UpdateApplication;
   private
     { Private declarations }
   public
@@ -20,6 +21,20 @@ type
     function GetServiceController: TServiceController; override;
     { Public declarations }
   end;
+
+type
+  TApplication = class(TObject)
+    FRootPath : string;
+    FPath     : string;
+    FName     : string;
+    FVersion  : string;
+    FMd5      : string;
+  private
+  public
+    constructor Create(RootPath, Path, Name, Version, Md5: string); override;
+    procedure UpdateApplication;
+  end;
+
 
 var
   GainUpdater: TGainUpdater;
@@ -88,6 +103,31 @@ begin
   CloseHandle(FSnapshotHandle);
 end;
 
+procedure TGainUpdater.UpdateApplication;
+var
+  xxx: Integer;
+  nama, versiOnline, path, MD5Online: string;
+  app : TApplication;
+begin
+  dm.SQLExec(dm.QShow, 'SELECT * FROM app_versi WHERE RIGHT(kode,4)=".exe" ' +
+    'ORDER BY path', True);
+
+  dm.QShow.First;
+  for xxx := 0 to dm.QShow.RecordCount - 1 do
+  begin
+    nama := dm.QShow.FieldByName('kode').AsString;
+    versiOnline := dm.QShow.FieldByName('versi_terbaru').AsString;
+    path := dm.QShow.FieldByName('path').AsString;
+    MD5Online := dm.QShow.FieldByName('md5_file').AsString;
+
+    app := TApplication.Create(RootPath,path,nama,versiOnline,MD5Online);
+    app.UpdateApplication;
+    app.Free;
+
+    dm.QShow.Next;
+  end;
+end;
+
 procedure TGainUpdater.ServiceStart(Sender: TService;
   var Started: Boolean);
   var
@@ -127,6 +167,23 @@ begin
   Log('Service Stop.');
   Timer1.Enabled:= False;
   dm.Free;
+end;
+
+{ TApplication }
+
+constructor TApplication.Create(RootPath, Path, Name, Version, Md5: string: string);
+begin
+  inherited;
+  FRootPath := RootPath;
+  FPath     := Path;
+  FName     := Name;
+  FVersion  := Version;
+  FMd5      := Md5;
+end;
+
+procedure TApplication.UpdateApplication;
+begin
+  //
 end;
 
 end.
