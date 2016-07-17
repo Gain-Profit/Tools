@@ -194,6 +194,7 @@ begin
   if dm.terkoneksi then
   begin
     Log('terkoneksi ke database...');
+    UpdateApplication;
   end;
 end;
 
