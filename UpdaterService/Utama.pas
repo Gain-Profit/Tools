@@ -166,8 +166,8 @@ procedure TGainUpdater.ServiceStart(Sender: TService;
   var
     AppINI: TIniFile;
 begin
-  Log('Service Start.');
   AppPath := GetAppData(CSIDL_COMMON_APPDATA);
+  Log('Service Start.');
 
   if not (DirectoryExists(AppPath)) then
     CreateDir(AppPath);
