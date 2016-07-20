@@ -241,6 +241,9 @@ begin
   UnZip.ExtractAt(0, FullFileName);
   UnZip.CloseArchive;
   UnZip.Free;
+
+  if FileExists(ZipFile) then
+    DeleteFile(ZipFile);
 end;
 
 function TApplication.FileVersion: string;
@@ -260,10 +263,7 @@ begin
   if FVersion <> FileVersion then
   begin
     Log(FName + ' v:' + FileVersion + ' new v:' + FVersion);
-
-    if FileExists(ZipFile) then
-      ExtractZipFile else
-      DownloadZipFile;
+    DownloadZipFile;
   end;  
 end;
 
