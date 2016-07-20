@@ -183,9 +183,6 @@ begin
   
   Application.CreateForm(Tdm, dm);
 
-  if not (DirectoryExists(FRootPath + '\Downloaded')) then
-    CreateDir(FRootPath + '\Downloaded');
-
   Timer1.Enabled:= True;
 end;
 
@@ -277,7 +274,7 @@ var
   FileNameWithoutExt: string;
 begin
   FileNameWithoutExt := Copy(FName, 1 , Length(FName)- 4);
-  Result := FRootPath + '\Downloaded\' + FileNameWithoutExt + '-' +
+  Result := FRootPath + '\' + FileNameWithoutExt + '-' +
     FVersion + '.zip';
 end;
 
