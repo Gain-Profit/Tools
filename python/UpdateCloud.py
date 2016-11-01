@@ -7,6 +7,8 @@ cns = mysql.connector.connect(user='root', password='server', database='profit-w
 cus = cns.cursor()
 
 cus.execute("SELECT updated FROM products ORDER BY updated DESC LIMIT 1")
+
+last_sync = '2000-01-01'
 for (data) in cus:
     last_sync = data[0]
 
