@@ -32,8 +32,6 @@ def sync(sumber, tujuan):
     for (data) in cux:
         d.append(data)
 
-    cux.close()
-
     if d:
         cns = mysql.connector.connect(**tujuan.con)
         cus = cns.cursor()
@@ -47,5 +45,6 @@ def sync(sumber, tujuan):
         cux.execute(sumber.updateSync(),)
         cnx.commit()
         
+    cux.close()
     cnx.close()
 

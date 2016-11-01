@@ -12,6 +12,9 @@ field_jurnal_server = "perusahaan_id, id, tanggal, keterangan, referensi, jenis,
 field_jurdet_local  = "kd_perusahaan, ix_jurnal, no_urut, kd_akun, debet, kredit, rujukan"
 field_jurdet_server = "perusahaan_id, jurnal_id, urut, kiraan_id, debit, kredit, rujukan"
 
+field_asset_local  = "kd_perusahaan, kd_asset, nm_asset, tgl_perolehan, q_asset, jumlah_nilai, nilai_residu, umur_ekonomis"
+field_asset_server = "perusahaan_id, id, deskripsi, tanggal, qty, nilai, residu, umur_ekonomis"
+
 s_history = a.Table(con_s, field_history_local, "tb_jurnal_history")
 t_history = a.Table(con_t, field_history_server, "jurnal_sejarahs")
 
@@ -21,6 +24,10 @@ t_jurnal = a.Table(con_t, field_jurnal_server, "jurnals")
 s_jurdet = a.Table(con_s, field_jurdet_local, "tb_jurnal_rinci")
 t_jurdet = a.Table(con_t, field_jurdet_server, "jurnal_details")
 
+s_asset = a.Table(con_s, field_asset_local, "tb_asset")
+t_asset = a.Table(con_t, field_asset_server, "assets")
+
 a.sync(s_history,t_history)
 a.sync(s_jurnal, t_jurnal)
 a.sync(s_jurdet, t_jurdet)
+a.sync(s_asset, t_asset)
