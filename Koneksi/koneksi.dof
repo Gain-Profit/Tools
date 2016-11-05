@@ -114,7 +114,7 @@ IncludeVerInfo=1
 AutoIncBuild=0
 MajorVer=1
 MinorVer=1
-Release=2
+Release=3
 Build=0
 Debug=0
 PreRelease=0
@@ -126,7 +126,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=Gain-Profit
 FileDescription=
-FileVersion=1.1.2.0
+FileVersion=1.1.3.0
 InternalName=Tools
 LegalCopyright=
 LegalTrademarks=
