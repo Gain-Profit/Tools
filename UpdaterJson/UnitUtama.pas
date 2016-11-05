@@ -87,7 +87,9 @@ begin
   if FindFirst(Path + '\*.*', faAnyFile, SR) = 0 then
   begin
     repeat
-      if (SR.Attr <> faDirectory) then
+      // untuk windows 8 ke bawah
+      // if (SR.Attr <> faDirectory) then
+      if (SR.Attr <> 8208) then
       begin
         if ExtractFileExt(SR.Name) = extensi then
         begin
