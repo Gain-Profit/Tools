@@ -63,7 +63,7 @@ begin
   Result := False;
 
   if (edHost.Text = '') or (edPort.Value = 0) or (edUserName.Text = '') or (edDatabase.Text
-    = '') or (edPassword.Text = '') then
+    = '') then
   begin
     ShowMessage('semua data untuk koneksi harus di isi...');
     Exit;
