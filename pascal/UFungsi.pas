@@ -3,20 +3,23 @@ unit UFungsi;
 interface
 
 uses
-  Classes, mySQLDbTables, DB, sysutils, ShellAPI, windows, Winsock,
-  Printers, WinSpool, IniFiles;
+  Classes, DB, sysutils, ShellAPI, windows, Winsock, Printers, WinSpool,
+  IniFiles, DBAccess, MyAccess;
+
+  // general function
+function MyDate(Date: TDateTime): string;
 
 type
   TQueryTread = class(TThread)
   private
-    FQuery: TmySQLQuery;
+    FQuery: TMyQuery;
     FText: string;
     iscari: Boolean;
   protected
     procedure Execute; override;
     procedure ThreadExecute;
   public
-    constructor create(_query: TmySQLQuery; _text: string; is_cari: Boolean);
+    constructor create(_query: TMyQuery; _text: string; is_cari: Boolean);
   end;
 
 type
@@ -28,10 +31,10 @@ type
     function GetVersiApp: string;
     procedure Amankan(pathin, pathout: string; Chave: Word);
     procedure HapusDir(const DirName: string);
-    procedure LoadSQL(aQuery: TmySQLQuery; _SQL: string);
-    procedure SaveToFile(aQuery: TmySQLQuery; _SQL, nm_file: string);
-    procedure SQLExec(aQuery: TmySQLQuery; _SQL: string; isSearch: boolean);
-    procedure SQLExecT(aQuery: TmySQLQuery; _SQL: string; isSearch: boolean);
+    procedure LoadSQL(aQuery: TMyQuery; _SQL: string);
+    procedure SaveToFile(aQuery: TMyQuery; _SQL, nm_file: string);
+    procedure SQLExec(aQuery: TMyQuery; _SQL: string; isSearch: boolean);
+    procedure SQLExecT(aQuery: TMyQuery; _SQL: string; isSearch: boolean);
     procedure CetakFile(const sFileName: string);
     procedure OpenCashDrawer;
     function AmbilIniFile(nama_file, Section, Ident: string; def: string = ''): string;
@@ -45,6 +48,11 @@ var
   fungsi: Tfungsi;
 
 implementation
+
+function MyDate(Date: TDateTime): string;
+begin
+  Result := FormatDateTime('yyyy-MM-dd', Date);
+end;
 
 { TQueryTread }
 
@@ -67,7 +75,7 @@ begin
   end;
 end;
 
-constructor TQueryTread.create(_query: TmySQLQuery; _text: string; is_cari: Boolean);
+constructor TQueryTread.create(_query: TMyQuery; _text: string; is_cari: Boolean);
 begin
   inherited create(False);
   Self.FQuery := _query;
@@ -180,7 +188,7 @@ begin
   SHFileOperation(FileOp);
 end;
 
-procedure Tfungsi.LoadSQL(aQuery: TmySQLQuery; _SQL: string);
+procedure Tfungsi.LoadSQL(aQuery: TMyQuery; _SQL: string);
 begin
   with aQuery do
   begin
@@ -193,7 +201,7 @@ begin
   end;
 end;
 
-procedure Tfungsi.SaveToFile(aQuery: TmySQLQuery; _SQL, nm_file: string);
+procedure Tfungsi.SaveToFile(aQuery: TMyQuery; _SQL, nm_file: string);
 var
   I: Integer;
   X: TextFile;
@@ -243,7 +251,7 @@ begin
   amankan(nm_file, nm_file, 9966);
 end;
 
-procedure Tfungsi.SQLExec(aQuery: TmySQLQuery; _SQL: string; isSearch: boolean);
+procedure Tfungsi.SQLExec(aQuery: TmyQuery; _SQL: string; isSearch: boolean);
 begin
   with aQuery do
   begin
@@ -255,7 +263,7 @@ begin
   end;
 end;
 
-procedure Tfungsi.SQLExecT(aQuery: TmySQLQuery; _SQL: string; isSearch: boolean);
+procedure Tfungsi.SQLExecT(aQuery: TMyQuery; _SQL: string; isSearch: boolean);
 begin
   TQueryTread.Create(aQuery, _SQL, isSearch);
 end;
