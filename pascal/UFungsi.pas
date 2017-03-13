@@ -89,7 +89,7 @@ end;
 
 function Tfungsi.GetIPFromHost(var HostName, IPaddr, WSAErr: string): Boolean;
 type
-  Name = array[0..100] of Char;
+  Name = array[0..100] of AnsiChar;
 
   PName = ^Name;
 var
