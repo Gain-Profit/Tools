@@ -10,19 +10,6 @@ uses
 function MyDate(Date: TDateTime): string;
 
 type
-  TQueryTread = class(TThread)
-  private
-    FQuery: TMyQuery;
-    FText: string;
-    iscari: Boolean;
-  protected
-    procedure Execute; override;
-    procedure ThreadExecute;
-  public
-    constructor create(_query: TMyQuery; _text: string; is_cari: Boolean);
-  end;
-
-type
   Tfungsi = class(TObject)
   private
     {private declaration}
@@ -34,7 +21,6 @@ type
     procedure LoadSQL(aQuery: TMyQuery; _SQL: string);
     procedure SaveToFile(aQuery: TMyQuery; _SQL, nm_file: string);
     procedure SQLExec(aQuery: TMyQuery; _SQL: string; isSearch: boolean);
-    procedure SQLExecT(aQuery: TMyQuery; _SQL: string; isSearch: boolean);
     procedure CetakFile(const sFileName: string);
     procedure OpenCashDrawer;
     function AmbilIniFile(nama_file, Section, Ident: string; def: string = ''): string;
@@ -52,37 +38,6 @@ implementation
 function MyDate(Date: TDateTime): string;
 begin
   Result := FormatDateTime('yyyy-MM-dd', Date);
-end;
-
-{ TQueryTread }
-
-procedure TQueryTread.Execute;
-begin
-  Synchronize(ThreadExecute);
-end;
-
-procedure TQueryTread.ThreadExecute();
-begin
-  with FQuery do
-  begin
-    Close;
-    sql.Clear;
-    SQL.Text := FText;
-    if iscari then
-      Open
-    else
-      ExecSQL;
-  end;
-end;
-
-constructor TQueryTread.create(_query: TMyQuery; _text: string; is_cari: Boolean);
-begin
-  inherited create(False);
-  Self.FQuery := _query;
-  Self.FText := _text;
-  Self.iscari := is_cari;
-  FreeOnTerminate := True;
-  Resume;
 end;
 
 { Tfungsi }
@@ -261,11 +216,6 @@ begin
     else
       ExecSQL;
   end;
-end;
-
-procedure Tfungsi.SQLExecT(aQuery: TMyQuery; _SQL: string; isSearch: boolean);
-begin
-  TQueryTread.Create(aQuery, _SQL, isSearch);
 end;
 
 function Tfungsi.AmbilIniFile(nama_file, Section, Ident: string; def: string =
