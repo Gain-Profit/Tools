@@ -4228,6 +4228,7 @@ object FMain: TFMain
     Align = alBottom
     TabOrder = 3
     LookAndFeel.Kind = lfOffice11
+    LookAndFeel.NativeStyle = False
     object View: TcxGridDBTableView
       NavigatorButtons.ConfirmDelete = False
       OnCustomDrawCell = ViewCustomDrawCell
