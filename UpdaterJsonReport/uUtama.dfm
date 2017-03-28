@@ -27,6 +27,10 @@ object Form1: TForm1
       item
         Caption = 'Version'
         Width = 100
+      end
+      item
+        Caption = 'MD5'
+        Width = 250
       end>
     TabOrder = 0
     ViewStyle = vsReport

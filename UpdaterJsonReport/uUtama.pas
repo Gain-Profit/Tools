@@ -4,7 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, Xmldoc, StdCtrls, XMLIntf, ComCtrls, ExtCtrls, filectrl, ulkjson;
+  Dialogs, Xmldoc, StdCtrls, XMLIntf, ComCtrls, ExtCtrls, filectrl, ulkjson,
+  IdHashMessageDigest;
 
 type
   TVersion = class
@@ -47,6 +48,22 @@ implementation
 
 {$R *.dfm}
 
+//returns MD5 has for a file
+function MD5(const fileName: string): string;
+var
+  idmd5: TIdHashMessageDigest5;
+  fs: TFileStream;
+begin
+  idmd5 := TIdHashMessageDigest5.Create;
+  fs := TFileStream.Create(fileName, fmOpenRead or fmShareDenyWrite);
+  try
+    result := idmd5.AsHex(idmd5.HashValue(fs));
+  finally
+    fs.Free;
+    idmd5.Free;
+  end;
+end;
+
 procedure GetFiles(const StartDir: String; const List: TListItems);
 var
   SRec: TSearchRec;
@@ -67,6 +84,7 @@ begin
       item := List.Add;
       item.Caption := SRec.Name;
       item.SubItems.Add(TReportVersion.Create(StartDir + SRec.Name).AsString);
+      item.SubItems.Add(MD5(StartDir + SRec.Name));
       Res := FindNext(SRec);
     end;
   finally
@@ -163,7 +181,7 @@ begin
       jsonDetail := TlkJSONobject.Create(False);
       jsondetail.Add('nama', lv.Items[no].Caption);
       jsondetail.Add('path', '/Laporan/');
-      jsondetail.Add('md5_file', '');
+      jsondetail.Add('md5_file', lv.Items[no].SubItems.Strings[1]);
       jsondetail.Add('versi', lv.Items[no].SubItems.Strings[0]);
       jsondetail.Add('download',
         'https://raw.githubusercontent.com/Gain-Profit/laporan/master/' + lv.Items[no].Caption);
