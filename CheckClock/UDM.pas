@@ -3,19 +3,19 @@ unit UDM;
 interface
 
 uses
-  SysUtils, Classes, DB, mySQLDbTables, sSkinManager, Dialogs, Forms,
-  ImgList, Controls, acAlphaImageList;
+  SysUtils, Classes, DB, sSkinManager, Dialogs, Forms,
+  ImgList, Controls, acAlphaImageList, MemDS, DBAccess, MyAccess;
 
 type
   Tdm = class(TDataModule)
-    xConn: TmySQLDatabase;
-    Qexe: TmySQLQuery;
-    QShow: TmySQLQuery;
+    xConn: TMyConnection;
+    Qexe: TMyQuery;
+    QShow: TMyQuery;
     sm: TsSkinManager;
     dsStatus: TDataSource;
-    QStatus: TmySQLQuery;
+    QStatus: TMyQuery;
     procedure koneksikan;
-    procedure SQLExec(aQuery:TmySQLQuery; _SQL:string; isSearch: boolean);
+    procedure SQLExec(aQuery:TMyQuery; _SQL:string; isSearch: boolean);
     procedure DataModuleCreate(Sender: TObject);
     procedure refreshTable;
   private
@@ -33,7 +33,7 @@ implementation
 
 {$R *.dfm}
 
-procedure Tdm.SQLExec(aQuery:TmySQLQuery; _SQL:string; isSearch: boolean);
+procedure Tdm.SQLExec(aQuery:TMyQuery; _SQL:string; isSearch: boolean);
 begin
   with aQuery  do
   begin
@@ -84,10 +84,10 @@ begin
     with xConn do
     begin
       Connected := False;
-      Host := _host;
-      DatabaseName:= _db;
+      Server := _host;
+      Database:= _db;
       UserName:= _user;
-      UserPassword:= _password;
+      Password:= _password;
       port:= _port;
       Connected:= True;
     end;
@@ -99,7 +99,8 @@ end;
 
 procedure Tdm.DataModuleCreate(Sender: TObject);
 begin
-koneksikan;
+  sm.Active := True;
+  koneksikan;
 end;
 
 procedure Tdm.refreshTable;

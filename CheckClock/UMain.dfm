@@ -2152,9 +2152,9 @@ object FMain: TFMain
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000}
     Layout = blGlyphBottom
-    SkinData.SkinSection = 'BUTTON'
     Reflected = True
     ShowCaption = False
+    SkinData.SkinSection = 'BUTTON'
   end
   object btnCheckOut: TsBitBtn
     Left = 216
@@ -4216,9 +4216,9 @@ object FMain: TFMain
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000}
     Layout = blGlyphBottom
-    SkinData.SkinSection = 'BUTTON'
     Reflected = True
     ShowCaption = False
+    SkinData.SkinSection = 'BUTTON'
   end
   object grid: TcxGrid
     Left = 0
@@ -4230,7 +4230,7 @@ object FMain: TFMain
     LookAndFeel.Kind = lfOffice11
     LookAndFeel.NativeStyle = False
     object View: TcxGridDBTableView
-      NavigatorButtons.ConfirmDelete = False
+      Navigator.Buttons.CustomButtons = <>
       OnCustomDrawCell = ViewCustomDrawCell
       DataController.DataSource = dm.dsStatus
       DataController.Summary.DefaultGroupSummaryItems = <
@@ -4279,8 +4279,8 @@ object FMain: TFMain
     Left = 40
     Top = 264
   end
-  object Q_time: TmySQLQuery
-    Database = dm.xConn
+  object Q_time: TMyQuery
+    Connection = dm.xConn
     Left = 8
     Top = 264
   end

@@ -8,8 +8,10 @@ uses
   cxStyles, cxCustomData, cxGraphics, cxFilter, cxData, cxDataStorage,
   cxEdit, DB, cxDBData, cxGridLevel, cxClasses, cxControls,
   cxGridCustomView, cxGridCustomTableView, cxGridTableView,
-  cxGridDBTableView, cxGrid, cxTextEdit, cxSpinEdit, mySQLDbTables,
-  ExtCtrls;
+  cxGridDBTableView, cxGrid, cxTextEdit, cxSpinEdit, 
+  ExtCtrls, cxLookAndFeels, cxLookAndFeelPainters, dxSkinsCore,
+  dxSkinsDefaultPainters, dxSkinscxPCPainter, cxNavigator, MemDS, DBAccess,
+  MyAccess;
 
 type
   TFMain = class(TForm)
@@ -25,7 +27,7 @@ type
     vwNama: TcxGridDBColumn;
     vwKondisi: TcxGridDBColumn;
     Timer1: TTimer;
-    Q_time: TmySQLQuery;
+    Q_time: TMyQuery;
     lbTime: TsLabel;
     function methodManual:Boolean;
     procedure FormCreate(Sender: TObject);
@@ -81,7 +83,7 @@ end;
 procedure TFMain.FormCreate(Sender: TObject);
 begin
   sb.Panels[0].Text := program_versi;
-  sb.Panels[1].Text := dm.xConn.DatabaseName + '@' +dm.xConn.Host;
+  sb.Panels[1].Text := dm.xConn.Database + '@' +dm.xConn.Server;
 end;
 
 
@@ -91,7 +93,7 @@ var
 begin
   sql:= 'SELECT nilai FROM tb_settings WHERE parameter ="fingerprint"';
   dm.SQLExec(dm.QShow,sql,True);
-  Result:= dm.QShow.FieldByName('nilai').AsBoolean;
+  Result:= not(dm.QShow.FieldByName('nilai').AsBoolean);
 end;
 
 procedure TFMain.btnCheckInClick(Sender: TObject);
