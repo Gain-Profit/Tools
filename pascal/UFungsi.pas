@@ -6,16 +6,35 @@ uses
   Classes, DB, sysutils, ShellAPI, windows, Winsock, Printers, WinSpool,
   IniFiles, DBAccess, MyAccess;
 
-  // general function
-function MyDate(Date: TDateTime): string;
-
 type
+  TVerCompare = (vLower, vEqual, vHigher);
+
+  TVersion = class
+  protected
+    FMayor: Integer;
+    FMinor: Integer;
+    FRelease: Integer;
+    FBuild: Integer;
+  public
+    property Mayor: Integer read FMayor;
+    property Minor: Integer read FMinor;
+    property Release: Integer read FRelease;
+    property Build: Integer read FBuild;
+    constructor Create(AMayor, AMinor, ARelease, ABuild: Integer); overload;
+    constructor Create(const AVersion: String); overload;
+    function AsString: string;
+  end;
+
+  TAppVersion = class(TVersion)
+  public
+    constructor Create(AFile: String);
+  end;
+
   Tfungsi = class(TObject)
   private
     {private declaration}
   public
     function GetIPFromHost(var HostName, IPaddr, WSAErr: string): Boolean;
-    function GetVersiApp: string;
     procedure Amankan(pathin, pathout: string; Chave: Word);
     procedure HapusDir(const DirName: string);
     procedure LoadSQL(aQuery: TMyQuery; _SQL: string);
@@ -33,11 +52,69 @@ type
 var
   fungsi: Tfungsi;
 
+  // general function or procedure
+  function MyDate(Date: TDateTime): string;
+  function CompareVersion(ALeft, ARight: TVersion): TVerCompare;
+
 implementation
 
-function MyDate(Date: TDateTime): string;
+{ TVersion }
+
+constructor TVersion.Create(AMayor, AMinor, ARelease, ABuild: Integer);
 begin
-  Result := FormatDateTime('yyyy-MM-dd', Date);
+  self.FMayor := AMayor;
+  Self.FMinor := AMinor;
+  Self.FRelease := ARelease;
+  Self.FBuild := ABuild;
+end;
+
+constructor TVersion.Create(const AVersion: String);
+var
+  LVersion : TStrings;
+begin
+  LVersion := TStringList.Create;
+  LVersion.Delimiter := '.';
+  LVersion.DelimitedText := AVersion;
+
+  if (LVersion.Count <> 4) then
+    raise Exception.CreateFmt('Harus ada 4 parameter sementara ada %d parameter',
+    [LVersion.Count]);
+    
+  self.FMayor := StrToInt(LVersion[0]);
+  self.FMinor := StrToInt(LVersion[1]);
+  self.FRelease := StrToInt(LVersion[2]);
+  self.FBuild := StrToInt(LVersion[3]);
+  FreeAndNil(LVersion);
+end;
+
+function TVersion.AsString: string;
+begin
+  Result := Format('%d.%d.%d.%d', [Self.FMayor, Self.FMinor, Self.FRelease, Self.FBuild]);
+end;
+
+{ TAppVersion }
+
+constructor TAppVersion.Create(AFile: String);
+var
+  V1, V2, V3, V4: Word;
+  VerInfoSize, VerValueSize, Dummy: DWORD;
+  VerInfo: Pointer;
+  VerValue: PVSFixedFileInfo;
+begin
+  VerInfoSize := GetFileVersionInfoSize(PChar(AFile), Dummy);
+  GetMem(VerInfo, VerInfoSize);
+  GetFileVersionInfo(PChar(ParamStr(0)), 0, VerInfoSize, VerInfo);
+  VerQueryValue(VerInfo, '\', Pointer(VerValue), VerValueSize);
+  with VerValue^ do
+  begin
+    V1 := dwFileVersionMS shr 16;
+    V2 := dwFileVersionMS and $FFFF;
+    V3 := dwFileVersionLS shr 16;
+    V4 := dwFileVersionLS and $FFFF;
+  end;
+  FreeMem(VerInfo, VerInfoSize);
+
+  inherited Create(V1, V2, V3, V4);
 end;
 
 { Tfungsi }
@@ -83,29 +160,6 @@ begin
   end;
   Dispose(HName);
   WSACleanup;
-end;
-
-function Tfungsi.GetVersiApp: string;
-var
-  V1, V2, V3, V4: Word;
-  VerInfoSize, VerValueSize, Dummy: DWORD;
-  VerInfo: Pointer;
-  VerValue: PVSFixedFileInfo;
-begin
-  VerInfoSize := GetFileVersionInfoSize(PChar(ParamStr(0)), Dummy);
-  GetMem(VerInfo, VerInfoSize);
-  GetFileVersionInfo(PChar(ParamStr(0)), 0, VerInfoSize, VerInfo);
-  VerQueryValue(VerInfo, '\', Pointer(VerValue), VerValueSize);
-  with VerValue^ do
-  begin
-    V1 := dwFileVersionMS shr 16;
-    V2 := dwFileVersionMS and $FFFF;
-    V3 := dwFileVersionLS shr 16;
-    V4 := dwFileVersionLS and $FFFF;
-  end;
-  FreeMem(VerInfo, VerInfoSize);
-
-  Result := IntToStr(V1) + '.' + IntToStr(V2) + '.' + IntToStr(V3) + '.' + IntToStr(V4);
 end;
 
 procedure Tfungsi.Amankan(pathin, pathout: string; Chave: Word);
@@ -391,6 +445,33 @@ begin
   except
     // do nothing
   end;
+end;
+
+{ General Function/Procedure }
+function MyDate(Date: TDateTime): string;
+begin
+  Result := FormatDateTime('yyyy-MM-dd', Date);
+end;
+
+function CompareVersion(ALeft, ARight: TVersion): TVerCompare;
+var
+  LHasil : TVerCompare;
+begin
+  if (ALeft.Mayor > ARight.Mayor) or (ALeft.Minor > ARight.Minor) or
+    (ALeft.Release > ARight.Release) or (ALeft.Build > ARight.Build) then
+  begin
+    LHasil := vHigher;
+  end else
+  if (ALeft.Mayor > ARight.Mayor) or (ALeft.Minor > ARight.Minor) or
+    (ALeft.Release > ARight.Release) or (ALeft.Build > ARight.Build) then
+  begin
+    LHasil := vLower;
+  end else
+  begin
+    LHasil := vEqual;
+  end;
+
+  Result := LHasil;
 end;
 
 end.
