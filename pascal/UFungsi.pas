@@ -462,8 +462,8 @@ begin
   begin
     LHasil := vHigher;
   end else
-  if (ALeft.Mayor > ARight.Mayor) or (ALeft.Minor > ARight.Minor) or
-    (ALeft.Release > ARight.Release) or (ALeft.Build > ARight.Build) then
+  if (ALeft.Mayor < ARight.Mayor) or (ALeft.Minor < ARight.Minor) or
+    (ALeft.Release < ARight.Release) or (ALeft.Build < ARight.Build) then
   begin
     LHasil := vLower;
   end else
