@@ -454,24 +454,56 @@ begin
 end;
 
 function CompareVersion(ALeft, ARight: TVersion): TVerCompare;
-var
-  LHasil : TVerCompare;
 begin
-  if (ALeft.Mayor > ARight.Mayor) or (ALeft.Minor > ARight.Minor) or
-    (ALeft.Release > ARight.Release) or (ALeft.Build > ARight.Build) then
+  Result := vEqual;
+
+  if (ALeft.Mayor > ARight.Mayor) then
   begin
-    LHasil := vHigher;
-  end else
-  if (ALeft.Mayor < ARight.Mayor) or (ALeft.Minor < ARight.Minor) or
-    (ALeft.Release < ARight.Release) or (ALeft.Build < ARight.Build) then
-  begin
-    LHasil := vLower;
-  end else
-  begin
-    LHasil := vEqual;
+    Result := vHigher;
+    Exit;
   end;
 
-  Result := LHasil;
+  if (ALeft.Mayor < ARight.Mayor) then
+  begin
+    Result := vLower;
+    Exit;
+  end;
+
+  if (ALeft.Minor > ARight.Minor) then
+  begin
+    Result := vHigher;
+    Exit;
+  end;
+
+  if (ALeft.Minor < ARight.Minor) then
+  begin
+    Result := vLower;
+    Exit;
+  end;
+
+  if (ALeft.Release > ARight.Release) then
+  begin
+    Result := vHigher;
+    Exit;
+  end;
+
+  if (ALeft.Release < ARight.Release) then
+  begin
+    Result := vLower;
+    Exit;
+  end;
+
+  if (ALeft.Build > ARight.Build) then
+  begin
+    Result := vHigher;
+    Exit;
+  end;
+
+  if (ALeft.Build < ARight.Build) then
+  begin
+    Result := vLower;
+    Exit;
+  end;
 end;
 
 end.
