@@ -76,14 +76,23 @@ begin
   LVersion.Delimiter := '.';
   LVersion.DelimitedText := AVersion;
 
-  if (LVersion.Count <> 4) then
-    raise Exception.CreateFmt('Harus ada 4 parameter sementara ada %d parameter',
-    [LVersion.Count]);
-    
-  self.FMayor := StrToInt(LVersion[0]);
-  self.FMinor := StrToInt(LVersion[1]);
-  self.FRelease := StrToInt(LVersion[2]);
-  self.FBuild := StrToInt(LVersion[3]);
+  self.FMayor := 0;
+  Self.FMinor := 0;
+  Self.FRelease := 0;
+  Self.FBuild := 0;
+
+  if LVersion.Count > 0 then
+    self.FMayor := StrToIntDef(LVersion[0],0);
+
+  if LVersion.Count > 1 then
+    self.FMinor := StrToIntDef(LVersion[1],0);
+
+  if LVersion.Count > 2 then
+    self.FRelease := StrToIntDef(LVersion[2],0);
+
+  if LVersion.Count > 3 then
+    self.FBuild := StrToIntDef(LVersion[3],0);
+
   FreeAndNil(LVersion);
 end;
 
