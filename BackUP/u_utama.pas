@@ -324,10 +324,6 @@ end;
 Form1.Caption:= 'Proses Backup Berjalan';
 ShellExecute_andwait('open', 'cmd.exe', param , wpath, SW_HIDE, True);
 Form1.Caption:= 'Auto Backup';
-
-if gb_pilihan.ItemIndex <> 0 then
-amankan(wpath+'BackUp\'+ed_nama.Text+'.sql.gz',wpath+'BackUp\'+ed_nama.Text+'.sql.gz',9966);
-
 end;
 
 procedure TForm1.ed_namaKeyDown(Sender: TObject; var Key: Word;
