@@ -10,45 +10,44 @@ uses
   MyAccess;
 
 type
-  TForm1 = class(TForm)
-    Timer1: TTimer;
+  TFrmBackup = class(TForm)
+    TmrBackup: TTimer;
     db: TMyConnection;
     lb_time: TLabel;
     sb: TStatusBar;
     PopupMenu1: TPopupMenu;
     open1: TMenuItem;
     exit1: TMenuItem;
-    sg: TStringGrid;
-    Button1: TButton;
+    BtnBackup: TButton;
     gb_pilihan: TRadioGroup;
     ed_nama: TEdit;
-    procedure salin;
-    procedure WndProc(var Msg : TMessage); override;
-    procedure Timer1Timer(Sender: TObject);
+    procedure TmrBackupTimer(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure open1Click(Sender: TObject);
     procedure exit1Click(Sender: TObject);
-    procedure deAfterDialog(Sender: TObject; var Name: String;
-      var Action: Boolean);
-    procedure sgSetEditText(Sender: TObject; ACol, ARow: Integer;
-      const Value: String);
-    procedure Button1Click(Sender: TObject);
+    procedure BtnBackupClick(Sender: TObject);
     procedure ed_namaKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+  protected
+    procedure WndProc(var Msg : TMessage); override;
   private
     pusat,jalur,nama,kata,data,wpath: string;
-    { Private declarations }
+    Connected: Boolean;
+    procedure BackUpToFile(AType : Integer = 2; AName : string = '');
+    procedure CekConnection;
+    procedure RequiredFile(AFileName: TFileName);
   public
-    { Public declarations }
     IconData : TNotifyIconData;
     IconCount : integer;
   end;
 
 var
-  Form1: TForm1;
+  FrmBackup: TFrmBackup;
 
 implementation
+
+uses Math;
 
 {$R *.dfm}
 
@@ -82,7 +81,18 @@ begin
   if not bOK then Result := -1;
 end;
 
-procedure TForm1.WndProc(var Msg : TMessage);
+function krupuk(const s: String; CryptInt: Integer): String;
+var
+  i: integer;
+  s2: string;
+begin
+  if not (Length(s) = 0) then
+    for i := 1 to Length(s) do
+      s2 := s2 + Chr(Ord(s[i]) - cryptint);
+  Result := s2;
+end;
+
+procedure TFrmBackup.WndProc(var Msg : TMessage);
 var
   aPoint : TPoint;
 begin
@@ -98,114 +108,77 @@ begin
       end;
       WM_LBUTTONDOWN:
       begin
-        if Form1.Showing then
-          Form1.Hide else
-          Form1.Show;
+        if Self.Showing then
+          Self.Hide else
+          Self.Show;
       end;
     end;
   end;
   inherited;
 end;
 
-function krupuk(const s: String; CryptInt: Integer): String;
+procedure TFrmBackup.CekConnection;
 var
-  i: integer;
-  s2: string;
+  X: TextFile;
 begin
-  if not (Length(s) = 0) then
-    for i := 1 to Length(s) do
-      s2 := s2 + Chr(Ord(s[i]) - cryptint);
-  Result := s2;
-end;
+  assignfile(X,wpath+'\koneksi.cbCon');
+  try
+    reset(X);
+    readln(X,pusat);
+    readln(X,data);
+    readln(X,jalur);
+    readln(X,nama);
+    readln(X,kata);
+    closefile(X);
+  except
+  end;
 
-function tempdir: String;
-var
-  TempDir: array[0..255] of Char;
-begin
-  GetTempPath(255, @TempDir);
-  Result := StrPas(TempDir);
-end;
-
-procedure TForm1.salin;
-var
-param,sekarang: String;
-begin
-sekarang := formatdatetime('_yyyyMMdd_HHmmss',now());
-
-param:='/C mysqldump -u'+db.Username+' -p'+db.Password+' --host='+db.Server
-+' --complete-insert --routines '+db.Database+' | gzip -9 > BackUp\'+sekarang+'.sql.gz';
-
-Form1.Caption:= 'Proses Backup Berjalan';
-ShellExecute_andwait('open', 'cmd.exe', param , wpath, SW_HIDE, True);
-Form1.Caption:= 'Auto Backup';
-end;
-
-procedure TForm1.Timer1Timer(Sender: TObject);
-var i,aktif:integer;
-    X: TextFile;
-    aini: Tinifile;
-begin
-aini:=Tinifile.Create(wpath+'\gain.ini');
-try
-sg.Cells[0,0]:=aini.ReadString('backup','jam1','09:00:00');
-sg.Cells[0,1]:=aini.ReadString('backup','jam2','15:00:00');
-sg.Cells[0,2]:=aini.ReadString('backup','jam3','20:00:00');
-aktif:= aini.ReadInteger('backup','aktif',1);
-finally
-aini.Free;
-end;
-
-if aktif=0 then
-begin
-application.Terminate;
-exit;
-end;
-
-assignfile(X,wpath+'\koneksi.cbCon');
-try
-   reset(X);
-   readln(X,pusat);
-   readln(X,data);
-   readln(X,jalur);
-   readln(X,nama);
-   readln(X,kata);
-   closefile(X);
-except
-end;
-
-lb_time.Caption:=formatdatetime('HH:mm:ss',time());
-try
-db.Server:=krupuk(pusat,6);
-db.Database:= krupuk(data,6);
-db.Port:= strtoint(krupuk(jalur,6));
-db.Username:= krupuk(nama,6);
-db.Password:= krupuk(kata,6);
-db.Connected:=true;
-sb.Panels[0].Text:='CONNECTED' ;
-sb.Panels[1].Text:='   '+db.Database+'@'+ db.Server ;
-except
-on E:exception do
-begin
-sb.Panels[0].Text:='UNCONNECTED';
-sb.Panels[1].text:=e.Message;
-end;
-end;
-
-for i:=0 to sg.RowCount do
-  begin
-    if (pos(sg.Cells[0,i],lb_time.Caption)>0) and (sb.Panels[0].Text='CONNECTED') then salin;
+  try
+    db.Server:=krupuk(pusat,6);
+    db.Database:= krupuk(data,6);
+    db.Port:= strtoint(krupuk(jalur,6));
+    db.Username:= krupuk(nama,6);
+    db.Password:= krupuk(kata,6);
+    db.Connected:=true;
+    sb.Panels[0].Text:='CONNECTED';
+    sb.Panels[1].Text:=db.Username + ':' + db.Database + '@' + db.Server ;
+    Connected := True;
+  except
+    on E:exception do
+    begin
+      Connected := False;
+      sb.Panels[0].Text:='UNCONNECTED';
+      sb.Panels[1].text:=e.Message;
+    end;
   end;
 end;
 
-procedure TForm1.FormCreate(Sender: TObject);
+procedure TFrmBackup.RequiredFile(AFileName: TFileName);
 begin
+  if not(FileExists(AFileName)) then
+  begin
+    ShowMessage( Format('File %s tidak dapat ditemukan, aplikasi tidak dapat dijalankan.',
+      [AFileName]));
+    Application.Terminate;
+  end;
+end;
 
-wpath:=extractfilepath(application.ExeName);
+procedure TFrmBackup.FormCreate(Sender: TObject);
+begin
+  wpath:=extractfilepath(application.ExeName);
 
-if not (DirectoryExists(wpath+'\BackUp')) then
-MkDir(wpath+'\BackUp');
+  if not (DirectoryExists(wpath + '\BackUp')) then
+    MkDir(wpath+'\BackUp');
 
-ShowWindow(Application.Handle, SW_HIDE);
+  RequiredFile('gzip.exe');
+
+  RequiredFile('mysqldump.exe');
+
+  RequiredFile('koneksi.cbCon');
+
+  ShowWindow(Application.Handle, SW_HIDE);
+
+  TmrBackup.Enabled := True;
 
   BorderIcons := [biSystemMenu];
   IconCount := 0;
@@ -219,84 +192,84 @@ ShowWindow(Application.Handle, SW_HIDE);
   Shell_NotifyIcon(NIM_ADD, @IconData);
 end;
 
-procedure TForm1.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure TFrmBackup.BackUpToFile(AType : Integer; AName : string);
+var
+  LParam, LName: String;
 begin
-  Action := caNone;
-  Form1.Hide;
+  LName := AName;
+  if LName='' then
+  begin
+    LName := formatdatetime('_yyyyMMdd_HHmmss', Now());
+  end;
+
+  case AType of
+    //hanya strukturnya saja
+    0: LParam:='/C mysqldump -u'+db.UserName+' -p'+db.Password+' --host='+db.Server
+       +' --no-data --routines '+db.Database+' | gzip > BackUp\'+LName+'.sql.gz';
+
+    // hanya datanya saja
+    1: LParam:='/C mysqldump -u'+db.UserName+' -p'+db.Password+' --host='+db.Server
+       +' --no-create-info --complete-insert '+db.Database+' | gzip > BackUp\'+LName+'.sql.gz';
+
+    // data komplit (struktur plus data)
+    2: LParam:='/C mysqldump -u'+db.UserName+' -p'+db.Password+' --host='+db.Server
+       +' --complete-insert --routines '+db.Database+' | gzip > BackUp\'+LName+'.sql.gz';
+  end;
+  
+  Caption:= 'Proses Backup Berjalan';
+  ShellExecute_andwait('open', 'cmd.exe', LParam , wpath, SW_HIDE, True);
+  Caption:= 'Auto Backup';
 end;
 
-procedure TForm1.open1Click(Sender: TObject);
+procedure TFrmBackup.TmrBackupTimer(Sender: TObject);
+var
+  I:integer;
+  LBackupTime : array[0..1] of String;
 begin
-  Form1.Show;
+  LBackupTime[0] := '10.00.00';
+  LBackupTime[1] := '22.00.00';
+
+  lb_time.Caption:=formatdatetime('HH.mm.ss',time());
+
+  CekConnection;
+
+  for i:=0 to Length(LBackupTime) - 1 do
+  begin
+    If ( not( Connected )) then Exit;
+    if ( pos( LBackUpTime[i], lb_time.Caption ) > 0 ) then
+      BackUpToFile;
+  end;
+end;
+
+procedure TFrmBackup.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  Action := caNone;
+  Self.Hide;
+end;
+
+procedure TFrmBackup.open1Click(Sender: TObject);
+begin
+  Self.Show;
   ShowWindow(Application.Handle, SW_HIDE);
 end;
 
-procedure TForm1.exit1Click(Sender: TObject);
+procedure TFrmBackup.exit1Click(Sender: TObject);
 begin
   Shell_NotifyIcon(NIM_DELETE, @IconData);
   Application.ProcessMessages;
   Application.Terminate;
 end;
 
-procedure TForm1.deAfterDialog(Sender: TObject;
-  var Name: String; var Action: Boolean);
-var aini: Tinifile;
+procedure TFrmBackup.BtnBackupClick(Sender: TObject);
 begin
-aini:=Tinifile.Create(wpath+'\gain.ini');
-try
-aini.WriteString('setting','jam1',sg.Cells[0,0]);
-aini.WriteString('setting','jam2',sg.Cells[0,1]);
-aini.WriteString('setting','jam3',sg.Cells[0,2]);
-aini.WriteString('setting','tempat',name);
-finally
-aini.Free;
-end;
+  BackUpToFile(gb_pilihan.ItemIndex, ed_nama.Text);
 end;
 
-procedure TForm1.sgSetEditText(Sender: TObject; ACol, ARow: Integer;
-  const Value: String);
-begin
-ShellExecute(Handle, 'open', PChar(wpath+'\gain.ini'), nil,nil, SW_SHOWNORMAL);
-end;
-
-
-procedure TForm1.Button1Click(Sender: TObject);
-var
-param: String;
-begin
-if ed_nama.Text='' then
-begin
-showmessage('masukkan nama file terlebih dahulu..., nama tidak boleh ada spasi...');
-ed_nama.SetFocus;
-exit;
-end;
-
-case gb_pilihan.ItemIndex of
-//hanya strukturnya saja
-0: param:='/C mysqldump -u'+db.UserName+' -p'+db.Password+' --host='+db.Server
-+' --no-data --routines '+db.Database+' | gzip > BackUp\'+ed_nama.Text+'.sql.gz';
-
-
-// hanya datanya saja
-1: param:='/C mysqldump -u'+db.UserName+' -p'+db.Password+' --host='+db.Server
-+' --no-create-info --complete-insert '+db.Database+' | gzip > BackUp\'+ed_nama.Text+'.sql.gz';
-
-// data komplit (struktur plus data)
-2: param:='/C mysqldump -u'+db.UserName+' -p'+db.Password+' --host='+db.Server
-+' --complete-insert --routines '+db.Database+' | gzip > BackUp\'+ed_nama.Text+'.sql.gz';
-
-end;
-//ShellExecute(Handle, 'open', 'cmd.exe', Pchar(param) ,pchar(wpath), SW_HIDE);
-Form1.Caption:= 'Proses Backup Berjalan';
-ShellExecute_andwait('open', 'cmd.exe', param , wpath, SW_HIDE, True);
-Form1.Caption:= 'Auto Backup';
-end;
-
-procedure TForm1.ed_namaKeyDown(Sender: TObject; var Key: Word;
+procedure TFrmBackup.ed_namaKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-if Key= vk_return then
- Button1Click(Self);
+  if Key= vk_return then
+    BackUpToFile(gb_pilihan.ItemIndex, ed_nama.Text);
 end;
 
 end.

@@ -1,4 +1,4 @@
-object Form1: TForm1
+object FrmBackup: TFrmBackup
   Left = 474
   Top = 281
   BorderStyle = bsDialog
@@ -47,31 +47,14 @@ object Form1: TForm1
         Width = 100
       end>
   end
-  object sg: TStringGrid
-    Left = 385
-    Top = 104
-    Width = 62
-    Height = 71
-    ColCount = 1
-    DefaultColWidth = 100
-    DefaultRowHeight = 20
-    FixedCols = 0
-    RowCount = 3
-    FixedRows = 0
-    Options = [goFixedVertLine, goFixedHorzLine, goHorzLine, goRangeSelect, goEditing]
-    ScrollBars = ssNone
-    TabOrder = 1
-    Visible = False
-    OnSetEditText = sgSetEditText
-  end
-  object Button1: TButton
+  object BtnBackup: TButton
     Left = 8
     Top = 144
     Width = 233
     Height = 25
     Caption = 'Backup Manual'
-    TabOrder = 2
-    OnClick = Button1Click
+    TabOrder = 1
+    OnClick = BtnBackupClick
   end
   object gb_pilihan: TRadioGroup
     Left = 8
@@ -85,21 +68,22 @@ object Form1: TForm1
       'Strukturnya Saja'
       'Datanya saja'
       'kedua duanya')
-    TabOrder = 3
+    TabOrder = 2
   end
   object ed_nama: TEdit
     Left = 8
     Top = 120
     Width = 233
     Height = 21
-    TabOrder = 4
+    TabOrder = 3
     OnKeyDown = ed_namaKeyDown
   end
   object db: TMyConnection
     Top = 8
   end
-  object Timer1: TTimer
-    OnTimer = Timer1Timer
+  object TmrBackup: TTimer
+    Enabled = False
+    OnTimer = TmrBackupTimer
     Left = 72
     Top = 8
   end
