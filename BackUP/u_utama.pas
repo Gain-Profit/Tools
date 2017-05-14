@@ -34,11 +34,10 @@ type
     procedure sgSetEditText(Sender: TObject; ACol, ARow: Integer;
       const Value: String);
     procedure Button1Click(Sender: TObject);
-    procedure amankan(pathin, pathout: string; Chave: Word);
     procedure ed_namaKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
   private
-//    function ExecAndWait(const FileName, Params: ShortString; const WinState: Word): boolean; export
+    pusat,jalur,nama,kata,data,wpath: string;
     { Private declarations }
   public
     { Public declarations }
@@ -48,8 +47,6 @@ type
 
 var
   Form1: TForm1;
-  pusat,jalur,nama,kata,data,wpath: string;
-
 
 implementation
 
@@ -83,30 +80,6 @@ begin
       Result := 0;
   end;
   if not bOK then Result := -1;
-end;
-
-procedure TForm1.amankan(pathin, pathout: string; Chave: Word);
-var
-  InMS, OutMS: TMemoryStream;
-  cnt: Integer;
-  C: byte;
-begin
-  InMS  := TMemoryStream.Create;
-  OutMS := TMemoryStream.Create;
-  try
-    InMS.LoadFromFile(pathin);
-    InMS.Position := 0;
-    for cnt := 0 to InMS.Size - 1 DO
-      begin
-        InMS.Read(C, 1);
-        C := (C xor not (ord(chave shr cnt)));
-        OutMS.Write(C, 1);
-      end;
-    OutMS.SaveToFile(pathout);
-  finally
-    InMS.Free;
-    OutMS.Free;
-  end;
 end;
 
 procedure TForm1.WndProc(var Msg : TMessage);
@@ -161,17 +134,10 @@ sekarang := formatdatetime('_yyyyMMdd_HHmmss',now());
 
 param:='/C mysqldump -u'+db.Username+' -p'+db.Password+' --host='+db.Server
 +' --complete-insert --routines '+db.Database+' | gzip -9 > BackUp\'+sekarang+'.sql.gz';
-//--complete-insert table sempurna
-//--create-options  create sempurna
-//--routines memasukkan procedure
-//--no-create-info berfungsi agar tidak membuat table
-
-//ShellExecute(Handle, 'open', 'cmd.exe', Pchar(param) ,pchar(wpath), SW_HIDE);
 
 Form1.Caption:= 'Proses Backup Berjalan';
 ShellExecute_andwait('open', 'cmd.exe', param , wpath, SW_HIDE, True);
 Form1.Caption:= 'Auto Backup';
-amankan(wpath+'BackUp\'+sekarang+'.sql.gz',wpath+'BackUp\'+sekarang+'.sql.gz',9966);
 end;
 
 procedure TForm1.Timer1Timer(Sender: TObject);
