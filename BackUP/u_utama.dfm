@@ -18,7 +18,7 @@ object Form1: TForm1
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
-  object lb_time: TsLabel
+  object lb_time: TLabel
     Left = 0
     Top = 0
     Width = 245
@@ -26,12 +26,12 @@ object Form1: TForm1
     Align = alTop
     Alignment = taCenter
     Caption = '00:00:00'
-    ParentFont = False
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -53
     Font.Name = 'Rockwell'
     Font.Style = [fsBold]
+    ParentFont = False
   end
   object sb: TStatusBar
     Left = 0
@@ -95,11 +95,7 @@ object Form1: TForm1
     TabOrder = 4
     OnKeyDown = ed_namaKeyDown
   end
-  object db: TmySQLDatabase
-    ConnectOptions = []
-    Params.Strings = (
-      'Port=3306'
-      'TIMEOUT=30')
+  object db: TMyConnection
     Top = 8
   end
   object Timer1: TTimer

@@ -4,15 +4,16 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls,shellapi, DB, mySQLDbTables, MySQLDump, MySQLTools,
-  ExtCtrls, ComCtrls, sLabel, Menus, Grids, Buttons,registry, Mask,
-  sMaskEdit, sCustomComboEdit, sTooledit,inifiles, sButton;
+  Dialogs, StdCtrls,shellapi, DB,
+  ExtCtrls, ComCtrls, Menus, Grids, Buttons,registry, Mask,
+  sMaskEdit, sCustomComboEdit, sTooledit,inifiles, sButton, DBAccess,
+  MyAccess;
 
 type
   TForm1 = class(TForm)
     Timer1: TTimer;
-    db: TmySQLDatabase;
-    lb_time: TsLabel;
+    db: TMyConnection;
+    lb_time: TLabel;
     sb: TStatusBar;
     PopupMenu1: TPopupMenu;
     open1: TMenuItem;
@@ -158,8 +159,8 @@ param,sekarang: String;
 begin
 sekarang := formatdatetime('_yyyyMMdd_HHmmss',now());
 
-param:='/C mysqldump -u'+db.UserName+' -p'+db.UserPassword+' --host='+db.Host
-+' --complete-insert --routines '+db.DatabaseName+' | gzip -9 > BackUp\'+sekarang+'.sql.gz';
+param:='/C mysqldump -u'+db.Username+' -p'+db.Password+' --host='+db.Server
++' --complete-insert --routines '+db.Database+' | gzip -9 > BackUp\'+sekarang+'.sql.gz';
 //--complete-insert table sempurna
 //--create-options  create sempurna
 //--routines memasukkan procedure
@@ -208,14 +209,14 @@ end;
 
 lb_time.Caption:=formatdatetime('HH:mm:ss',time());
 try
-db.Host:=krupuk(pusat,6);
-db.DatabaseName:= krupuk(data,6);
+db.Server:=krupuk(pusat,6);
+db.Database:= krupuk(data,6);
 db.Port:= strtoint(krupuk(jalur,6));
-db.UserName:= krupuk(nama,6);
-db.UserPassword:= krupuk(kata,6);
+db.Username:= krupuk(nama,6);
+db.Password:= krupuk(kata,6);
 db.Connected:=true;
 sb.Panels[0].Text:='CONNECTED' ;
-sb.Panels[1].Text:='   '+db.DatabaseName+'@'+ db.Host ;
+sb.Panels[1].Text:='   '+db.Database+'@'+ db.Server ;
 except
 on E:exception do
 begin
@@ -306,17 +307,17 @@ end;
 
 case gb_pilihan.ItemIndex of
 //hanya strukturnya saja
-0: param:='/C mysqldump -u'+db.UserName+' -p'+db.UserPassword+' --host='+db.Host
-+' --no-data --routines '+db.DatabaseName+' | gzip -9 > BackUp\'+ed_nama.Text+'.sql.gz';
+0: param:='/C mysqldump -u'+db.UserName+' -p'+db.Password+' --host='+db.Server
++' --no-data --routines '+db.Database+' | gzip > BackUp\'+ed_nama.Text+'.sql.gz';
 
 
 // hanya datanya saja
-1: param:='/C mysqldump -u'+db.UserName+' -p'+db.UserPassword+' --host='+db.Host
-+' --no-create-info --complete-insert '+db.DatabaseName+' | gzip -9 > BackUp\'+ed_nama.Text+'.sql.gz';
+1: param:='/C mysqldump -u'+db.UserName+' -p'+db.Password+' --host='+db.Server
++' --no-create-info --complete-insert '+db.Database+' | gzip > BackUp\'+ed_nama.Text+'.sql.gz';
 
 // data komplit (struktur plus data)
-2: param:='/C mysqldump -u'+db.UserName+' -p'+db.UserPassword+' --host='+db.Host
-+' --complete-insert --routines '+db.DatabaseName+' | gzip -9 > BackUp\'+ed_nama.Text+'.sql.gz';
+2: param:='/C mysqldump -u'+db.UserName+' -p'+db.Password+' --host='+db.Server
++' --complete-insert --routines '+db.Database+' | gzip > BackUp\'+ed_nama.Text+'.sql.gz';
 
 end;
 //ShellExecute(Handle, 'open', 'cmd.exe', Pchar(param) ,pchar(wpath), SW_HIDE);
