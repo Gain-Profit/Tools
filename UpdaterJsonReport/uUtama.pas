@@ -57,7 +57,7 @@ begin
   idmd5 := TIdHashMessageDigest5.Create;
   fs := TFileStream.Create(fileName, fmOpenRead or fmShareDenyWrite);
   try
-    result := idmd5.AsHex(idmd5.HashValue(fs));
+    result := idmd5.HashStreamAsHex(fs);
   finally
     fs.Free;
     idmd5.Free;
@@ -176,7 +176,7 @@ begin
     js := TlkJSONobject.Create(False);
     jsonList := TlkJSONlist.Create;
 
-    for no := 0 to 10 do
+    for no := 0 to lv.Items.Count - 1 do
     begin
       jsonDetail := TlkJSONobject.Create(False);
       jsondetail.Add('nama', lv.Items[no].Caption);
