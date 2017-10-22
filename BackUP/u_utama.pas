@@ -7,7 +7,7 @@ uses
   Dialogs, StdCtrls,shellapi, DB,
   ExtCtrls, ComCtrls, Menus, Grids, Buttons,registry, Mask,
   sMaskEdit, sCustomComboEdit, sTooledit,inifiles, sButton, DBAccess,
-  MyAccess;
+  MyAccess, SHFolder;
 
 type
   TFrmBackup = class(TForm)
@@ -32,6 +32,7 @@ type
   protected
     procedure WndProc(var Msg : TMessage); override;
   private
+    FBackUpPath : string;
     pusat,jalur,nama,kata,data,wpath: string;
     Connected: Boolean;
     procedure BackUpToFile(AType : Integer = 2; AName : string = '');
@@ -50,6 +51,16 @@ implementation
 uses Math;
 
 {$R *.dfm}
+
+function GetAppData(Folder: Integer): string;
+var
+  path: array[0..MAX_PATH] of Char;
+begin
+  if Succeeded(SHGetFolderPath(0, Folder, 0, 0, @Path[0])) then
+    Result := path + '\Gain Profit\'
+  else
+    Result := '';
+end;
 
 function ShellExecute_AndWait(Operation, FileName, Parameter, Directory: string;
   Show: Word; bWait: Boolean): Longint;
@@ -121,7 +132,7 @@ procedure TFrmBackup.CekConnection;
 var
   X: TextFile;
 begin
-  assignfile(X,wpath+'\koneksi.cbCon');
+  assignfile(X,wpath+'\koneksi_root.cbCon');
   try
     reset(X);
     readln(X,pusat);
@@ -167,14 +178,15 @@ procedure TFrmBackup.FormCreate(Sender: TObject);
 begin
   wpath:=extractfilepath(application.ExeName);
 
-  if not (DirectoryExists(wpath + '\BackUp')) then
-    MkDir(wpath+'\BackUp');
+  FBackUpPath := GetAppData(CSIDL_COMMON_APPDATA) + '\BackUp\';
+  if not (DirectoryExists(FBackUpPath)) then
+    CreateDir(FBackUpPath);
 
-  RequiredFile('gzip.exe');
+  RequiredFile(wpath + '\gzip.exe');
 
-  RequiredFile('mysqldump.exe');
+  RequiredFile(wpath + '\mysqldump.exe');
 
-  RequiredFile('koneksi.cbCon');
+  RequiredFile(wpath + '\koneksi_root.cbCon');
 
   ShowWindow(Application.Handle, SW_HIDE);
 
@@ -204,16 +216,19 @@ begin
 
   case AType of
     //hanya strukturnya saja
-    0: LParam:='/C mysqldump -u'+db.UserName+' -p'+db.Password+' --host='+db.Server
-       +' --no-data --routines '+db.Database+' | gzip > BackUp\'+LName+'.sql.gz';
+    0: LParam:='/C mysqldump -u' + db.UserName + ' -p' + db.Password +
+      ' --host=' + db.Server + ' -P' + IntToStr(db.Port) + ' --no-data --routines '+
+       db.Database+' | gzip > "' + FBackUpPath + LName + '.sql.gz"';
 
     // hanya datanya saja
-    1: LParam:='/C mysqldump -u'+db.UserName+' -p'+db.Password+' --host='+db.Server
-       +' --no-create-info --complete-insert '+db.Database+' | gzip > BackUp\'+LName+'.sql.gz';
+    1: LParam:='/C mysqldump -u' + db.UserName + ' -p' + db.Password +
+      ' --host=' + db.Server + ' -P' + IntToStr(db.Port) + ' --no-create-info --complete-insert '+
+       db.Database + ' | gzip > "' + FBackUpPath + LName + '.sql.gz"';
 
     // data komplit (struktur plus data)
-    2: LParam:='/C mysqldump -u'+db.UserName+' -p'+db.Password+' --host='+db.Server
-       +' --complete-insert --routines '+db.Database+' | gzip > BackUp\'+LName+'.sql.gz';
+    2: LParam:='/C mysqldump -u' + db.UserName + ' -p' + db.Password +
+      ' --host=' + db.Server + ' -P' + IntToStr(db.Port) + ' --complete-insert --routines '+
+       db.Database + ' | gzip > "' + FBackUpPath + LName + '.sql.gz"';
   end;
   
   Caption:= 'Proses Backup Berjalan';

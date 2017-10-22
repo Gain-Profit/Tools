@@ -32,6 +32,7 @@ object FrmBackup: TFrmBackup
     Font.Name = 'Rockwell'
     Font.Style = [fsBold]
     ParentFont = False
+    ExplicitWidth = 212
   end
   object sb: TStatusBar
     Left = 0
