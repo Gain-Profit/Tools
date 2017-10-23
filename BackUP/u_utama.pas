@@ -182,11 +182,11 @@ begin
   if not (DirectoryExists(FBackUpPath)) then
     CreateDir(FBackUpPath);
 
-  RequiredFile(wpath + '\gzip.exe');
+  RequiredFile(wpath + 'gzip.exe');
 
-  RequiredFile(wpath + '\mysqldump.exe');
+  RequiredFile(wpath + 'mysqldump.exe');
 
-  RequiredFile(wpath + '\koneksi_root.cbCon');
+  RequiredFile(wpath + 'koneksi_root.cbCon');
 
   ShowWindow(Application.Handle, SW_HIDE);
 
