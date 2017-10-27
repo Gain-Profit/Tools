@@ -150,7 +150,7 @@ begin
   New(HName);
   if GetHostName(HName^, SizeOf(Name)) = 0 then
   begin
-    HostName := StrPas(HName^);
+    HostName := string(AnsiString(HName^));
     HEnt := GetHostByName(HName^);
     for i := 0 to HEnt^.h_length - 1 do
       IPaddr := Concat(IPaddr, IntToStr(Ord(HEnt^.h_addr_list^[i])) + '.');
@@ -249,7 +249,7 @@ begin
   while not aQuery.Eof do
   begin
     S1 := '';
-    for I := 0 to aQuery.FieldCount - 2 do
+    for I := 0 to aQuery.FieldCount - 1 do
     begin
       if aQuery.Fields[I].DataType in [ftSmallint, ftInteger, ftFloat,
         ftCurrency, ftLargeint] then
@@ -261,20 +261,6 @@ begin
           + '#&'
       else
         S1 := S1 + '#' + aQuery.Fields[I].AsString + '#&';
-    end;
-
-    if aQuery.Fields.FieldByNumber(aQuery.FieldCount - 1) <> nil then
-    begin
-      if aQuery.Fields[I].DataType in [ftSmallint, ftInteger, ftFloat,
-        ftCurrency, ftLargeint] then
-        S1 := S1 + floattostr(aQuery.Fields[I].AsFloat)
-      else if aQuery.Fields[I].DataType in [ftDate] then
-        S1 := S1 + '#' + formatdatetime('yyyy-MM-dd', aQuery.Fields[I].AsDateTime) + '#'
-      else if aQuery.Fields[I].DataType in [ftDateTime] then
-        S1 := S1 + '#' + formatdatetime('yyyy-MM-dd hh:nn:ss', aQuery.Fields[I].AsDateTime)
-          + '#'
-      else
-        S1 := S1 + '#' + aQuery.Fields[I].AsString + '#';
     end;
 
     S1 := Format('%s%s%s', ['<', S1, '>']);
@@ -340,7 +326,7 @@ end;
 function Tfungsi.TulisFormat(Text: string; lebar: integer; Alignment: TAlignment
   = taleftjustify): string;
 var
-  left, right: integer;
+  left: integer;
 begin
   if Length(Text) > lebar then
     Text := Copy(Text, 1, lebar - 1);
@@ -355,7 +341,6 @@ begin
   end;
   if left < 0 then
     left := 0;
-  right := lebar - (left + Length(Text));
 
   result := addspace(left, text);
 end;
@@ -365,7 +350,6 @@ var
   Registry: TRegistry;
   LRegSerial, LKompSerial : string;
 begin
-  Result := False;
   Registry := TRegistry.Create(KEY_READ);
   try
   Registry.RootKey := HKEY_LOCAL_MACHINE;
@@ -458,7 +442,6 @@ type
     pDataType: pChar;
   end;
 var
-  Count: Cardinal;
   BytesWritten: Cardinal;
   hPrinter: THandle;
   hDeviceMode: THandle;
@@ -466,8 +449,6 @@ var
   Driver: array[0..255] of Char;
   Port: array[0..255] of Char;
   DocInfo: TDoc_Info_1;
-  f: file;
-  Buffer: Pointer;
   Code: AnsiString;
 begin
   try
