@@ -4,7 +4,7 @@ interface
 
 uses
   Classes, DB, sysutils, ShellAPI, windows, Winsock, Printers, WinSpool,
-  IniFiles, DBAccess, MyAccess;
+  IniFiles, DBAccess, MyAccess, System.Hash, System.Win.Registry;
 
 type
   TVerCompare = (vLower, vEqual, vHigher);
@@ -32,7 +32,7 @@ type
 
   Tfungsi = class(TObject)
   private
-    {private declaration}
+    function GetSerial(AKode: string; APerusahaan: string): string;
   public
     function GetIPFromHost(var HostName, IPaddr, WSAErr: string): Boolean;
     procedure Amankan(pathin, pathout: string; Chave: Word);
@@ -47,6 +47,7 @@ type
     function AddSpace(Count: integer; Text: string; AsTail: boolean = false): string;
     function TulisFormat(Text: string; lebar: integer; Alignment: TAlignment =
       taleftjustify): string;
+    function CekSerial(KdPerusahaan: string; NamaPerusahaan: string): Boolean;
   end;
 
 var
@@ -169,6 +170,22 @@ begin
   end;
   Dispose(HName);
   WSACleanup;
+end;
+
+function Tfungsi.GetSerial(AKode, APerusahaan: string): string;
+var
+  LSerial : string;
+  Str1, Str2, Str3, Str4, Str5: string;
+begin
+  LSerial := THashSHA1.GetHashString('GAIN' + AKode + APerusahaan + 'PROFIT');
+  Str1 := Copy(LSerial, 34, 5);
+  Str2 := Copy(LSerial, 8, 6);
+  Str3 := Copy(LSerial, 25, 3);
+  Str4 := Copy(LSerial, 12, 4);
+  Str5 := Copy(LSerial, 2, 5);
+
+  LSerial := Format('%s-%s-%s-%s-%s', [Str1, Str2, Str3, Str4, Str5]);
+  Result := UpperCase(LSerial);
 end;
 
 procedure Tfungsi.Amankan(pathin, pathout: string; Chave: Word);
@@ -341,6 +358,25 @@ begin
   right := lebar - (left + Length(Text));
 
   result := addspace(left, text);
+end;
+
+function Tfungsi.CekSerial(KdPerusahaan, NamaPerusahaan: string): Boolean;
+var
+  Registry: TRegistry;
+  LRegSerial, LKompSerial : string;
+begin
+  Result := False;
+  Registry := TRegistry.Create(KEY_READ);
+  try
+  Registry.RootKey := HKEY_LOCAL_MACHINE;
+  // False because we do not want to create it if it doesn't exist
+  Registry.OpenKey('SOFTWARE\Ngadep\GainProfit\Serial', False);
+  LRegSerial := Registry.ReadString('Serial' + KdPerusahaan);
+  LKompSerial := GetSerial(KdPerusahaan, NamaPerusahaan);
+  Result := CompareStr(LRegSerial, LKompSerial) = 0;
+  finally
+    Registry.Free;
+  end;
 end;
 
 procedure Tfungsi.CetakFile(const sFileName: string);
