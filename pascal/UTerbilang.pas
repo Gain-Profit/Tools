@@ -2,194 +2,168 @@ unit UTerbilang;
 
 interface
 
-uses SysUtils;
+uses System.SysUtils;
 
-type TStr15= String[15];
-
-function MyTerbilang(Bilangan:Double):String;
+function MyTerbilang(ABilangan: Double): string;
 
 const
-  NL : ARRAY[0..9] OF STRING[8]
-           = ( '','Satu','Dua','Tiga','Empat','Lima','Enam','Tujuh',
-               'Delapan','Sembilan');
+  NL : ARRAY[0..9] of string
+        = ('', 'Satu', 'Dua', 'Tiga', 'Empat', 'Lima', 'Enam', 'Tujuh',
+           'Delapan', 'Sembilan');
 
 implementation
 
-Function nolkiri(x:string;n:byte):string;
-var p : integer;
-    s : TStr15;
-begin
-  p := length(x);
-  if n > p then
-  begin
-    fillchar(s,(n-p)+1,'0');
-    s[0] := AnsiChar(n-p);
-    x := s+x;
-  end;
-  nolkiri := x;
-end;
-
-Function noltrim (x:TStr15):string;
-begin
-  if (x[0] <> #0) then
-     while (x[1] = '0') and (x[0] <> #0) do
-           delete (x,1,1);
-     noltrim := x;
-end;
-
-function saysat(sat:TStr15):string;
-var angka,i : integer;
-begin
-  if sat[1]='0' then saysat := '' else
-  begin
-    val(sat[1],angka,i);
-    saysat := nl[angka]+' '
-  end;
-end;
-
-function saypul(pul : TStr15) : STRING;
-begin
-  if pul[1] = '1' then
-  begin
-    if pul[2] = '1' then saypul := 'Sebelas ' else
-    if pul[2] = '0' then saypul := 'Sepuluh ' else
-       saypul := saysat(pul[2])+'Belas '
-  end else
-  if pul[1] in['2'..'9'] then
-     saypul := saysat(pul[1])+'Puluh '+ saysat(pul[2])
-  else saypul := saysat(pul[2]);
-end;
-
-function sayrat(rat : TStr15) : string;
-begin
-  if rat[1] = '1' then
-     sayrat := 'Seratus '+ saypul(rat[2]+rat[3]) else
-  if rat[1] in['2'..'9'] then
-     sayrat := saysat(rat[1])+'Ratus '+ saypul(rat[2]+rat[3])
-  else sayrat := saypul(rat[2]+rat[3]);
-end;
-
-function sayribu(ribu : TStr15) : string;
-var a,b : TStr15;
-begin
-  ribu := nolkiri(ribu,6);
-  a := copy(ribu,1,3);
-  b := copy(ribu,4,3);
-  if (length(noltrim(a)) = 1) and (a[3] = '1') then
-     sayribu := 'Seribu '+ sayrat(b) else
-  if length(noltrim(a)) <> 0 then
-     sayribu := sayrat(a)+'Ribu '+ sayrat(b)
-  else sayribu := sayrat(b);
-end;
-
-function sayjuta(juta : TStr15) : string;
-var a,b : TStr15;
-begin
-  juta := nolkiri(juta,9);
-  a := copy(juta,1,3);
-  b := copy(juta,4,6);
-  if length(noltrim(a)) <> 0 then
-     sayjuta :=  sayrat(a)+'Juta '+sayribu(b)
-  else sayjuta := sayribu(b);
-end;
-
-function saymill(mill : TStr15) : string;
-var a,b : TStr15;
-begin
-  mill := nolkiri(mill,12);
-  a := copy(mill,1,3);
-  b := copy(mill,4,9);
-  if length(noltrim(a)) <> 0 then
-     saymill :=  sayrat(a)+'Milyar '+sayjuta(b)
-  else saymill := sayjuta(b);
-end;
-
-function saytril(tril : TStr15) : string;
-var a,b : TStr15;
-begin
-  tril := nolkiri(tril,15);
-  a := copy(tril,1,3);
-  b := copy(tril,4,12);
-  if length(noltrim(a)) <> 0 then
-     saytril :=  sayrat(a)+'Trillyun '+saymill(b)
-  else saytril :=  saymill(b);
-end;
-
-function MyTerbilang;
+function NolKiri(X: string; N: byte): string;
 var
-   a, b, x, y, Induk, Koma, TI, TK, Tanda: String;
-    c,d,e,f : Integer;
-   bilText:String;
+  I: Integer;
 begin
-//Inisialisasi
-  c:=0;
-  BilText := FloatToStr(bilangan);
-  x:=  bilText;
-  y:=x;
-  TI:='';
-  TK:='';
-  Tanda:='';
-//Mencari titik lalu memisahkan keduanya--
-  if pos('.',BilText)>0 then
+  Result := X;
+  if N > Length(X) then
   begin
-     while pos('.',y)>0 do
-       delete(y,1,1);
-       f:=Length(y);
-     while pos('.',x)>0 do
-       delete(x,pos('.',x),f+1);
-     Induk:=x;
-     Koma:=y;
-     Tanda :='Koma ';
-  end
-//Mencari komalalu memisahkan keduanya----
-  else
-    if pos(',',BilText)>0 then
-    begin
-     while pos(',',y)>0 do
-       delete(y,1,1);
-       f:=Length(y);
-     while pos(',',x)>0 do
-       delete(x,pos(',',x),f+1);
-     Induk:=x;
-     Koma:=y;
-     Tanda:='Koma ';
-    end;
-//Menulis Angka Induk----------------------
-   case length(x) of
-   0      : TI   := '';
-   1      : Begin
-              if x='0' then TI:='Nol' else
-              TI   := saysat(x);
-            End;
-   2      : TI:= saypul(x);
-   3      : TI:= sayrat(x);
-   4..6   : TI:= sayribu(x);
-   7..9   : TI:= sayjuta(x);
-   10..12 : TI:= saymill(x);
-   13..15 : TI:= saytril(x);
-   end;
-//Menulis angka koma------------------------
-  for d:=0 to (Length(Koma)-1) do
-  begin
-     c:=c+1;
-     a:=Copy(Koma,c,1);
-     e:=StrToIntdef(a,0);
-     Case e of
-     0 : b:='Nol ';
-     1 : b:='Satu ';
-     2 : b:='Dua ';
-     3 : b:='Tiga ';
-     4 : b:='Empat ';
-     5 : b:='Lima ';
-     6 : b:='Enam ';
-     7 : b:='Tujuh ';
-     8 : b:='Delapan ';
-     9 : b:='Sembilan ';
-     end;
-     TK:=TK+b;
+    for I := Length(X) to Pred(N) do
+      Result := '0' + Result;
   end;
-//Tulis Semuanya-----------------------
-MyTerbilang:=TI+Tanda+TK;
+end;
+
+function NolTrim(x: string): string;
+begin
+  while (x[1] = '0') do
+    Delete (x, 1, 1);
+  Result := x;
+end;
+
+function SaySat(ASatuan: string): string;
+begin
+  Result := Format('%s ', [ NL[StrToInt(ASatuan)] ]);
+end;
+
+function SayPul(APuluhan: string): string;
+begin
+  if APuluhan[1] = '1' then
+  begin
+    if APuluhan[2] = '1' then
+      Result := 'Sebelas ' else
+    if APuluhan[2] = '0' then
+      Result := 'Sepuluh ' else
+      Result := Format('%sBelas ', [SaySat(APuluhan[2])]);
+  end else
+  if CharInSet(APuluhan[1], ['2'..'9']) then
+    Result := Format('%sPuluh %s',[ SaySat(APuluhan[1]), SaySat(APuluhan[2]) ]) else
+    Result := SaySat(APuluhan[2]);
+end;
+
+function SayRat(ARatusan: string): string;
+begin
+  if ARatusan[1] = '1' then
+    Result := Format('Seratus %s', [SayPul(ARatusan[2] + ARatusan[3])]) else
+  if CharInSet(ARatusan[1], ['2'..'9']) then
+    Result := Format('%sRatus %s', [ SaySat(ARatusan[1]),
+      SayPul(ARatusan[2] + ARatusan[3]) ]) else
+    Result := SayPul(ARatusan[2] + ARatusan[3]);
+end;
+
+function SayRibu(ARibuan: string): string;
+var
+  LKiri, LKanan : string;
+begin
+  ARibuan := NolKiri(ARibuan, 6);
+  Lkiri := Copy(ARibuan, 1, 3);
+  Lkanan := Copy(ARibuan, 4, 3);
+  if (Length(NolTrim(LKiri)) = 1) and (LKiri[3] = '1') then
+     Result := Format('Seribu %s', [SayRat(Lkanan)]) else
+  if Length(NolTrim(LKiri)) <> 0 then
+     Result := Format('%sRibu %s', [SayRat(LKiri), SayRat(Lkanan)]) else
+     Result := SayRat(Lkanan);
+end;
+
+function SayJuta(Ajutaan: string): string;
+var
+  LKiri, LKanan : string;
+begin
+  Ajutaan := NolKiri(Ajutaan, 9);
+  LKiri := Copy(Ajutaan,1,3);
+  LKanan := Copy(Ajutaan,4,6);
+  if Length(NolTrim(LKiri)) <> 0 then
+     Result := Format('%sJuta %s', [SayRat(LKiri), SayRibu(LKanan)]) else
+     Result := SayRibu(LKanan);
+end;
+
+function SayMil(AMilyaran: string) : string;
+var
+  LKiri, LKanan : string;
+begin
+  AMilyaran := NolKiri(AMilyaran, 12);
+  LKiri := Copy(AMilyaran,1,3);
+  LKanan := Copy(AMilyaran,4,9);
+  if Length(NolTrim(LKiri)) <> 0 then
+     Result := Format('%sMilyar %s', [SayRat(LKiri), SayJuta(LKanan)]) else
+     Result := SayJuta(LKanan);
+end;
+
+function SayTril(ATrilyun: string) : string;
+var
+  LKiri, LKanan : string;
+begin
+  ATrilyun := nolkiri(ATrilyun, 15);
+  LKiri := Copy(ATrilyun,1,3);
+  LKanan := Copy(ATrilyun,4,12);
+  if Length(NolTrim(LKiri)) <> 0 then
+     Result := Format('%sTrillyun %s', [SayRat(LKiri), SayMil(LKanan)]) else
+     Result := SayMil(LKanan);
+end;
+
+function MyTerbilang(ABilangan: Double): string;
+var
+  LBilText, LInduk, LKoma, LTanda, TI, TK : string;
+  I : Integer;
+  LDecimal : Char;
+begin
+  //Inisialisasi
+  LDecimal := FormatSettings.DecimalSeparator;
+  LBilText := FloatToStr(ABilangan);
+  LInduk  :=  LBilText;
+
+  //Mencari titik lalu memisahkan keduanya--
+  if pos(LDecimal, LBilText) > 0 then
+  begin
+    LKoma :=  LInduk;
+    Delete(LKoma, 1, pos(LDecimal, LBilText));
+    Delete(LInduk, pos('.', LInduk), Length(LKoma) + 1);
+    LTanda := 'Koma ';
+  end;
+  //Menulis Angka Induk----------------------
+  case length(LInduk) of
+  0      : TI   := '';
+  1      : Begin
+            if LInduk = '0' then
+            TI := 'Nol' else
+            TI := SaySat(LInduk);
+          End;
+  2      : TI:= SayPul(LInduk);
+  3      : TI:= SayRat(LInduk);
+  4..6   : TI:= SayRibu(LInduk);
+  7..9   : TI:= SayJuta(LInduk);
+  10..12 : TI:= SayMil(LInduk);
+  13..15 : TI:= SayTril(LInduk);
+  end;
+//Menulis angka koma------------------------
+  for I := 0 to (Length(LKoma)-1) do
+  begin
+     Case StrToInt(Copy(LKoma, I + 1, 1)) of
+     0 : TK := TK + 'Nol ';
+     1 : TK := TK + 'Satu ';
+     2 : TK := TK + 'Dua ';
+     3 : TK := TK + 'Tiga ';
+     4 : TK := TK + 'Empat ';
+     5 : TK := TK + 'Lima ';
+     6 : TK := TK + 'Enam ';
+     7 : TK := TK + 'Tujuh ';
+     8 : TK := TK + 'Delapan ';
+     9 : TK := TK + 'Sembilan ';
+     end;
+  end;
+  //Tulis Semuanya-----------------------
+  Result := TI + LTanda + TK;
 end;
 
 end.
