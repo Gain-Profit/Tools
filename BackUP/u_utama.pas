@@ -4,10 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls,shellapi, DB,
-  ExtCtrls, ComCtrls, Menus, Grids, Buttons,registry, Mask,
-  sMaskEdit, sCustomComboEdit, sTooledit,inifiles, sButton, DBAccess,
-  MyAccess, SHFolder;
+  Dialogs, StdCtrls,shellapi, DB, ExtCtrls, ComCtrls, Menus, Grids,
+  Buttons,registry, Mask, inifiles, DBAccess, MyAccess, SHFolder;
 
 type
   TFrmBackup = class(TForm)
