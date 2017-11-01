@@ -26,7 +26,7 @@ object FormUtama: TFormUtama
     Align = alClient
     TabOrder = 0
     object TableView: TcxGridDBTableView
-      NavigatorButtons.ConfirmDelete = False
+      Navigator.Buttons.CustomButtons = <>
       DataController.Summary.DefaultGroupSummaryItems = <>
       DataController.Summary.FooterSummaryItems = <>
       DataController.Summary.SummaryGroups = <>
@@ -74,22 +74,13 @@ object FormUtama: TFormUtama
     Height = 41
     Align = alTop
     TabOrder = 1
-    object btnBrowse: TButton
+    object edtFolder: TEdit
       Left = 8
       Top = 8
-      Width = 75
+      Width = 713
       Height = 21
-      Caption = 'Pilih Folder'
       TabOrder = 0
-      OnClick = btnBrowseClick
-    end
-    object edtFolder: TEdit
-      Left = 88
-      Top = 8
-      Width = 633
-      Height = 21
-      TabOrder = 1
-      Text = 'D:\WORKSPACES\GAIN PROFIT\GAIN PROFIT'
+      Text = 'E:\WORKSPACE\GAIN PROFIT\GAIN PROFIT\Win32\Release'
     end
     object btnCek: TButton
       Left = 728
@@ -97,7 +88,7 @@ object FormUtama: TFormUtama
       Width = 89
       Height = 21
       Caption = 'Cek'
-      TabOrder = 2
+      TabOrder = 1
       OnClick = btnCekClick
     end
     object btnSimpan: TButton
@@ -106,7 +97,7 @@ object FormUtama: TFormUtama
       Width = 81
       Height = 21
       Caption = 'Simpan'
-      TabOrder = 3
+      TabOrder = 2
       OnClick = btnSimpanClick
     end
   end

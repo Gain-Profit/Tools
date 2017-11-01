@@ -7,9 +7,9 @@ uses
   Dialogs, StdCtrls, cxStyles, cxCustomData, cxGraphics, cxFilter, cxData,
   cxDataStorage, cxEdit, DB, cxDBData, cxGridCustomTableView, cxGridTableView,
   cxGridDBTableView, cxGridLevel, cxClasses, cxControls, cxGridCustomView,
-  cxGrid, ExtCtrls, IdHTTP, uLkJSON, ExtActns, ComCtrls, frxBarcode, frxClass,
-  AbBase, AbBrowse, AbZBrows, AbUnzper, TlHelp32, AbComCtrls, AbArcTyp, ShellAPI,
-  FileCtrl, IdHashMessageDigest, idHash, AbZipper;
+  cxGrid, ExtCtrls, IdHTTP, ExtActns, ComCtrls, AbBase, AbBrowse, AbZBrows,
+  AbUnzper, TlHelp32, AbComCtrls, AbArcTyp, ShellAPI, AbZipper,
+  cxLookAndFeels, cxLookAndFeelPainters, cxNavigator, System.Hash, System.JSON;
 
 type
   TFormUtama = class(TForm)
@@ -23,7 +23,6 @@ type
     TableViewColumn4: TcxGridDBColumn;
     TableViewColumn5: TcxGridDBColumn;
     status: TStatusBar;
-    btnBrowse: TButton;
     edtFolder: TEdit;
     btnCek: TButton;
     btnSimpan: TButton;
@@ -31,7 +30,6 @@ type
     function _get(baris, kolom: Integer): string;
     procedure _set(baris, kolom: Integer; _isi: variant);
     procedure FormCreate(Sender: TObject);
-    procedure btnBrowseClick(Sender: TObject);
     procedure btnCekClick(Sender: TObject);
     procedure btnSimpanClick(Sender: TObject);
   private
@@ -88,8 +86,8 @@ begin
   begin
     repeat
       // untuk windows 8 ke bawah
-      // if (SR.Attr <> faDirectory) then
-      if (SR.Attr <> 8208) then
+      if (SR.Attr <> faDirectory) then
+//      if (SR.Attr <> 8208) then
       begin
         if ExtractFileExt(SR.Name) = extensi then
         begin
@@ -105,22 +103,6 @@ begin
       end;
     until FindNext(SR) <> 0;
     FindClose(SR);
-  end;
-end;
-
-//returns MD5 has for a file
-function MD5(const fileName: string): string;
-var
-  idmd5: TIdHashMessageDigest5;
-  fs: TFileStream;
-begin
-  idmd5 := TIdHashMessageDigest5.Create;
-  fs := TFileStream.Create(fileName, fmOpenRead or fmShareDenyWrite);
-  try
-    result := idmd5.AsHex(idmd5.HashValue(fs));
-  finally
-    fs.Free;
-    idmd5.Free;
   end;
 end;
 
@@ -165,14 +147,6 @@ begin
   ThisPath := StringReplace(tempat, '\', '/', [rfReplaceAll]);
 end;
 
-procedure TFormUtama.btnBrowseClick(Sender: TObject);
-var
-  chosenDirectory: string;
-begin
-  if selectdirectory('Select a directory', '', chosenDirectory) then
-    edtFolder.Text := chosenDirectory;
-end;
-
 procedure TFormUtama.btnCekClick(Sender: TObject);
 var
   listFile: TStringList;
@@ -192,7 +166,7 @@ begin
     namaSaja := Copy(nama, 0, Length(nama) - 4);
     path := Copy(fullNama, Length(edtFolder.Text) + 1, Length(fullNama) - Length
       (edtFolder.Text) - Length(nama));
-    md5file := MD5(fullNama);
+    md5file := THashMD5.GetHashStringFromFile(fullNama);
     versi := program_versi(fullNama);
     // ambil info untuk company name
     companyName := GetInfoApp(fullNama, '\CompanyName');
@@ -219,36 +193,34 @@ end;
 procedure TFormUtama.btnSimpanClick(Sender: TObject);
 var
   X: TextFile;
-  js, jsonDetail: TlkJSONobject;
-  jsonList: TlkJSONlist;
-  no, i: Integer;
-  json: string;
+  I: Integer;
+  LJSon, LData : TJSONObject;
+  LList : TJSONArray;
 begin
   try
-    js := TlkJSONobject.Create(False);
-    jsonList := TlkJSONlist.Create;
+    LList := TJSONArray.Create;
 
-    for no := 0 to TableView.DataController.RecordCount - 1 do
+    for I := 0 to TableView.DataController.RecordCount - 1 do
     begin
-      jsonDetail := TlkJSONobject.Create(False);
-      jsondetail.Add('nama', _get(no, 0));
-      jsondetail.Add('path', _get(no, 1));
-      jsondetail.Add('md5_file', _get(no, 2));
-      jsondetail.Add('versi', _get(no, 3));
-      jsondetail.Add('download', _get(no, 4));
-      jsonList.Add(jsonDetail);
-    end;
-    js.Add('profit', jsonList);
+      LData := TJSONObject.Create;
+      LData.AddPair('nama', _get(I, 0));
+      LData.AddPair('path', _get(I, 1));
+      LData.AddPair('md5_file', _get(I, 2));
+      LData.AddPair('versi', _get(I, 3));
+      LData.AddPair('download', _get(I, 4));
 
-    i := 0;
-    json := GenerateReadableText(js, i);
+      LList.Add(LData);
+    end;
+    LJSon := TJSONObject.Create;
+    LJSon.AddPair('profit', LList);
 
     assignfile(X, 'updater.json');
     rewrite(X);
-    write(X, json);
+    write(X, LJson.ToJSON);
     closefile(X);
 
     showmessage('penyimpanan data Berhasil');
+    LJSon.Free;
   except
     on E: Exception do
     begin
