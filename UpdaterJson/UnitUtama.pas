@@ -166,7 +166,7 @@ begin
     namaSaja := Copy(nama, 0, Length(nama) - 4);
     path := Copy(fullNama, Length(edtFolder.Text) + 1, Length(fullNama) - Length
       (edtFolder.Text) - Length(nama));
-    md5file := THashMD5.GetHashStringFromFile(fullNama);
+    md5file := UpperCase(THashMD5.GetHashStringFromFile(fullNama));
     versi := program_versi(fullNama);
     // ambil info untuk company name
     companyName := GetInfoApp(fullNama, '\CompanyName');
