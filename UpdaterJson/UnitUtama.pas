@@ -9,7 +9,7 @@ uses
   cxGridDBTableView, cxGridLevel, cxClasses, cxControls, cxGridCustomView,
   cxGrid, ExtCtrls, IdHTTP, ExtActns, ComCtrls, AbBase, AbBrowse, AbZBrows,
   AbUnzper, TlHelp32, AbComCtrls, AbArcTyp, ShellAPI, AbZipper,
-  cxLookAndFeels, cxLookAndFeelPainters, cxNavigator, System.Hash, System.JSON;
+  cxLookAndFeels, cxLookAndFeelPainters, cxNavigator, System.Hash, uLkJSON;
 
 type
   TFormUtama = class(TForm)
@@ -193,34 +193,36 @@ end;
 procedure TFormUtama.btnSimpanClick(Sender: TObject);
 var
   X: TextFile;
-  I: Integer;
-  LJSon, LData : TJSONObject;
-  LList : TJSONArray;
+  js, jsonDetail: TlkJSONobject;
+  jsonList: TlkJSONlist;
+  no, i: Integer;
+  json: string;
 begin
   try
-    LList := TJSONArray.Create;
+    js := TlkJSONobject.Create(False);
+    jsonList := TlkJSONlist.Create;
 
-    for I := 0 to TableView.DataController.RecordCount - 1 do
+    for no := 0 to TableView.DataController.RecordCount - 1 do
     begin
-      LData := TJSONObject.Create;
-      LData.AddPair('nama', _get(I, 0));
-      LData.AddPair('path', _get(I, 1));
-      LData.AddPair('md5_file', _get(I, 2));
-      LData.AddPair('versi', _get(I, 3));
-      LData.AddPair('download', _get(I, 4));
-
-      LList.Add(LData);
+      jsonDetail := TlkJSONobject.Create(False);
+      jsondetail.Add('nama', _get(no, 0));
+      jsondetail.Add('path', _get(no, 1));
+      jsondetail.Add('md5_file', _get(no, 2));
+      jsondetail.Add('versi', _get(no, 3));
+      jsondetail.Add('download', _get(no, 4));
+      jsonList.Add(jsonDetail);
     end;
-    LJSon := TJSONObject.Create;
-    LJSon.AddPair('profit', LList);
+    js.Add('profit', jsonList);
+
+    i := 0;
+    json := GenerateReadableText(js, i);
 
     assignfile(X, 'updater.json');
     rewrite(X);
-    write(X, LJson.ToJSON);
+    write(X, json);
     closefile(X);
 
     showmessage('penyimpanan data Berhasil');
-    LJSon.Free;
   except
     on E: Exception do
     begin

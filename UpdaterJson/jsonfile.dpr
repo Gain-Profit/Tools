@@ -2,7 +2,8 @@ program jsonfile;
 
 uses
   Forms,
-  UnitUtama in 'UnitUtama.pas' {FormUtama};
+  UnitUtama in 'UnitUtama.pas' {FormUtama},
+  uLkJSON in '..\pascal\uLkJSON.pas';
 
 {$R *.res}
 
