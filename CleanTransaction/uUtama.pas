@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, DB, DBAccess, MyAccess, StdCtrls;
+  Dialogs, DB, DBAccess, MyAccess, StdCtrls, System.UITypes;
 
 type
   TFUtama = class(TForm)

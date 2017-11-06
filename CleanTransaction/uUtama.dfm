@@ -1,10 +1,10 @@
 object FUtama: TFUtama
   Left = 320
   Top = 158
-  Width = 322
-  Height = 208
   BorderIcons = [biSystemMenu]
   Caption = 'Aplikasi Hapus Transaksi'
+  ClientHeight = 181
+  ClientWidth = 314
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
