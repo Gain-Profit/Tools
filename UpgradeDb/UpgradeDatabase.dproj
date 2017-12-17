@@ -5,7 +5,7 @@
         <FrameworkType>VCL</FrameworkType>
         <MainSource>UpgradeDatabase.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">Release</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
@@ -47,7 +47,7 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
-        <DCC_ExeOutput>.\$(Platform)\$(Config)</DCC_ExeOutput>
+        <DCC_ExeOutput>..\..\Gain Profit\Tools</DCC_ExeOutput>
         <DCC_E>false</DCC_E>
         <DCC_N>false</DCC_N>
         <DCC_S>false</DCC_S>
@@ -59,13 +59,17 @@
         <UWP_DelphiLogo44>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png</UWP_DelphiLogo44>
         <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
         <SanitizedProjectName>UpgradeDatabase</SanitizedProjectName>
+        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
+        <VerInfo_Locale>2057</VerInfo_Locale>
+        <VerInfo_Keys>CompanyName=gain-profit;FileDescription=$(MSBuildProjectName);FileVersion=0.0.1.0;InternalName=UpgradeDb;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_MajorVer>0</VerInfo_MajorVer>
+        <VerInfo_Release>1</VerInfo_Release>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
+        <Icon_MainIcon>img\icon.ico</Icon_MainIcon>
         <DCC_UsePackage>DBXSqliteDriver;dxCoreRS25;dxSkinValentineRS25;DBXInterBaseDriver;dxSkinOffice2007PinkRS25;dxSkinMcSkinRS25;vclactnband;vclFireDAC;cxExportRS25;dxHttpIndyRequestRS25;tethering;svnui;dxSkinOffice2010BlueRS25;dxPSTeeChartRS25;FireDACADSDriver;dxSkinMoneyTwinsRS25;dxPScxCommonRS25;frxe25;dxSkinSilverRS25;vcltouch;dxSkinDarkRoomRS25;dxSkinDarkSideRS25;vcldb;bindcompfmx;svn;Intraweb;dxSkinOffice2013WhiteRS25;inetdb;cxLibraryRS25;dxOfficeCoreRS25;FmxTeeUI;AbbreviaVCLD;fmx;fmxdae;dxSkinBlackRS25;dxSkinBlueRS25;dxSkinOffice2007BlueRS25;dxSkinOffice2007SilverRS25;frxDB25;dxSkinOffice2007BlackRS25;dxSkinDevExpressDarkStyleRS25;frxTee25;dbexpress;IndyCore;dxSkinVS2010RS25;vclx;dxSkinFoggyRS25;dsnap;mydac250;dxSkinSevenRS25;dxPSDBTeeChartRS25;dxSkinSpringTimeRS25;dxSkinLiquidSkyRS25;VCLRESTComponents;dxPScxExtCommonRS25;mydacvcl250;cxPageControlRS25;dxSkinLilianRS25;dxPSLnksRS25;acntDX10Tokyo_R;dxPSdxSpreadSheetLnkRS25;dxSpreadSheetReportDesignerRS25;vclie;dxSkinCoffeeRS25;bindengine;DBXMySQLDriver;dxFireDACServerModeRS25;FireDACMySQLDriver;mydacfmx250;dxSkinOffice2013LightGrayRS25;FireDACCommonODBC;dxSkinMetropolisRS25;dxSkinOffice2010SilverRS25;dxSkinOffice2016DarkRS25;bindcompdbx;IndyIPCommon;dxSkinBlueprintRS25;dxSkinLondonLiquidSkyRS25;vcl;IndyIPServer;dxSkinStardustRS25;dxPSdxLCLnkRS25;UIRibbonPackageDR;IndySystem;dxComnRS25;dxSkinsCoreRS25;dxSkinOffice2007GreenRS25;dac250;dxSkinWhiteprintRS25;dsnapcon;dxSkinVisualStudio2013BlueRS25;mysqlmon250;dxLayoutControlRS25;FireDACMSAccDriver;fmxFireDAC;dxSkinGlassOceansRS25;vclimg;dxSkinMetropolisDarkRS25;TeeDB;dxSkinCaramelRS25;dxServerModeRS25;dxSkinOffice2013DarkGrayRS25;dxSkinSharpPlusRS25;dxSpreadSheetRS25;dxSkinVisualStudio2013LightRS25;dxPScxPCProdRS25;FireDACPgDriver;dxSkiniMaginaryRS25;ChromeTabs_R;cxEditorsRS25;FMXTee;cxGridRS25;dxSkinTheAsphaltWorldRS25;DbxCommonDriver;Tee;dxSkinHighContrastRS25;xmlrtl;frx25;fmxobj;vclwinx;dxSkinSevenClassicRS25;rtl;cxDataRS25;DbxClientDriver;dxPScxGridLnkRS25;dacvcl250;dxPSCoreRS25;CustomIPTransport;vcldsnap;dxmdsRS25;dxSkinSharpRS25;dxSkinOffice2016ColorfulRS25;bindcomp;appanalytics;crcontrols250;dxSkinVisualStudio2013DarkRS25;IndyIPClient;bindcompvcl;dxSkinOffice2010BlackRS25;dxDBXServerModeRS25;dxSkinDevExpressStyleRS25;dxGDIPlusRS25;dxThemeRS25;TeeUI;dxSkinscxPCPainterRS25;vclribbon;dbxcds;VclSmp;adortl;dacfmx250;dsnapxml;dbrtl;inetdbxpress;IndyProtocols;dxSkinSummer2008RS25;dxADOServerModeRS25;dxSkinPumpkinRS25;dxSkinXmas2008BlueRS25;fmxase;$(DCC_UsePackage)</DCC_UsePackage>
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
         <BT_BuildType>Debug</BT_BuildType>
-        <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
     </PropertyGroup>
@@ -84,6 +88,8 @@
         <DCC_RemoteDebug>false</DCC_RemoteDebug>
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppEnableHighDPI>true</AppEnableHighDPI>
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <Manifest_File>(None)</Manifest_File>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_LocalDebugSymbols>false</DCC_LocalDebugSymbols>
@@ -94,6 +100,7 @@
     <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppEnableHighDPI>true</AppEnableHighDPI>
+        <VerInfo_Locale>1033</VerInfo_Locale>
     </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
